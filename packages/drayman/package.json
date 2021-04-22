@@ -1,6 +1,6 @@
 {
   "name": "drayman",
-  "version": "0.0.1",
+  "version": "1.0.0-alpha.0",
   "description": "",
   "main": "index.js",
   "scripts": {},
@@ -8,6 +8,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "drayman-core": "^0.0.1"
+    "drayman-core": "^1.0.0-alpha.0"
   }
 }
