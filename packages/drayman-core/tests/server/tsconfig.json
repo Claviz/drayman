@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "stripInternal": true,
+        "jsx": "react-jsx",
+        "typeRoots": [
+            "../../node_modules/@types"
+        ],
+        "types": [
+            "@types/node",
+            "@types/jest"
+        ]
+    },
+    "include": [
+        "./",
+        "../../src"
+    ]
+}

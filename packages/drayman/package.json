@@ -1,0 +1,13 @@
+{
+  "name": "drayman",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "drayman-core": "^0.0.1"
+  }
+}

@@ -1,0 +1,447 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`expression as children 2 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/0/p/0/text",
+              "options": Object {
+                "text": "This is item 0 in the list",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/0/p",
+          "options": Object {},
+          "style": null,
+          "type": "p",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/1/p/0/text",
+              "options": Object {
+                "text": "This is item 1 in the list",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/1/p",
+          "options": Object {},
+          "style": null,
+          "type": "p",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/2/p/0/text",
+              "options": Object {
+                "text": "This is item 2 in the list",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/2/p",
+          "options": Object {},
+          "style": null,
+          "type": "p",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": null,
+      "type": "div",
+    },
+  ],
+}
+`;
+
+exports[`function as children 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/0/p/0/text",
+              "options": Object {
+                "text": "This is item 0 in the list",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/0/p",
+          "options": Object {},
+          "style": null,
+          "type": "p",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/1/p/0/text",
+              "options": Object {
+                "text": "This is item 1 in the list",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/1/p",
+          "options": Object {},
+          "style": null,
+          "type": "p",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/2/p/0/text",
+              "options": Object {
+                "text": "This is item 2 in the list",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/2/p",
+          "options": Object {},
+          "style": null,
+          "type": "p",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": null,
+      "type": "div",
+    },
+  ],
+}
+`;
+
+exports[`ignores empty elements 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/0/h1/0/text",
+              "options": Object {
+                "text": "Hello, world!",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/0/h1",
+          "options": Object {},
+          "style": null,
+          "type": "h1",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": null,
+      "type": "div",
+    },
+  ],
+}
+`;
+
+exports[`renders components with childRenderer 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/0/h3/0/text",
+              "options": Object {
+                "text": "Hello, world!",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/0/h3",
+          "options": Object {},
+          "style": null,
+          "type": "h3",
+        },
+        Object {
+          "children": Array [],
+          "key": "/0/div/1/not-child",
+          "options": Object {
+            "message": "Hello, world!",
+          },
+          "style": null,
+          "type": "not-child",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": null,
+      "type": "div",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/1/h3/0/text",
+          "options": Object {
+            "text": "Hello, orphan!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/1/h3",
+      "options": Object {},
+      "style": null,
+      "type": "h3",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/2/h3/0/text",
+          "options": Object {
+            "text": "Hello, func orphan!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/2/h3",
+      "options": Object {},
+      "style": null,
+      "type": "h3",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/3/h6/0/text",
+          "options": Object {
+            "text": "Hello, other child!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/3/h6",
+      "options": Object {},
+      "style": null,
+      "type": "h6",
+    },
+  ],
+}
+`;
+
+exports[`renders deprecated elements correctly 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [
+                Object {
+                  "children": Array [],
+                  "key": "/0/div/0/div/0/h1/0/text",
+                  "options": Object {
+                    "text": "Hello, world!",
+                  },
+                  "style": null,
+                  "type": "text",
+                },
+              ],
+              "key": "/0/div/0/div/0/h1",
+              "options": Object {},
+              "style": null,
+              "type": "h1",
+            },
+          ],
+          "key": "/0/div/0/div",
+          "options": Object {},
+          "style": null,
+          "type": "div",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": null,
+      "type": "div",
+    },
+  ],
+}
+`;
+
+exports[`renders nested array of elements 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/h1/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/0/h1",
+      "options": Object {},
+      "style": null,
+      "type": "h1",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/1/h1/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/1/h1",
+      "options": Object {},
+      "style": null,
+      "type": "h1",
+    },
+  ],
+}
+`;
+
+exports[`renders nested elements 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/0/button/0/text",
+              "options": Object {
+                "text": "Red button",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/0/button",
+          "options": Object {},
+          "style": Object {
+            "color": "red",
+          },
+          "type": "button",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/1/button/0/text",
+              "options": Object {
+                "text": "Blue button",
+              },
+              "style": null,
+              "type": "text",
+            },
+          ],
+          "key": "/0/div/1/button",
+          "options": Object {},
+          "style": Object {
+            "color": "blue",
+          },
+          "type": "button",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": null,
+      "type": "div",
+    },
+  ],
+}
+`;
+
+exports[`renders single element 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/button/0/text",
+          "options": Object {
+            "text": "Click me!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/0/button",
+      "options": Object {},
+      "style": Object {
+        "color": "red",
+      },
+      "type": "button",
+    },
+  ],
+}
+`;
+
+exports[`stores events correctly 1`] = `
+Object {
+  "events": Object {
+    "/0/input/onValueChange": [Function],
+    "/0/input/onValueChangeStart": [Function],
+  },
+  "tree": Array [
+    Object {
+      "children": Array [],
+      "key": "/0/input",
+      "options": Object {
+        "onValueChange": true,
+        "onValueChangeStart": true,
+        "type": "text",
+      },
+      "style": null,
+      "type": "input",
+    },
+  ],
+}
+`;
