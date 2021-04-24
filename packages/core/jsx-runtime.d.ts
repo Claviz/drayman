@@ -1,0 +1,1 @@
+declare module '@drayman/core/jsx-runtime';

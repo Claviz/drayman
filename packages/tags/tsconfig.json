@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "stripInternal": true,
+        "rootDir": "./src",
+        "declaration": true,
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
