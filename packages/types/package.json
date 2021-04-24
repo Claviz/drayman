@@ -5,6 +5,9 @@
   "scripts": {
     "build": "tsc && node ./dist/map-elements"
   },
+  "files": [
+    "./dist/index.d.ts"
+  ],
   "types": "./dist/index.d.ts",
   "keywords": [],
   "author": "",
