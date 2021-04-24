@@ -1,6 +1,6 @@
 {
   "name": "extended-drayman-element",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.4",
   "scripts": {
     "build": "ng build --prod --single-bundle --output-hashing=none"
   },
@@ -15,9 +15,9 @@
     "@angular/platform-browser": "~11.2.6",
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
+    "@drayman/element": "^1.0.0-alpha.4",
     "axios": "^0.21.1",
     "document-register-element": "^1.7.2",
-    "@drayman/element": "^1.0.0-alpha.0",
     "elements-zone-strategy": "^10.0.1",
     "ngx-build-plus": "^11.0.0",
     "rxjs": "~6.6.0",

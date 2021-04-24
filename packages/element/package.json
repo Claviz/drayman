@@ -1,6 +1,6 @@
 {
   "name": "@drayman/element",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.4",
   "scripts": {
     "build": "npm run map-elements && ng build --prod --single-bundle --output-hashing=none",
     "map-elements": "tsc -p ./scripts/tsconfig.json && node ./dist/map-elements"
@@ -27,11 +27,11 @@
     "@angular/platform-browser": "~11.2.6",
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
+    "@drayman/tags": "^1.0.0-alpha.4",
     "@types/is-hotkey": "^0.1.2",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.20.10",
     "codelyzer": "^6.0.0",
-    "@drayman/tags": "^1.0.0-alpha.0",
     "elements-zone-strategy": "^10.0.1",
     "fast-json-patch": "^3.0.0-1",
     "is-hotkey": "^0.2.0",
