@@ -53,7 +53,6 @@ const start = () => {
     app.use(express.static('./public'));
     // app.use(express.static('./app/dist/app'));
     app.get('/drayman-element.js', function (req, res) {
-        console.log(path.join(__dirname, '../element/dist/main-es2015.js'));
         res.sendFile(path.join(__dirname, '../element/dist/main-es2015.js'));
     });
     // app.get('/drayman.js', async (req, res) => {
@@ -155,17 +154,21 @@ const start = () => {
             draymanCore.onDestroyComponentInstance({ componentInstanceId });
         });
     });
+
+    return io;
 }
 
 const command = process.argv[2];
 (async () => {
-    if (command === 'start') {
-        start();
+    if (command === 'start:dev') {
+        await build();
+        const io = start();
+        fs.watch(componentRootDir, async () => {
+            await build();
+            io.emit('browserReload');
+        });
     } else if (command === 'build') {
         await build();
-    } else if (command === 'build:watch') {
-        await build();
-        fs.watch(componentRootDir, build);
     } else {
         throw new Error(`Unknown command.`);
     }

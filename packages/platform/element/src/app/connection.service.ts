@@ -67,7 +67,9 @@ export class ConnectionService {
         handler({ payload, type, componentInstanceId });
       }
     });
-
+    this.socket.on('browserReload', () => {
+      window.location.reload();
+    });
 
     // this.socket = io();
     // window.onpopstate = () => this.emit('locationChange');
