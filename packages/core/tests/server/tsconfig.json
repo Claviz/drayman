@@ -11,7 +11,8 @@
         ],
         "types": [
             "@types/node",
-            "@types/jest"
+            "@types/jest",
+            "@drayman/types"
         ]
     },
     "include": [

@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`something 1`] = `
+"<ng-container *ngSwitchCase=\\"'h1'\\">
+<h1 [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</h1>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'h2'\\">
+<h2 [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</h2>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'h3'\\">
+<h3 [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</h3>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'h4'\\">
+<h4 [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</h4>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'h5'\\">
+<h5 [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</h5>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'h6'\\">
+<h6 [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</h6>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'td'\\">
+<td [attr.colspan]=\\"element.options.colspan\\" [attr.rowspan]=\\"element.options.rowspan\\" [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</td>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'div'\\">
+<div [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</div>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'span'\\">
+<span [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</span>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'table'\\">
+<table [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</table>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'tbody'\\">
+<tbody [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</tbody>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'thead'\\">
+<thead [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</thead>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'tfoot'\\">
+<tfoot [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</tfoot>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'tr'\\">
+<tr [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</tr>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'th'\\">
+<th [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</th>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'input'\\">
+<app-drayman-input-field [options]=\\"element.options\\" [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</app-drayman-input-field>
+</ng-container>
+<ng-container *ngSwitchCase=\\"'img'\\">
+<img [src]=\\"element.options.src\\" [alt]=\\"element.options.alt\\" [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\" />
+</ng-container>
+<ng-container *ngSwitchCase=\\"'button'\\">
+<button (click)=\\"element.options.onClick()\\" [disabled]=\\"element.options.disabled\\" [ngStyle]=\\"element.style\\" [attr.tabindex]=\\"element.options.tabindex\\" (keydown)=\\"onShortcut($event, element)\\">
+<ng-container *ngTemplateOutlet=\\"childrenTemplate; context: {children: element.children}\\"></ng-container>
+</button>
+</ng-container>"
+`;

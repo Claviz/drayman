@@ -1,17 +1,17 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "module": "ESNext",
+        "module": "CommonJS",
         "outDir": "../dist",
         "esModuleInterop": true,
-        "moduleResolution": "node",
+        "resolveJsonModule": true,
         "stripInternal": true,
-        "rootDir": "../scripts",
-        "typeRoots": [
-            "../node_modules/@types"
-        ]
+        "rootDir": "../scripts"
     },
     "include": [
         "../scripts/**/*"
+    ],
+    "exclude": [
+        "../scripts/**/*.spec.ts"
     ]
 }

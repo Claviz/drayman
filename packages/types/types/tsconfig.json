@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "ESNext"
+        ],
+        "target": "ESNext",
+        "module": "commonjs",
+        "jsxImportSource": "@drayman/core",
+        "jsx": "react-jsx",
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noEmit": true
+    }
+}

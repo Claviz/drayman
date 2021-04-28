@@ -2,9 +2,6 @@
     "compilerOptions": {
         "target": "esnext",
         "module": "CommonJS",
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "stripInternal": true,
         "jsxImportSource": "@drayman/core",
         "jsx": "react-jsx",
         "rootDir": "src",

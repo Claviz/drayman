@@ -2,6 +2,7 @@
   "name": "@drayman/platform-demo",
   "version": "1.0.0-alpha.7",
   "scripts": {
+    "build": "drayman-platform build",
     "start:dev": "drayman-platform start:dev"
   },
   "private": "true",

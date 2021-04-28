@@ -158,3 +158,24 @@ test(`renders deprecated elements correctly`, async () => {
     );
     expect(result).toMatchSnapshot();
 });
+
+test(`renders styles appending 'px' to number values where possible`, async () => {
+    const result = await render(
+        <div style={{ width: 100, height: 50, flex: 1 }}>Hello, world!</div>
+    );
+    expect(result).toMatchSnapshot();
+});
+
+test(`converts camel-cased styles to kebab-case`, async () => {
+    const result = await render(
+        <div style={{ backgroundColor: 'red', paddingTop: '15px' }}>Hello, world!</div>
+    );
+    expect(result).toMatchSnapshot();
+});
+
+test(`custom CSS properties are allowed`, async () => {
+    const result = await render(
+        <div style={{ ['--theme-color' as any]: 'black' }}>Hello, world!</div>
+    );
+    expect(result).toMatchSnapshot();
+});

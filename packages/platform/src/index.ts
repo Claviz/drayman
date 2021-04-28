@@ -6,39 +6,42 @@ import path from 'path';
 import shortid from 'shortid';
 import { Server, Socket } from 'socket.io';
 import * as draymanCore from '@drayman/core';
-import fs from 'fs';
+import fs from 'fs-extra';
 import ts from 'typescript';
 
-const componentRootDir = `./src/components`;
+const componentInputDir = `./src/components`;
 
 const build = async () => {
-    const componentFiles = await fs.promises.readdir(componentRootDir);
-    const templateFilePath = `./node_modules/@drayman/types/dist/index.d.ts`;
-    const template = await fs.promises.readFile(templateFilePath, 'utf8');
+    await fs.ensureDir(componentInputDir);
+    const componentFiles = await fs.readdir(componentInputDir);
+    const templateFilePath = `./out/index.d.ts`;
+    await fs.ensureFile(templateFilePath);
+    const template = await fs.readFile(templateFilePath, 'utf8');
     const lines = template.split('\n');
-    let newLines = componentFiles.map(x => `'${x.replace('.tsx', '')}': { [propName:string]: any; };`);
-    const startIndex = lines.findIndex(x => x.includes('// USER-ELEMENTS-START')) + 1;
+    let newLines = componentFiles.map(x => `'${x.replace('.tsx', '')}': { [propName: string]: any; };`);
+    const startIndex = lines.findIndex(x => x.includes('// ELEMENTS-START')) + 1;
     if (startIndex) {
-        const endIndex = lines.findIndex(x => x.includes('// USER-ELEMENTS-END'));
+        const endIndex = lines.findIndex(x => x.includes('// ELEMENTS-END'));
         lines.splice(startIndex, endIndex - startIndex, ...newLines);
     } else {
         newLines = [
             `declare namespace JSX {`,
             `interface IntrinsicElements {`,
-            `// USER-ELEMENTS-START`,
+            `// ELEMENTS-START`,
             ...newLines,
-            `// USER-ELEMENTS-END`,
+            `// ELEMENTS-END`,
             `}`,
             `}`
         ]
         lines.splice(startIndex, 0, ...newLines);
     }
-    await fs.promises.writeFile(templateFilePath, lines.join('\n'));
-    const tsConfig = JSON.parse(await fs.promises.readFile(`./tsconfig.json`, 'utf-8'));
+    await fs.outputFile(templateFilePath, lines.join('\n'));
+    const tsConfig = JSON.parse(await fs.readFile(`./tsconfig.json`, 'utf-8'));
+    const componentOutputDir = `./out/components`;
     for (const componentFile of componentFiles) {
-        const componentScript = await fs.promises.readFile(path.join(componentRootDir, componentFile), 'utf-8');
+        const componentScript = await fs.readFile(path.join(componentInputDir, componentFile), 'utf-8');
         const transpiledComponentScript = ts.transpileModule(componentScript, tsConfig);
-        await fs.promises.writeFile(path.join(`./out/components`, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
+        await fs.outputFile(path.join(componentOutputDir, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
     }
     console.log(`Rebuilt!`);
 }
@@ -163,7 +166,7 @@ const command = process.argv[2];
     if (command === 'start:dev') {
         await build();
         const io = start();
-        fs.watch(componentRootDir, async () => {
+        fs.watch(componentInputDir, async () => {
             await build();
             io.emit('browserReload');
         });

@@ -1,0 +1,8 @@
+{
+    "extends": "dtslint/dtslint.json",
+    "rules": {
+        "no-empty-interface": false,
+        "no-trailing-whitespace": false,
+        "no-single-declare-module": false
+    }
+}

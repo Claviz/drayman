@@ -1,14 +1,22 @@
-import { ChangeDetectorRef, Component, Inject, Input, NgZone, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Optional,
+  SimpleChanges,
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { applyPatch } from 'fast-json-patch';
 import isHotkey from 'is-hotkey';
-import { Subscription } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
 
-import { DraymanModalComponent } from './modal/drayman-modal.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Clipboard } from '@angular/cdk/clipboard';
 import { IConnectionService } from './interfaces/connection-service';
+import { DraymanModalComponent } from './modal/drayman-modal.component';
 
 @Component({
   selector: 'app-drayman-element',
@@ -24,25 +32,18 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
   view = {};
   previouslySerializedTree = [];
   viewTree: any[] = [];
-  messages$?: Subscription;
 
   constructor(
-    // private draymanService: DraymanService,
+    @Optional() private dialogRef: MatDialogRef<DraymanModalComponent>,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private clipboard: Clipboard,
-    @Optional() private dialogRef: MatDialogRef<DraymanModalComponent>,
     private ref: ChangeDetectorRef,
     private ngZone: NgZone,
-    // @Inject('DRAYMAN_CUSTOM_ELEMENT_URL') public elementUrl: string,
-  ) {
-    console.log({ dialogRef });
-    // console.log(`ref socket`, this.draymanService.socket);
-  }
+  ) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.options && !changes.options.firstChange) {
-      console.log(this.component, this.options);
       this.config?.connection.updateComponentInstanceProps({ componentInstanceId: this.componentInstanceId, options: this.options });
     }
   }
@@ -53,9 +54,6 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.config?.connection.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
-    if (this.messages$) {
-      this.messages$.unsubscribe();
-    }
   }
 
   traverseTree(tree: any) {
@@ -73,18 +71,12 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    console.log(`drayman-element init`)
     while (!this.config) {
-      console.log(`trying to init again`)
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    this.componentInstanceId = await this.config?.connection.initializeComponent({ componentId: this.component, componentOptions: this.options, location: { href: window.location.href } });
-    this.config?.connection.onEvent(this.componentInstanceId, ({ type, payload }) => {
+    this.componentInstanceId = await this.config.connection.initializeComponent({ componentId: this.component, componentOptions: this.options, location: { href: window.location.href } });
+    this.config.connection.onEvent(this.componentInstanceId, ({ type, payload }) => {
       this.ngZone.run(() => {
-        // const message = event.message;
-        // if (event.type === 'componentInstanceMessage') {
-        // console.log({ message });
-        // if (message.componentInstanceId === this.componentInstanceId) {
         if (type === 'closeModal') {
           if (this.dialogRef) {
             const { data } = payload;
@@ -95,11 +87,8 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
           const tree = JSON.parse(JSON.stringify(this.previouslySerializedTree));
           this.traverseTree(tree);
           this.viewTree = tree;
-          console.log({ tree });
           this.ref.detectChanges();
         }
-        // }
-        // } else if (event.type === 'browserEventMessage') {
         else if (type === 'openModal') {
           const { component, options, onCloseCallbackId } = payload;
           const dialog = this.dialog.open(DraymanModalComponent, {
@@ -134,7 +123,6 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
           const { path } = payload;
           this.config?.connection.navigate(path);
         }
-        // }
       });
     });
   }

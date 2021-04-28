@@ -1,5 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`converts camel-cased styles to kebab-case 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/div/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": Object {
+        "background-color": "red",
+        "padding-top": "15px",
+      },
+      "type": "div",
+    },
+  ],
+}
+`;
+
+exports[`custom CSS properties are allowed 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/div/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": Object {
+        "--theme-color": "black",
+      },
+      "type": "div",
+    },
+  ],
+}
+`;
+
 exports[`expression as children 2 1`] = `
 Object {
   "events": Object {},
@@ -419,6 +474,35 @@ Object {
         "color": "red",
       },
       "type": "button",
+    },
+  ],
+}
+`;
+
+exports[`renders styles appending 'px' to number values where possible 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/div/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/0/div",
+      "options": Object {},
+      "style": Object {
+        "flex": 1,
+        "height": "50px",
+        "width": "100px",
+      },
+      "type": "div",
     },
   ],
 }

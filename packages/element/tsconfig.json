@@ -18,7 +18,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "types": [
+      "node",
+      "jest",
+      "@drayman/types"
+    ],
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

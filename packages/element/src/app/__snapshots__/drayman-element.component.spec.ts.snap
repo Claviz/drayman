@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DraymanElementComponent should render button 1`] = `
+<app-drayman-element
+  clipboard={[Function Object]}
+  component={[Function String]}
+  componentInstanceId={[Function String]}
+  config={[Function Object]}
+  dialog={[Function Object]}
+  dialogRef={[Function Object]}
+  emit={[Function Function]}
+  ngZone={[Function NgZone]}
+  options={[Function Object]}
+  previouslySerializedTree={[Function Array]}
+  ref={[Function ViewRef_]}
+  snackBar={[Function Object]}
+  view={[Function Object]}
+  viewTree={[Function Array]}
+>
+  <button>
+    
+    
+    
+  </button>
+</app-drayman-element>
+`;
