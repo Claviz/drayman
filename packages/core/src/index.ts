@@ -91,7 +91,10 @@ export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPa
         `${path.join(__dirname, '../node_modules/ts-node/dist/bin-transpile')}`,
         [
             '--project',
-            `${path.join(__dirname, '../shared/component-processor.tsconfig.json')}`,
+            path.join(
+                __dirname,
+                process.env.NODE_ENV === 'test' ? `../tests/component-processor.tsconfig.test.json` : `../shared/component-processor.tsconfig.json`,
+            ),
             // '--files',
             path.join(__dirname, '../shared/component-processor.ts'),
             componentInstanceId

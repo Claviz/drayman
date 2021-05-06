@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+        "jsxImportSource": "../../",
+        "jsx": "react-jsx",
+        "esModuleInterop": true
+    }
+}
