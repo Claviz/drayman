@@ -17,7 +17,7 @@ jobs:
         
       - name: Setup lerna
         run: |
-          npm install lerna -g
+          sudo npm install lerna -g
           lerna bootstrap
         
       - name: Build
