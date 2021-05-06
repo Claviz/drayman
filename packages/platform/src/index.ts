@@ -9,12 +9,10 @@ import * as draymanCore from '@drayman/core';
 import fs from 'fs-extra';
 import ts from 'typescript';
 
-const componentInputDir = `./src/components`;
-
 const build = async () => {
     await fs.ensureDir(componentInputDir);
     const componentFiles = await fs.readdir(componentInputDir);
-    const templateFilePath = `./out/index.d.ts`;
+    const templateFilePath = path.join(rootDir, `./src/index.d.ts`);
     await fs.ensureFile(templateFilePath);
     const template = await fs.readFile(templateFilePath, 'utf8');
     const lines = template.split('\n');
@@ -36,13 +34,13 @@ const build = async () => {
         lines.splice(startIndex, 0, ...newLines);
     }
     await fs.outputFile(templateFilePath, lines.join('\n'));
-    const tsConfig = JSON.parse(await fs.readFile(`./tsconfig.json`, 'utf-8'));
-    const componentOutputDir = `./out/components`;
-    for (const componentFile of componentFiles) {
-        const componentScript = await fs.readFile(path.join(componentInputDir, componentFile), 'utf-8');
-        const transpiledComponentScript = ts.transpileModule(componentScript, tsConfig);
-        await fs.outputFile(path.join(componentOutputDir, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
-    }
+    // const tsConfig = JSON.parse(await fs.readFile(path.join(rootDir, `./tsconfig.json`), 'utf-8'));
+    // const componentOutputDir = path.join(rootDir, `./src/components`);
+    // for (const componentFile of componentFiles) {
+    //     const componentScript = await fs.readFile(path.join(componentInputDir, componentFile), 'utf-8');
+    //     const transpiledComponentScript = ts.transpileModule(componentScript, tsConfig);
+    //     await fs.outputFile(path.join(componentOutputDir, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
+    // }
     console.log(`Rebuilt!`);
 }
 
@@ -53,7 +51,7 @@ const start = () => {
     const app = express();
     // let ws;
     app.use(express.json());
-    app.use(express.static('./public'));
+    app.use(express.static(path.join(rootDir, './public')));
     // app.use(express.static('./app/dist/app'));
     app.get('/drayman-element.js', function (req, res) {
         res.sendFile(path.join(__dirname, '../element/dist/main-es2015.js'));
@@ -70,7 +68,19 @@ const start = () => {
     app.post('/api/componentEvent', upload.any(), async (req, res, next) => {
         try {
             const { componentInstanceId, eventName } = req.body;
-            draymanCore.handleComponentEvent({ componentInstanceId, eventName, options: req.body.options, files: req.files, res })
+            draymanCore.handleComponentEvent({
+                componentInstanceId,
+                eventName,
+                options: req.body.options,
+                files: req.files,
+                onError: ({ err }) => {
+                    res.status(500).send(`${err}`);
+                },
+                onSuccess: ({ result }) => {
+                    res.json(result || null);
+                },
+                // res
+            })
         } catch (err) {
             console.log(err);
             next(err);
@@ -111,7 +121,7 @@ const start = () => {
         res.status(500).send(err);
     });
 
-    app.get('*', (req, res) => res.sendFile(path.resolve('public', 'index.html')));
+    app.get('*', (req, res) => res.sendFile(path.resolve(rootDir, 'public', 'index.html')));
 
     process.on('uncaughtException', function (err) {
         console.log(err);
@@ -120,7 +130,7 @@ const start = () => {
     // import { BrowserEventMessage, CloseModalMessage, ComponentInstanceMessage, CustomDraymanEvent, DraymanEvents, HandleBrowserCallback, InitializeComponentInstance, LocationChange, OpenModalMessage, UpdateComponentInstanceProps, ViewComponentInstanceMessage } from '../shared/types';
 
     const server = app.listen(3033);
-    console.log(`Drayman started`);
+    console.log(`Drayman started at http://localhost:3033`);
     server.setTimeout(0);
     const io = new Server(server);
 
@@ -141,8 +151,7 @@ const start = () => {
             callback({ componentInstanceId });
             draymanCore.onInitializeComponentInstance({
                 componentName: componentId,
-                componentRootDir: `out/components`,
-                // componentPath: `./out/components/${componentId}`,
+                componentRootDir: path.join(rootDir, `src/components`),
                 componentInstanceId,
                 componentOptions,
                 location,
@@ -162,6 +171,9 @@ const start = () => {
 }
 
 const command = process.argv[2];
+const rootDir = process.argv[3] || '.';
+const componentInputDir = path.join(rootDir, `./src/components`);
+
 (async () => {
     if (command === 'start:dev') {
         await build();

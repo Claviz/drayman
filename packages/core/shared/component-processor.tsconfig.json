@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+        "jsxImportSource": "@drayman/core",
+        "jsx": "react-jsx",
+        "esModuleInterop": true
+    }
+}

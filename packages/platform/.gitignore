@@ -63,3 +63,5 @@ typings/
 /lib
 dist
 out
+cypress/videos
+cypress/screenshots

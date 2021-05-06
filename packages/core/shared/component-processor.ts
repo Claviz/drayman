@@ -89,7 +89,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         )
         .map(x => x
             .replace(componentNamePrefix, '')
-            .replace('.js', '')
+            .replace('.tsx', '')
         );
     const Components: { [componentId: string]: any } = {};
     componentNames.forEach(x => Components[x] = x);
@@ -106,8 +106,8 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
     }
     const createComponent = async (componentKey: string, initialProps: any) => {
         const props = { ...initialProps } || {};
-        // const child_fnResult = require(path.join(process.cwd(), `./out/components/${componentKey}.js`));
-        const child_fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
+        // const child_fnResult = require(path.join(process.cwd(), `./out/components/${componentKey}.tsx`));
+        const child_fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.tsx`));
         const child_componentResult = await (Object.values(child_fnResult)[0] as any)({
             forceUpdate,
             props,
@@ -216,7 +216,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         // });
         // }
     }
-    const fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
+    const fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.tsx`));
     const componentResult = await (Object.values(fnResult)[0] as any)({
         props,
         forceUpdate,
@@ -227,6 +227,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         ...extensions.importable,
         // isModal,
     });
+
     await forceUpdate();
 }
 

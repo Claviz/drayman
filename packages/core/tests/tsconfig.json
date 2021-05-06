@@ -6,13 +6,15 @@
         "resolveJsonModule": true,
         "stripInternal": true,
         "jsx": "react-jsx",
+        "jsxImportSource": "@drayman/core",
         "typeRoots": [
             "../../node_modules/@types"
         ],
         "types": [
             "@types/node",
             "@types/jest",
-            "@drayman/types"
+            "@drayman/types",
+            "../jsx-runtime"
         ]
     },
     "include": [

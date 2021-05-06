@@ -3,14 +3,14 @@ import path from 'path';
 import execa from 'execa';
 import shortid from 'shortid';
 
-export const handleComponentEvent = ({ componentInstanceId, eventName, options, res, files }) => {
-    options = (options && JSON.parse(options)) || {};
+export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
     const requestId = shortid.generate();
     if (Object.keys(componentInstances).includes(componentInstanceId)) {
-        componentInstances[componentInstanceId].eventRequests[requestId] = res;
+        componentInstances[componentInstanceId].eventRequests[requestId] = { onSuccess, onError };
         componentInstances[componentInstanceId].process.send({ type: 'componentEvent', payload: { eventName, requestId, options, files, } });
     } else {
-        res.status(500).send(`Component instance was not found.`);
+        onError({ err: `Component instance was not found.` });
+        // res.status(500).send(`Component instance was not found.`);
     }
 }
 
@@ -67,9 +67,6 @@ export const onLocationChange = ({ location, connectionId }) => {
 }
 
 export const onUpdateComponentInstanceProps = ({ componentInstanceId, options, }) => {
-    if (typeof options === 'string') {
-        options = JSON.parse(options);
-    }
     componentInstances[componentInstanceId].process.send({ type: 'updateComponentInstanceProps', payload: { componentInstanceId, options, } });
 }
 
@@ -90,11 +87,17 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
 }
 
 export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPath = null, extensionsOptions = null, componentNamePrefix = '', componentName, componentRootDir, componentInstanceId, componentOptions, location, connectionId, emit }) => {
-    if (typeof componentOptions === 'string') {
-        componentOptions = JSON.parse(componentOptions);
-    }
-
-    const subprocess = execa.node(path.join(__dirname, 'component-processor.js'), [componentInstanceId], { nodeOptions: ['--unhandled-rejections=strict'], serialization: 'advanced', });
+    const subprocess = execa.node(
+        `${path.join(__dirname, '../node_modules/ts-node/dist/bin-transpile')}`,
+        [
+            '--project',
+            `${path.join(__dirname, '../shared/component-processor.tsconfig.json')}`,
+            // '--files',
+            path.join(__dirname, '../shared/component-processor.ts'),
+            componentInstanceId
+        ],
+        { nodeOptions: ['--unhandled-rejections=strict'], serialization: 'advanced', }
+    );
     componentInstances[componentInstanceId] = {
         process: subprocess,
         /**
@@ -117,12 +120,12 @@ export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPa
      * and cancel them.
      */
     subprocess.on('exit', (x) => {
-        const requests = componentInstances[componentInstanceId].eventRequests;
-        for (const requestId of Object.keys(requests)) {
-            requests[requestId].status(500).send(`Component instance was destroyed.`);
-        }
+        // const requests = componentInstances[componentInstanceId].eventRequests;
+        // for (const requestId of Object.keys(requests)) {
+        //     requests[requestId].status(500).send(`Component instance was destroyed.`);
+        // }
         delete componentInstances[componentInstanceId];
-        emit({ type: 'view', payload: { view: null }, componentInstanceId });
+        emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
         // httpClient.sendView({
         //     view: null,
         // });
@@ -137,9 +140,13 @@ export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPa
         if (type === 'response') {
             const { requestId, result, err } = payload;
             if (err) {
-                componentInstances[componentInstanceId].eventRequests[requestId].status(500).send(`${err}`);
+                // emit({ type: 'componentEventError', payload: { err, requestId }, componentInstanceId });
+                componentInstances[componentInstanceId].eventRequests[requestId].onError({ err });
+                // componentInstances[componentInstanceId].eventRequests[requestId].status(500).send(`${err}`);
             } else {
-                componentInstances[componentInstanceId].eventRequests[requestId].json(result || null);
+                // emit({ type: 'componentEventSuccess', payload: { result, requestId }, componentInstanceId });
+                componentInstances[componentInstanceId].eventRequests[requestId].onSuccess({ result });
+                // componentInstances[componentInstanceId].eventRequests[requestId].json(result || null);
             }
             delete componentInstances[componentInstanceId].eventRequests[requestId];
         } else if (type === 'eventHubEvent') {
@@ -162,11 +169,14 @@ export const onDestroyComponentInstance = ({ componentInstanceId }) => {
     componentInstances[componentInstanceId].process.kill();
 }
 
-const componentInstances: {
+export const componentInstances: {
     [componentInstanceId: string]: {
         process: execa.ExecaChildProcess<string>;
         eventRequests: {
-            [requestId: string]: any;
+            [requestId: string]: {
+                onSuccess: (data: { result: any }) => void,
+                onError: (data: { err: any }) => void,
+            };
         };
         connectionId: string;
         namespaceId: string;
