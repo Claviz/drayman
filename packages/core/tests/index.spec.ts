@@ -130,8 +130,6 @@ describe('', () => {
             });
         }))();
         expect(messages).toMatchSnapshot();
-        expect(onError.mock.calls.length).toEqual(0);
-        expect(onSuccess.mock.calls.length).toEqual(1);
     });
 
     test('should change location for specific connection', async () => {
