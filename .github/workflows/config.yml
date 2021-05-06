@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        
+      - name: Setup lerna
+        run: |
+          sudo npm install lerna -g
+          lerna bootstrap
+        
+      - name: Build
+        run: lerna run build
+        
+      - name: Test
+        run: lerna run test
