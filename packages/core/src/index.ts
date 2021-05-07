@@ -88,7 +88,7 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
 
 export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPath = null, extensionsOptions = null, componentNamePrefix = '', componentName, componentRootDir, componentInstanceId, componentOptions, location, connectionId, emit }) => {
     const subprocess = execa.node(
-        `${path.join(__dirname, '../node_modules/ts-node/dist/bin-transpile')}`,
+        `${path.join(path.dirname(require.resolve('ts-node/package.json')), 'dist/bin-transpile')}`,
         [
             '--project',
             path.join(
