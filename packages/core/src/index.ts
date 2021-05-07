@@ -96,6 +96,7 @@ export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPa
                 process.env.NODE_ENV === 'test' ? `../tests/component-processor.tsconfig.test.json` : `../shared/component-processor.tsconfig.json`,
             ),
             // '--files',
+            '--skip-ignore',
             path.join(__dirname, '../shared/component-processor.ts'),
             componentInstanceId
         ],
