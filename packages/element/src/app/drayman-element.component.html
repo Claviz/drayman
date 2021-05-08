@@ -102,6 +102,11 @@
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </button>
 </ng-container>
+<ng-container *ngSwitchCase="'pre'">
+<pre [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
+</pre>
+</ng-container>
                 <!--ELEMENTS-END-->
                 <ng-container *ngSwitchCase="'text'">
                     {{element.options.text}}

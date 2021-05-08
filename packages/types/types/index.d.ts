@@ -64,6 +64,7 @@ declare global {
 
     // }
     interface DivProps extends PropsWithChildren { }
+    interface PreformattedProps extends PropsWithChildren { }
     interface HeadingProps extends PropsWithChildren { }
     type InputProps = TextInputProps | NumberInputProps;
     interface ImageProps extends DefaultProps {
@@ -153,6 +154,10 @@ declare global {
              * Clickable button used to perform server-side actions.
              */
             'button': ButtonProps;
+            /**
+             * Represents preformatted text which is to be presented exactly as written in the HTML file.
+             */
+            'pre': PreformattedProps;
         }
         interface Element { }
     }
