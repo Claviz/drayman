@@ -29,7 +29,7 @@ context('third-party-element', () => {
     cy.visit('http://localhost:3033/third-party-element');
   })
 
-  it.only(`renders third-party element`, () => {
+  it(`renders third-party element`, () => {
     cy.get('button').should('contain.text', 'Hello, world!');
     cy.get('button').should('have.attr', 'mat-raised-button');
   })

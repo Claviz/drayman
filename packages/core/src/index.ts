@@ -5,7 +5,10 @@ import shortid from 'shortid';
 import { find, name, path as nodeFindPath } from 'node-find';
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
-    options = (options && JSON.parse(options)) || {};
+    options = options || {};
+    if (typeof options === 'string') {
+        options = JSON.parse(options);
+    }
     const requestId = shortid.generate();
     if (Object.keys(componentInstances).includes(componentInstanceId)) {
         componentInstances[componentInstanceId].eventRequests[requestId] = { onSuccess, onError };
