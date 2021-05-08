@@ -76,7 +76,7 @@ const sendMessage = ({ type, payload }) => {
 
 const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
 
-const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, location, componentNamePrefix = '' }) => {
+const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, location, isModal = false, componentNamePrefix = '' }) => {
     if (extensionsPath) {
         extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
     }
@@ -126,17 +126,29 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
             return res;
         };
     }
-    const UI = {
-        openModal: async (component: string, options: any, onClose: any) => {
+    const UI: DraymanComponentUI = {
+        isModal,
+        openModal: async (component, options, modalOptions) => {
             let onCloseCallbackId;
-            if (onClose) {
+            if (modalOptions?.onClose) {
                 onCloseCallbackId = `${shortid.generate()}`;
                 browserCallbacks[onCloseCallbackId] = {
-                    callback: onClose,
+                    callback: modalOptions.onClose,
                     once: true,
                 };
             }
-            sendMessage({ type: 'openModal', payload: { component, options: serializeComponentInstanceOptions(options), onCloseCallbackId } })
+            sendMessage({
+                type: 'openModal',
+                payload: {
+                    component,
+                    options: serializeComponentInstanceOptions(options),
+                    onCloseCallbackId,
+                    modalOptions: {
+                        width: modalOptions?.width,
+                        height: modalOptions?.height,
+                    }
+                }
+            })
         },
         closeModal: async (data: any) => {
             sendMessage({ type: 'closeModal', payload: { data }, });

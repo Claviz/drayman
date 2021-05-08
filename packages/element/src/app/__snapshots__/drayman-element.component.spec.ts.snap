@@ -9,6 +9,7 @@ exports[`DraymanElementComponent should render button 1`] = `
   dialog={[Function Object]}
   dialogRef={[Function Object]}
   emit={[Function Function]}
+  isModal="false"
   ngZone={[Function NgZone]}
   options={[Function Object]}
   previouslySerializedTree={[Function Array]}

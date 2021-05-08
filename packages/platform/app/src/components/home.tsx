@@ -11,6 +11,9 @@ export const component: DraymanComponent = async ({ Router }) => {
             case 'http://localhost:3033/third-party-element': {
                 return <third-party-element />
             }
+            case 'http://localhost:3033/modal': {
+                return <modal />
+            }
         }
     }
 

@@ -34,3 +34,15 @@ context('third-party-element', () => {
     cy.get('button').should('have.attr', 'mat-raised-button');
   })
 })
+
+context('modal', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/modal');
+  })
+
+  it(`correctly opens and detects component inside modal`, () => {
+    cy.get('h3').should('contain.text', 'I am not modal!');
+    cy.get('button').click();
+    cy.get('app-drayman-modal').should('contain.text', 'I am modal!');
+  })
+})

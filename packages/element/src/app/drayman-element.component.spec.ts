@@ -70,6 +70,7 @@ describe('DraymanElementComponent', () => {
     expect(mockInitializeComponent.mock.calls[0][0]).toEqual({
       componentId: 'hello-world',
       componentOptions: { text: 'hi!' },
+      isModal: false,
       location: { href: 'http://localhost/' }
     });
   });
@@ -236,7 +237,11 @@ describe('DraymanElementComponent', () => {
             component: payload.component,
             options: payload.options,
             config,
-          }
+          },
+          height: '80vh',
+          width: '50vw',
+          maxHeight: '80vh',
+          maxWidth: '50vw',
         }
       ]);
       closeModal.next('bye!');

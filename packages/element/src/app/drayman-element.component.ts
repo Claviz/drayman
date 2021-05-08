@@ -27,6 +27,7 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
   @Input() component?: string;
   @Input() options: any;
   @Input() config?: { connection: IConnectionService, elementUrl: string };
+  @Input() isModal = false;
 
   componentInstanceId: any;
   view = {};
@@ -74,7 +75,7 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
     while (!this.config) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    this.componentInstanceId = await this.config.connection.initializeComponent({ componentId: this.component, componentOptions: this.options, location: { href: window.location.href } });
+    this.componentInstanceId = await this.config.connection.initializeComponent({ componentId: this.component, componentOptions: this.options, location: { href: window.location.href }, isModal: this.isModal });
     this.config.connection.onEvent(this.componentInstanceId, ({ type, payload }) => {
       this.ngZone.run(() => {
         if (type === 'closeModal') {
@@ -90,13 +91,19 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
           this.ref.detectChanges();
         }
         else if (type === 'openModal') {
-          const { component, options, onCloseCallbackId } = payload;
+          const { component, options, onCloseCallbackId, modalOptions } = payload;
+          const width = modalOptions?.width || '50vw';
+          const height = modalOptions?.height || '80vh';
           const dialog = this.dialog.open(DraymanModalComponent, {
             data: {
               component,
               options,
               config: this.config,
-            }
+            },
+            height,
+            width,
+            maxHeight: height,
+            maxWidth: width,
           });
           dialog.afterClosed().subscribe((data) => {
             if (onCloseCallbackId) {

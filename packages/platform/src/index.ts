@@ -145,7 +145,7 @@ const start = () => {
         socket.on('handleBrowserCallback', ({ callbackId, data }) => {
             draymanCore.onHandleBrowserCallback({ callbackId, data });
         });
-        socket.on('initializeComponentInstance', ({ componentId, componentOptions, location }, callback) => {
+        socket.on('initializeComponentInstance', ({ componentId, componentOptions, location, isModal }, callback) => {
             console.log(`initializeComponentInstance`);
             const componentInstanceId = shortid();
             callback({ componentInstanceId });
@@ -157,6 +157,7 @@ const start = () => {
                 location,
                 connectionId: socket.id,
                 emit: (message) => socket.emit('event', message),
+                isModal,
             });
         });
         socket.on('disconnect', () => {

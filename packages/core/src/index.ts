@@ -31,7 +31,7 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
 // });
 
 
-export async function getElementScriptByTag({ elementTag, nodeModulesPath }: { elementTag: string; nodeModulesPath?: string; }) {
+export async function getElementScriptByTag({ elementTag, nodeModulesPath = null }) {
     nodeModulesPath = nodeModulesPath || path.join(process.cwd(), 'node_modules');
     const packages = find(nodeFindPath('*/package.json'), { start: nodeModulesPath });
     for await (const packageJsonPath of packages) {
@@ -72,7 +72,7 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
     }
 }
 
-export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPath = null, extensionsOptions = null, componentNamePrefix = '', componentName, componentRootDir, componentInstanceId, componentOptions, location, connectionId, emit }) => {
+export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPath = null, extensionsOptions = null, componentNamePrefix = '', componentName, componentRootDir, componentInstanceId, componentOptions, location, connectionId, emit, isModal }) => {
     const subprocess = execa.node(
         `${path.join(path.dirname(require.resolve('ts-node/package.json')), 'dist/bin-transpile')}`,
         [
@@ -145,7 +145,7 @@ export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPa
             emit({ type, payload, componentInstanceId });
         }
     })
-    subprocess.send({ type: 'init', payload: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions } });
+    subprocess.send({ type: 'init', payload: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal } });
 }
 
 export const onDisconnect = ({ connectionId }) => {
