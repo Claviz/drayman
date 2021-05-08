@@ -2,8 +2,10 @@ import fs from 'fs-extra';
 import path from 'path';
 import execa from 'execa';
 import shortid from 'shortid';
+import { find, name, path as nodeFindPath } from 'node-find';
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
+    options = (options && JSON.parse(options)) || {};
     const requestId = shortid.generate();
     if (Object.keys(componentInstances).includes(componentInstanceId)) {
         componentInstances[componentInstanceId].eventRequests[requestId] = { onSuccess, onError };
@@ -26,36 +28,17 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
 // });
 
 
-/**
- * Returns `package.json` content for drayman packages.
- * Drayman package is a package which contains `drayman` field inside `package.json`.
- */
-export async function getDraymanPackages() {
-    const cfPackages: { [packagePath: string]: any; } = {};
-    const packages = await fs.readdir('./node_modules');
-    for (const packageName of packages) {
-        const packagePath = `./node_modules/${packageName}`;
-        const packageJsonPath = path.join(packagePath, `package.json`);
-        if (fs.existsSync(packageJsonPath)) {
-            const packageJson = await fs.readJSON(packageJsonPath, { throws: false });
-            if (packageJson?.['drayman']) {
-                cfPackages[packagePath] = packageJson['drayman']
-            }
+export async function getElementScriptByTag({ elementTag, nodeModulesPath }: { elementTag: string; nodeModulesPath?: string; }) {
+    nodeModulesPath = nodeModulesPath || path.join(process.cwd(), 'node_modules');
+    const packages = find(nodeFindPath('*/package.json'), { start: nodeModulesPath });
+    for await (const packageJsonPath of packages) {
+        const packageJson = await fs.readJSON(packageJsonPath.toString('/'), { throws: false });
+        const scriptPath = packageJson?.drayman?.elements?.[elementTag]?.script;
+        if (scriptPath) {
+            return await fs.readFile(path.join(packageJsonPath.parent.toString('/'), scriptPath), 'utf8');
         }
     }
-
-    return cfPackages;
-}
-
-export const getElementScriptByTag = async ({ elementTag }) => {
-    const packages = await getDraymanPackages();
-    const packagePath = Object.keys(packages).find(x => packages[x].elements[elementTag]);
-    if (packagePath) {
-        const script = await fs.readFile(path.join(packagePath, packages[packagePath].elements[elementTag].script), 'utf8');
-        return script;
-    } else {
-        throw new Error('Element script not found.');
-    }
+    throw new Error('Element script not found.');
 }
 
 export const onLocationChange = ({ location, connectionId }) => {
