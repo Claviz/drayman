@@ -1,0 +1,3 @@
+<pdf-viewer #wrapper [src]="options?.src" [page]="options?.page" [show-all]="!options?.page" [original-size]="false"
+  [autoresize]="true" [fit-to-page]="true" (after-load-complete)="loaded = true">
+</pdf-viewer>

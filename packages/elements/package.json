@@ -1,0 +1,161 @@
+{
+  "name": "@drayman/elements",
+  "version": "1.0.0-alpha.18",
+  "description": "Default drayman elements library",
+  "license": "MIT",
+  "keywords": [
+    "drayman"
+  ],
+  "types": "types",
+  "scripts": {
+    "ng": "ng",
+    "build:types": "tsc -p ./tsconfig.types.json",
+    "typedoc": "typedoc --tsconfig ./tsconfig.types.json",
+    "lint": "ng lint",
+    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:types && npm run typedoc",
+    "test:button": "jest --config ./projects/button/jest.config.js",
+    "build:button": "ng build button --prod --single-bundle --output-hashing=none",
+    "build:text-field": "ng build text-field --prod --single-bundle --output-hashing=none",
+    "build:claviz-charts": "ng build claviz-charts --prod --single-bundle --output-hashing=none",
+    "build:file-uploader": "ng build file-uploader --prod --single-bundle --output-hashing=none",
+    "build:number-field": "ng build number-field --prod --single-bundle --output-hashing=none",
+    "build:select": "ng build select --prod --single-bundle --output-hashing=none",
+    "build:youtube-player": "ng build youtube-player --prod --single-bundle --output-hashing=none",
+    "build:table": "ng build table --prod --single-bundle --output-hashing=none",
+    "build:checkbox": "ng build checkbox --prod --single-bundle --output-hashing=none",
+    "build:textarea-field": "ng build textarea-field --prod --single-bundle --output-hashing=none",
+    "build:radio-group": "ng build radio-group --prod --single-bundle --output-hashing=none",
+    "build:datepicker": "ng build datepicker --prod --single-bundle --output-hashing=none",
+    "build:timepicker": "ng build timepicker --prod --single-bundle --output-hashing=none",
+    "build:pdf-viewer": "ng build pdf-viewer --prod --single-bundle --output-hashing=none",
+    "build:ngx-charts": "ng build ngx-charts --prod --single-bundle --output-hashing=none",
+    "build:ngx-graph": "ng build ngx-graph --prod --single-bundle --output-hashing=none",
+    "build:menu": "ng build menu --prod --single-bundle --output-hashing=none",
+    "create-element": "./element-generator/create.sh",
+    "e2e": "ng e2e"
+  },
+  "drayman": {
+    "elements": {
+      "drayman-text-field": {
+        "script": "./dist/text-field/main-es2015.js"
+      },
+      "drayman-number-field": {
+        "script": "./dist/number-field/main-es2015.js"
+      },
+      "drayman-button": {
+        "script": "./dist/button/main-es2015.js"
+      },
+      "drayman-claviz-charts": {
+        "script": "./dist/claviz-charts/main-es2015.js"
+      },
+      "drayman-file-uploader": {
+        "script": "./dist/file-uploader/main-es2015.js"
+      },
+      "drayman-select": {
+        "script": "./dist/select/main-es2015.js"
+      },
+      "drayman-youtube-player": {
+        "script": "./dist/youtube-player/main-es2015.js"
+      },
+      "drayman-table": {
+        "script": "./dist/table/main-es2015.js"
+      },
+      "drayman-checkbox": {
+        "script": "./dist/checkbox/main-es2015.js"
+      },
+      "drayman-menu": {
+        "script": "./dist/menu/main-es2015.js"
+      },
+      "drayman-textarea-field": {
+        "script": "./dist/textarea-field/main-es2015.js"
+      },
+      "drayman-radio-group": {
+        "script": "./dist/radio-group/main-es2015.js"
+      },
+      "drayman-datepicker": {
+        "script": "./dist/datepicker/main-es2015.js"
+      },
+      "drayman-timepicker": {
+        "script": "./dist/timepicker/main-es2015.js"
+      },
+      "drayman-pdf-viewer": {
+        "script": "./dist/pdf-viewer/main-es2015.js"
+      },
+      "drayman-ngx-charts": {
+        "script": "./dist/ngx-charts/main-es2015.js"
+      },
+      "drayman-ngx-graph": {
+        "script": "./dist/ngx-graph/main-es2015.js"
+      }
+    }
+  },
+  "dependencies": {
+    "claviz-charts": "0.5.0"
+  },
+  "devDependencies": {
+    "@angular-builders/jest": "10.0.0",
+    "@angular-devkit/build-angular": "^0.1001.0",
+    "@angular-extensions/elements": "10.0.2",
+    "@angular/animations": "10.1.0",
+    "@angular/cdk": "10.2.0",
+    "@angular/cli": "10.1.0",
+    "@angular/common": "10.1.0",
+    "@angular/compiler": "10.1.0",
+    "@angular/compiler-cli": "10.1.0",
+    "@angular/core": "10.1.0",
+    "@angular/elements": "10.1.0",
+    "@angular/flex-layout": "10.0.0-beta.32",
+    "@angular/forms": "10.1.0",
+    "@angular/language-service": "10.1.0",
+    "@angular/material": "10.2.0",
+    "@angular/platform-browser": "10.1.0",
+    "@angular/platform-browser-dynamic": "10.1.0",
+    "@angular/router": "10.1.0",
+    "@angular/youtube-player": "^10.1.0",
+    "@babel/core": "^7.11.5",
+    "@compodoc/compodoc": "^1.1.11",
+    "@ngneat/spectator": "^5.13.2",
+    "@swimlane/ngx-charts": "16.0.0",
+    "@swimlane/ngx-graph": "^7.2.0",
+    "@types/jest": "26.0.13",
+    "@types/multer": "^1.4.4",
+    "@types/shortid": "0.0.29",
+    "angular-resize-event": "^2.0.1",
+    "babel-loader": "^8.1.0",
+    "codelyzer": "6.0.0",
+    "dayjs": "^1.9.6",
+    "deepmerge": "4.2.2",
+    "document-register-element": "^1.14.10",
+    "dot-object": "2.1.3",
+    "elements-zone-strategy": "10.0.0",
+    "filepond": "4.20.1",
+    "filepond-plugin-file-validate-size": "2.2.1",
+    "filepond-plugin-get-file": "1.0.6",
+    "jest": "26.4.2",
+    "jest-preset-angular": "^8.3.1",
+    "ng-lazyload-image": "9.0.1",
+    "ng2-date-picker": "^10.0.1",
+    "ng2-pdf-viewer": "^6.3.2",
+    "ngx-autofocus-fix": "1.0.4",
+    "ngx-build-plus": "10.1.1",
+    "ngx-device-detector": "2.0.0",
+    "ngx-filepond": "5.0.1",
+    "ngx-filesize": "2.0.16",
+    "ngx-mask": "^11.1.4",
+    "ngx-mat-select-search": "^3.2.0",
+    "ngx-popper": "7.0.0",
+    "pdfjs-dist": "~2.5.207",
+    "popper.js": "1.16.1",
+    "react-is": "^16.13.1",
+    "rxjs": "6.6.2",
+    "shortid": "^2.2.16",
+    "ts-jest": "^26.3.0",
+    "ts-node": "9.0.0",
+    "tslib": "2.0.1",
+    "tslint": "6.1.3",
+    "typedoc": "^0.19.1",
+    "typescript": "^3.9.4",
+    "typescript-json-schema": "^0.43.0",
+    "zone.js": "0.11.1"
+  }
+}

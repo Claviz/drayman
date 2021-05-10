@@ -14,6 +14,21 @@
         <ng-container *ngIf="isHtmlElement(element.type)">
             <ng-container [ngSwitch]="element.type">
                 <!--ELEMENTS-START-->
+<ng-container *ngSwitchCase="'i'">
+<i [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
+</i>
+</ng-container>
+<ng-container *ngSwitchCase="'b'">
+<b [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
+</b>
+</ng-container>
+<ng-container *ngSwitchCase="'p'">
+<p [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
+</p>
+</ng-container>
 <ng-container *ngSwitchCase="'h1'">
 <h1 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
@@ -95,7 +110,7 @@
 </app-drayman-input-field>
 </ng-container>
 <ng-container *ngSwitchCase="'img'">
-<img [src]="element.options.src" [alt]="element.options.alt" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)" />
+<img [src]="domSanitizer.bypassSecurityTrustUrl(element.options.src)" [alt]="element.options.alt" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)" />
 </ng-container>
 <ng-container *ngSwitchCase="'button'">
 <button (click)="element.options.onClick()" [disabled]="element.options.disabled" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">

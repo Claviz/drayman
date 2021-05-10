@@ -1,0 +1,107 @@
+<div [ngClass]="options?.pagination ? 'table-wrapper' : 'table-wrapper-no-pagination'" class="table-wrapper"
+  fxLayout="column">
+  <div [attr.aria-label]="options?.title ? options?.title + ' table' : 'Table'" fxLayout="column"
+    [ngClass]="{'table-header-selection-active': selection.selected.length}">
+    <div aria-label="Table header" fxLayout="row" fxLayoutAlign="center center" class="table-header">
+      <h3 *ngIf="selection.selected.length">{{selection.selected.length}} row(s) selected</h3>
+      <h3 *ngIf="!selection.selected.length">{{options?.title || 'Table'}}</h3>
+      <span fxFlex></span>
+      <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px" [fxHide]="!options?.search">
+        <input aria-label="Search field input" matInput [formControl]="searchControl" placeholder="Search" autofocus
+          autocomplete="off">
+        <mat-icon style="vertical-align: bottom" matPrefix>search</mat-icon>
+        <button aria-label="Clear search field input" *ngIf="searchControl.value" (click)="searchControl.setValue(null)"
+          mat-icon-button matSuffix>
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+      <drayman-button-internal [attr.aria-label]="button.options.label" *ngFor="let button of toolbarButtons"
+        [options]="button.options">
+      </drayman-button-internal>
+    </div>
+    <div style="height: 5px;"></div>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div class="table-body" [ngClass]="{'disable-interaction': loading}" cdkScrollable>
+    <table mat-table matSort #table [dataSource]="visibleData" [trackBy]="trackByFn" cdkDropList
+      [cdkDropListData]="visibleData" (cdkDropListDropped)="onRowDragEnd($event)"
+      [cdkDropListAutoScrollDisabled]="false" [cdkDropListDisabled]="!rowDragEnabled"
+      (matSortChange)="sortChange.next()" [matSortDisabled]="!options?.sort">
+
+      <ng-container matColumnDef="__select__" [sticky]="true">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let obj" style="width: 50px">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(obj) : null"
+            [checked]="selection.isSelected(obj)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container *ngFor="let column of options?.columns; let columnIndex = index" [matColumnDef]="column.field"
+        [sticky]="column.pinned === 'left'" [stickyEnd]="column.pinned === 'right'">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef [ngStyle]="column.style">
+          {{column.label}}
+        </th>
+        <td [attr.aria-label]="'Row ' + rowIndex + ' column ' + columnIndex" mat-cell
+          *matCellDef="let obj; let rowIndex = index" [ngStyle]="grid[rowIndex][columnIndex]?.style"
+          (click)="onCellClick(rowIndex, column.field)">
+          <ng-container [ngSwitch]="grid[rowIndex][columnIndex]?.type">
+            <ng-container *ngSwitchCase="'button'">
+              <drayman-button-internal [options]="grid[rowIndex][columnIndex].options"></drayman-button-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'text-field'">
+              <drayman-text-field-internal [options]="grid[rowIndex][columnIndex].options">
+              </drayman-text-field-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'number-field'">
+              <drayman-number-field-internal [options]="grid[rowIndex][columnIndex].options">
+              </drayman-number-field-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'select'">
+              <drayman-select-internal [options]="grid[rowIndex][columnIndex].options"></drayman-select-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'file-uploader'">
+              <drayman-file-uploader-internal [options]="grid[rowIndex][columnIndex].options">
+              </drayman-file-uploader-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'checkbox'">
+              <drayman-checkbox-internal [options]="grid[rowIndex][columnIndex].options"></drayman-checkbox-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'datepicker'">
+              <drayman-datepicker-internal [options]="grid[rowIndex][columnIndex].options">
+              </drayman-datepicker-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'timepicker'">
+              <drayman-timepicker-internal [options]="grid[rowIndex][columnIndex].options">
+              </drayman-timepicker-internal>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              {{grid[rowIndex][columnIndex].value}}
+            </ng-container>
+          </ng-container>
+        </td>
+      </ng-container>
+      <tr [fxHide]="options?.disableHeader" mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; let rowIndex = index" cdkDrag [cdkDragData]="row"
+        [ngStyle]="options?.rowStyle ? options?.rowStyle[rowIndex] : null">
+        <div *cdkDragPreview fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+          <mat-icon>open_with</mat-icon><span>{{row[options.columns[0].field].value}}</span>
+        </div>
+      </tr>
+      <tr class="mat-row" *matNoDataRow class="no-records-row">
+        <td class="no-records-cell" [ngStyle]="noRecordsCellStyle">No records to
+          display
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div aria-label="Table footer" [hidden]="!options?.pagination">
+  <mat-paginator aria-label="Table paginator" [showFirstLastButtons]="true" (page)="pageChange.next()">
+  </mat-paginator>
+</div>

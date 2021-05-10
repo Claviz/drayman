@@ -6,8 +6,10 @@
         "jsx": "react-jsx",
         "rootDir": "src",
         "outDir": "out",
+        "esModuleInterop": true,
         "types": [
             "@drayman/types",
+            "@drayman/elements",
             "node"
         ]
     },

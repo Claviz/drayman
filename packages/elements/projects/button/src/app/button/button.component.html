@@ -1,0 +1,61 @@
+<ng-container [ngSwitch]="options?.view">
+    <ng-container *ngSwitchCase="'raised'">
+        <button type="button" mat-raised-button (click)="onClick()" [matTooltip]="options?.tooltip"
+            [disabled]="options?.disabled" [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!options?.imgUrl" [attr.aria-label]="options?.label + ' raised button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'stroked'">
+        <button type="button" mat-stroked-button (click)="onClick()" [matTooltip]="options?.tooltip"
+            [disabled]="options?.disabled" [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!options?.imgUrl" [attr.aria-label]="options?.label + ' stroked button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'flat'">
+        <button type="button" mat-flat-button (click)="onClick()" [matTooltip]="options?.tooltip"
+            [disabled]="options?.disabled" [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!options?.imgUrl" [attr.aria-label]="options?.label + ' flat button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'icon'">
+        <button type="button" mat-icon-button (click)="onClick()" [matTooltip]="options?.tooltip"
+            [disabled]="options?.disabled" [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!options?.imgUrl" [attr.aria-label]="options?.label + ' icon button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'fab'">
+        <button type="button" mat-fab (click)="onClick()" [matTooltip]="options?.tooltip" [disabled]="options?.disabled"
+            [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!options?.imgUrl"
+            [attr.aria-label]="options?.label + ' fab button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchCase="'miniFab'">
+        <button type="button" mat-mini-fab (click)="onClick()" [matTooltip]="options?.tooltip"
+            [disabled]="options?.disabled" [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!options?.imgUrl" [attr.aria-label]="options?.label + ' mini fab button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <button type="button" mat-button (click)="onClick()" [matTooltip]="options?.tooltip"
+            [disabled]="options?.disabled" [ngStyle]="options?.buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!options?.imgUrl" [popperAppendTo]="'body'"
+            [attr.aria-label]="options?.label + ' basic button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
+</ng-container>
+
+<ng-template #button>
+    <mat-icon *ngIf="options?.icon">{{options?.icon}}</mat-icon>
+    <div *ngIf="!options?.icon">{{options?.label || 'Button'}}</div>
+</ng-template>
+
+<popper-content #thumbnailContent>
+    <img *ngIf="options?.imgUrl" style="width: 150px; z-index: 1001;" [lazyLoad]="options?.imgUrl">
+</popper-content>

@@ -8,6 +8,7 @@ exports[`DraymanElementComponent should render button 1`] = `
   config={[Function Object]}
   dialog={[Function Object]}
   dialogRef={[Function Object]}
+  domSanitizer={[Function DomSanitizerImpl]}
   emit={[Function Function]}
   isModal="false"
   ngZone={[Function NgZone]}

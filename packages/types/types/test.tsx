@@ -17,7 +17,10 @@ const component: DraymanComponent = async ({ EventHub, Router, UI, forceUpdate, 
             <input type="text" value="hello" onValueChange={async ({ value }) => { console.log(value.charAt(1)); }}></input>,
             <input type="number" value={123} onValueChange={async ({ value }) => { console.log(value.toFixed()); }}></input>,
             <pre>const welcome = 'Hello, world!';</pre>,
-            <div>Is modal? {UI.isModal}</div>
+            <div>Is modal? {UI.isModal}</div>,
+            <p>Paragraph</p>,
+            <i>italic</i>,
+            <b>bold</b>
         ];
     };
 };

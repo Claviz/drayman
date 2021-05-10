@@ -1,0 +1,25 @@
+import { Injector, NgModule } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
+
+import { ${pascal-case}Component } from './${kebab-case}/${kebab-case}.component';
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+  ],
+  declarations: [${pascal-case}Component],
+})
+export class ${pascal-case}Module {
+  constructor(private injector: Injector) {
+  }
+
+  ngDoBootstrap() {
+    const strategyFactory = new ElementZoneStrategyFactory(${pascal-case}Component, this.injector);
+    const el = createCustomElement(${pascal-case}Component, { injector: this.injector, strategyFactory });
+    customElements.define('drayman-${kebab-case}', el);
+  }
+}

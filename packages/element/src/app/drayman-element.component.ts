@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
 import { applyPatch } from 'fast-json-patch';
 import isHotkey from 'is-hotkey';
 
@@ -41,6 +42,7 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
     private clipboard: Clipboard,
     private ref: ChangeDetectorRef,
     private ngZone: NgZone,
+    public domSanitizer: DomSanitizer,
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {

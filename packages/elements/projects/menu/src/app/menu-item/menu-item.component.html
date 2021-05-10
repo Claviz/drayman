@@ -1,0 +1,18 @@
+<mat-menu #childMenu="matMenu">
+  <ng-container *ngFor="let item of items">
+    <ng-container *ngIf="item.items?.length">
+      <button mat-menu-item [disabled]="item.disabled" [matMenuTriggerFor]="menu.childMenu">
+        <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+        <span>{{item.label}}</span>
+      </button>
+      <drayman-menu-item-internal #menu [items]="item.items" (itemClick)="itemClick.emit($event)">
+      </drayman-menu-item-internal>
+    </ng-container>
+    <ng-container *ngIf="!item.items?.length">
+      <button mat-menu-item [disabled]="item.disabled" (click)="itemClick.emit(item)">
+        <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+        <span>{{item.label}}</span>
+      </button>
+    </ng-container>
+  </ng-container>
+</mat-menu>

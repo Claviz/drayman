@@ -1,0 +1,4 @@
+<drayman-button-internal class="trigger-btn" [options]="options" [matMenuTriggerFor]="menu.childMenu">
+</drayman-button-internal>
+<drayman-menu-item-internal #menu [items]="options?.items" (itemClick)="onItemClick($event)">
+</drayman-menu-item-internal>

@@ -27,6 +27,9 @@ const exceptions = {
         'updateOnBlur': '[options]="element.options"',
         'disabled': '[options]="element.options"',
         'value': '[options]="element.options"',
+    },
+    'img': {
+        'src': '[src]="domSanitizer.bypassSecurityTrustUrl(element.options.src)"',
     }
 }
 

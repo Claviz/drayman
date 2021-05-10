@@ -1,0 +1,27 @@
+<ng-template #select let-multiple='multiple'>
+  <mat-form-field [attr.aria-label]="options?.label + ' select field'">
+    <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
+    <mat-select [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
+      [errorStateMatcher]="errorStateMatcher" [multiple]="multiple">
+      <mat-option>
+        <ngx-mat-select-search aria-label="Select search field" [formControl]="searchControl"
+          [placeholderLabel]="'Search...'" [noEntriesFoundLabel]="'No entries found'" [clearSearchInput]="false"
+          [searching]="searching">
+        </ngx-mat-select-search>
+      </mat-option>
+      <mat-option [attr.aria-label]="data.label + ' option'" *ngFor="let data of selectOptions; trackBy: trackByFn"
+        [value]="data.value">
+        {{data.label}}
+      </mat-option>
+    </mat-select>
+    <mat-hint>{{options?.helpText}}</mat-hint>
+    <mat-error *ngIf="options?.error">
+      {{options?.error}}
+    </mat-error>
+  </mat-form-field>
+</ng-template>
+
+<ng-container *ngIf="options?.multiple" [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ multiple:true }">
+</ng-container>
+<ng-container *ngIf="!options?.multiple" [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ multiple:false }">
+</ng-container>

@@ -1,0 +1,78 @@
+<div [ngSwitch]="chart?.type" style="width: 100%; height: 100%;" (resized)="onResized($event)" #chartContainer>
+    <ng-container *ngSwitchCase="'verticalBar'">
+        <ngx-charts-bar-vertical [results]="chart.results" [scheme]="chart.scheme" [customColors]="chart.customColors"
+            [animations]="chart.animations" [legend]="chart.legend" [legendTitle]="chart.legendTitle"
+            [gradient]="chart.gradient" [activeEntries]="chart.activeEntries" [tooltipDisabled]="chart.tooltipDisabled"
+            [schemeType]="chart.schemeType" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
+            [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
+            [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [showGridLines]="chart.showGridLines"
+            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [barPadding]="chart.barPadding"
+            [roundDomains]="chart.roundDomains" [roundEdges]="chart.roundEdges" [yScaleMax]="chart.yScaleMax"
+            [yScaleMin]="chart.yScaleMin" [showDataLabel]="chart.showDataLabel" (select)="onSelect($event)">
+        </ngx-charts-bar-vertical>
+    </ng-container>
+    <ng-container *ngSwitchCase="'pie'">
+        <ngx-charts-pie-chart [results]="chart.results" [scheme]="chart.scheme" [customColors]="chart.customColors"
+            [animations]="chart.animations" [labels]="chart.labels" [trimLabels]="chart.trimLabels"
+            [maxLabelLength]="chart.maxLabelLength" [legend]="chart.legend" [legendTitle]="chart.legendTitle"
+            [explodeSlices]="chart.explodeSlices" [doughnut]="chart.doughnut" [arcWidth]="chart.arcWidth"
+            [gradient]="chart.gradient" [activeEntries]="chart.activeEntries" [tooltipDisabled]="chart.tooltipDisabled"
+            [schemeType]="chart.schemeType" (select)="onSelect($event)">
+        </ngx-charts-pie-chart>
+    </ng-container>
+    <ng-container *ngSwitchCase="'numberCard'">
+        <ngx-charts-number-card [results]="chart.results" [scheme]="chart.scheme" [schemeType]="chart.schemeType"
+            [customColors]="chart.customColors" [animations]="chart.animations" [cardColor]="chart.cardColor"
+            [bandColor]="chart.bandColor" [emptyColor]="chart.emptyColor" [innerPadding]="chart.innerPadding"
+            (select)="onSelect($event)">
+        </ngx-charts-number-card>
+    </ng-container>
+    <ng-container *ngSwitchCase="'gauge'">
+        <ngx-charts-gauge [results]="chart.results" [scheme]="chart.scheme" [schemeType]="chart.schemeType"
+            [customColors]="chart.customColors" [animations]="chart.animations" [legend]="chart.legend"
+            [legendTitle]="chart.legendTitle" [units]="chart.units" [min]="chart.min" [max]="chart.max"
+            [bigSegments]="chart.bigSegments" [smallSegments]="chart.smallSegments" [showAxis]="chart.showAxis"
+            [startAngle]="chart.startAngle" [angleSpan]="chart.angleSpan" [activeEntries]="chart.activeEntries"
+            [tooltipDisabled]="chart.tooltipDisabled" (select)="onSelect($event)">
+        </ngx-charts-gauge>
+    </ng-container>
+    <ng-container *ngSwitchCase="'areaNormalized'">
+        <ngx-charts-area-chart-normalized [results]="chart.results" [scheme]="chart.scheme"
+            [schemeType]="chart.schemeType" [customColors]="chart.customColors" [animations]="chart.animations"
+            [legend]="chart.legend" [legendTitle]="chart.legendTitle" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
+            [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
+            [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [timeline]="chart.timeline"
+            [gradient]="chart.gradient" [showGridLines]="chart.showGridLines" [activeEntries]="chart.activeEntries"
+            [schemeType]="chart.schemeType" [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks"
+            [roundDomains]="chart.roundDomains" [tooltipDisabled]="chart.tooltipDisabled" (select)="onSelect($event)">
+        </ngx-charts-area-chart-normalized>
+    </ng-container>
+    <ng-container *ngSwitchCase="'areaStacked'">
+        <ngx-charts-area-chart-stacked [results]="chart.results" [scheme]="chart.scheme" [schemeType]="chart.schemeType"
+            [customColors]="chart.customColors" [animations]="chart.animations" [legend]="chart.legend"
+            [legendTitle]="chart.legendTitle" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
+            [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
+            [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [timeline]="chart.timeline"
+            [gradient]="chart.gradient" [showGridLines]="chart.showGridLines" [activeEntries]="chart.activeEntries"
+            [schemeType]="chart.schemeType" [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks"
+            [roundDomains]="chart.roundDomains" [tooltipDisabled]="chart.tooltipDisabled" [xScaleMin]="chart.xScaleMin"
+            [xScaleMax]="chart.xScaleMax" [yScaleMin]="chart.yScaleMin" [yScaleMax]="chart.yScaleMax"
+            (select)="onSelect($event)">
+        </ngx-charts-area-chart-stacked>
+    </ng-container>
+    <ng-container *ngSwitchCase="'line'">
+        <ngx-charts-line-chart [results]="chart.results" [scheme]="chart.scheme" [schemeType]="chart.schemeType"
+            [customColors]="chart.customColors" [animations]="chart.animations" [legend]="chart.legend"
+            [legendTitle]="chart.legendTitle" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
+            [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
+            [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [timeline]="chart.timeline"
+            [gradient]="chart.gradient" [showGridLines]="chart.showGridLines" [activeEntries]="chart.activeEntries"
+            [schemeType]="chart.schemeType" [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks"
+            [roundDomains]="chart.roundDomains" [tooltipDisabled]="chart.tooltipDisabled" [autoScale]="chart.autoScale"
+            [gradient]="chart.gradient" [rangeFillOpacity]="chart.rangeFillOpacity" [showRefLines]="chart.showRefLines"
+            [referenceLines]="chart.referenceLines" [showRefLabels]="chart.showRefLabels" [xScaleMin]="chart.xScaleMin"
+            [xScaleMax]="chart.xScaleMax" [yScaleMin]="chart.yScaleMin" [yScaleMax]="chart.yScaleMax"
+            (select)="onSelect($event)">
+        </ngx-charts-line-chart>
+    </ng-container>
+</div>

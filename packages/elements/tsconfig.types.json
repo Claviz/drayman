@@ -1,0 +1,43 @@
+{
+    "typedocOptions": {
+        "mode": "file",
+        "disableSources": true,
+        "theme": "minimal",
+        "hideGenerator": true,
+        "includeDeclarations": true,
+        "excludeExternals": true,
+        "inputFiles": [
+            "./types/index.d.ts",
+            "./dist/types"
+        ],
+        "toc": [
+            ""
+        ],
+        "media": "./assets"
+    },
+    "compilerOptions": {
+        "outDir": "./dist/types",
+        "declaration": true,
+        "emitDeclarationOnly": true
+    },
+    "include": [
+        "./projects/text-field/src/app/models/text-field-options.ts",
+        "./projects/number-field/src/app/models/number-field-options.ts",
+        "./projects/select/src/app/models/select-options.ts",
+        "./projects/youtube-player/src/app/models/youtube-player-options.ts",
+        "./projects/table/src/app/models/table-options.ts",
+        "./projects/datepicker/src/app/models/datepicker-options.ts",
+        "./projects/menu/src/app/models/menu-options.ts",
+        "./projects/timepicker/src/app/models/timepicker-options.ts",
+        "./projects/ngx-charts/src/app/models/ngx-charts-options.ts",
+        "./projects/ngx-graph/src/app/models/ngx-graph-options.ts",
+        "./projects/pdf-viewer/src/app/models/pdf-viewer-options.ts",
+        "./projects/checkbox/src/app/models/checkbox-options.ts",
+        "./projects/textarea-field/src/app/models/textarea-field-options.ts",
+        "./projects/radio-group/src/app/models/radio-group-options.ts",
+        "./projects/claviz-charts/src/app/models/claviz-charts-options.ts",
+        "./projects/file-uploader/src/app/models/file-uploader-options.ts",
+        "./node_modules/claviz-charts/lib/models/container-chart-options.d.ts",
+        "./projects/shared/models/button-options.ts"
+    ],
+}

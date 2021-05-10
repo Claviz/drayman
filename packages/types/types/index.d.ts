@@ -88,6 +88,9 @@ declare global {
         disabled?: boolean;
     }
     interface SpanProps extends PropsWithChildren { }
+    interface ParagraphProps extends PropsWithChildren { }
+    interface BoldfaceProps extends PropsWithChildren { }
+    interface IdiomaticProps extends PropsWithChildren { }
     interface TableProps extends PropsWithChildren { }
     interface TableBodyProps extends PropsWithChildren { }
     interface TableHeadProps extends PropsWithChildren { }
@@ -97,6 +100,18 @@ declare global {
 
     namespace JSX {
         interface IntrinsicElements {
+            /**
+             * Idiomatic element.
+             */
+            'i': IdiomaticProps;
+            /**
+             * Boldface element.
+             */
+            'b': BoldfaceProps;
+            /**
+             * Paragraph element.
+             */
+            'p': ParagraphProps;
             /**
              * Heading level 1.
              */
