@@ -1,6 +1,6 @@
 {
   "name": "@drayman/platform-element",
-  "version": "1.0.0-alpha.16",
+  "version": "1.0.0-alpha.20",
   "scripts": {
     "build": "ng build --prod --single-bundle --output-hashing=none"
   },
@@ -15,7 +15,7 @@
     "@angular/platform-browser": "~11.2.6",
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
-    "@drayman/element": "^1.0.0-alpha.16",
+    "@drayman/element": "^1.0.0-alpha.20",
     "axios": "^0.21.1",
     "document-register-element": "^1.7.2",
     "elements-zone-strategy": "^10.0.1",
