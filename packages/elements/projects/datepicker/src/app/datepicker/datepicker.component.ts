@@ -26,7 +26,7 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     openOnClick: false,
     openOnFocus: false,
     format: this.defaultDateFormat,
-    appendTo: 'body',
+    appendTo: '.drayman-elements-container',
     firstDayOfWeek: 'mo',
   };
 
