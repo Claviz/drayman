@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -14,36 +14,42 @@ jobs:
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
-      
+
       - name: "@drayman/types"
         working-directory: ./packages/types
         run: |
           npm install
           npm run test
-        
+
       - name: "@drayman/core"
         working-directory: ./packages/core
         run: |
           npm install
           npm run build
           npm run test
-          
+
       - name: "@drayman/element"
         working-directory: ./packages/element
         run: |
           npm install
           npm run build
           npm run test
-          
+
       - name: "@drayman/platform-element"
         working-directory: ./packages/platform/element
         run: |
           npm install
           npm run build
-          
+
       - name: "@drayman/platform"
         working-directory: ./packages/platform
         run: |
           npm install
           npm run build
           npm run test
+
+      - name: "@drayman/elements"
+        working-directory: ./packages/elements
+        run: |
+          npm install
+          npm run build
