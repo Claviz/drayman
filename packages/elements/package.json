@@ -10,9 +10,9 @@
   "scripts": {
     "ng": "ng",
     "build:types": "tsc -p ./tsconfig.types.json",
-    "typedoc": "typedoc --tsconfig ./tsconfig.types.json",
+    "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:types && npm run typedoc",
+    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run typedoc",
     "test:button": "jest --config ./projects/button/jest.config.js",
     "build:button": "ng build button --prod --single-bundle --output-hashing=none",
     "build:text-field": "ng build text-field --prod --single-bundle --output-hashing=none",
