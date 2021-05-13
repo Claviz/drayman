@@ -33,6 +33,7 @@
     "fast-json-patch": "^3.0.0-1",
     "fs-extra": "^9.1.0",
     "node-find": "^0.7.2",
+    "pretty-error": "^3.0.3",
     "react": "^17.0.2",
     "shortid": "^2.2.16",
     "ts-node": "^9.1.1",

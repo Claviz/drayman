@@ -1,3 +1,5 @@
+const pe = require('pretty-error').start();
+pe.withoutColors();
 import { render, isEvent } from './utils';
 import fs from 'fs';
 import path from 'path';
@@ -105,6 +107,12 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         return null;
     }
     const createComponent = async (componentKey: string, initialProps: any) => {
+        pe.alias(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.tsx`), `${componentKey}.tsx`);
+        // pe.skip(function (traceLine, lineNumber) {
+        //     if (traceLine.file !== `${componentNamePrefix}${componentKey}.tsx`) {
+        //         return true;
+        //     }
+        // });
         const props = { ...initialProps } || {};
         // const child_fnResult = require(path.join(process.cwd(), `./out/components/${componentKey}.tsx`));
         const child_fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.tsx`));
