@@ -9,6 +9,8 @@ import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { RadioGroupComponent } from './radio-group/radio-group.component';
 import { MatInputModule } from '@angular/material/input';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -21,6 +23,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FlexLayoutModule,
   ],
   declarations: [RadioGroupComponent],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
 })
 export class RadioGroupModule {
   constructor(private injector: Injector) {

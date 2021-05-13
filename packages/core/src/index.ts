@@ -72,7 +72,21 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
     }
 }
 
-export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPath = null, extensionsOptions = null, componentNamePrefix = '', componentName, componentRootDir, componentInstanceId, componentOptions, location, connectionId, emit, isModal }) => {
+export const onInitializeComponentInstance = ({
+    namespaceId = null,
+    extensionsPath = null,
+    extensionsOptions = null,
+    componentNamePrefix = '',
+    componentName,
+    componentRootDir,
+    componentInstanceId,
+    componentOptions,
+    location,
+    connectionId,
+    emit,
+    isModal,
+    onComponentInstanceConsole,
+}) => {
     const subprocess = execa.node(
         `${path.join(path.dirname(require.resolve('ts-node/package.json')), 'dist/bin-transpile')}`,
         [
@@ -97,11 +111,13 @@ export const onInitializeComponentInstance = ({ namespaceId = null, extensionsPa
         namespaceId,
     };
     subprocess.stdout?.on('data', (data) => {
-        console.log(data.toString('utf8'));
+        onComponentInstanceConsole?.({ text: data.toString('utf8') });
+        // console.log(data.toString('utf8'));
         // httpClient.debug({ data: data.toString('utf8') });
     });
     subprocess.stderr?.on('data', (data) => {
-        console.log(data.toString('utf8'));
+        onComponentInstanceConsole?.({ text: data.toString('utf8') });
+        // console.log(data.toString('utf8'));
         // httpClient.debug({ data: data.toString('utf8') });
     });
     /**

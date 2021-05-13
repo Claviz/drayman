@@ -158,6 +158,7 @@ const start = () => {
                 connectionId: socket.id,
                 emit: (message) => socket.emit('event', message),
                 isModal,
+                onComponentInstanceConsole: ({ text }) => { console.log(text) },
             });
         });
         socket.on('disconnect', () => {

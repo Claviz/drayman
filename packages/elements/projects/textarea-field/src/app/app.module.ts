@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -6,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 import { TextareaFieldComponent } from './textarea-field/textarea-field.component';
 
@@ -19,6 +21,9 @@ import { TextareaFieldComponent } from './textarea-field/textarea-field.componen
     MatInputModule,
   ],
   declarations: [TextareaFieldComponent],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
 })
 export class TextareaFieldModule {
   constructor(private injector: Injector) {

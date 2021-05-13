@@ -10,6 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgxMaskModule } from 'ngx-mask'
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -23,6 +25,9 @@ import { NgxMaskModule } from 'ngx-mask'
   ],
   declarations: [TextFieldComponent],
   exports: [TextFieldComponent],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
 })
 export class TextFieldModule {
   constructor(private injector: Injector) {

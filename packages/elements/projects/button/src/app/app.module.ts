@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 import { Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule } from 'ng-lazyload-image';
 import { NgxPopperModule } from 'ngx-popper';
 
@@ -47,7 +49,10 @@ class LazyLoadImageHooks extends IntersectionObserverHooks {
     }),
     LazyLoadImageModule,
   ],
-  providers: [{ provide: LAZYLOAD_IMAGE_HOOKS, useClass: LazyLoadImageHooks }],
+  providers: [
+    { provide: LAZYLOAD_IMAGE_HOOKS, useClass: LazyLoadImageHooks },
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, }
+  ],
   declarations: [ButtonComponent],
   exports: [ButtonComponent],
 })

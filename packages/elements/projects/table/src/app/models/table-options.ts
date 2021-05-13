@@ -225,6 +225,7 @@ export interface DraymanTable {
     onRowDragEnd?: (data: {
         row: DraymanTableRow;
         currentIndex: number;
+        previousIndex: number;
     }) => Promise<void>;
     /**
      * Event fired when user changes a page or page size.

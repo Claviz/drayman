@@ -1,5 +1,3 @@
-import { Subject } from "rxjs";
-
 export interface IConnectionService {
     // events$: Subject<any>;
     onEvent(componentInstanceId: string, handler: (event: any) => void): void;

@@ -9,6 +9,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MenuComponent } from './menu/menu.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuItemComponent } from './menu-item/menu-item.component';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -19,6 +21,9 @@ import { MenuItemComponent } from './menu-item/menu-item.component';
     MatIconModule,
   ],
   declarations: [MenuComponent, MenuItemComponent],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
 })
 export class MenuModule {
   constructor(private injector: Injector) {

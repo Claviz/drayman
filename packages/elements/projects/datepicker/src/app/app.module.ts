@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DpDatePickerModule } from 'ng2-date-picker';
 import { NgxMaskModule } from 'ngx-mask';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -30,7 +32,9 @@ import { NgxMaskModule } from 'ngx-mask';
     DpDatePickerModule,
     NgxMaskModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
   declarations: [DatepickerComponent],
   exports: [DatepickerComponent],
 })

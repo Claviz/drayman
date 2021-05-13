@@ -11,6 +11,8 @@ import { SelectComponent } from './select/select.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -23,6 +25,9 @@ import { MatButtonModule } from '@angular/material/button';
   ],
   declarations: [SelectComponent],
   exports: [SelectComponent],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, }
+  ]
 })
 export class SelectModule {
   constructor(private injector: Injector) {

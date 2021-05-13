@@ -9,6 +9,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -21,6 +23,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
   ],
   declarations: [NumberFieldComponent],
   exports: [NumberFieldComponent],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
 })
 export class NumberFieldModule {
   constructor(private injector: Injector) {

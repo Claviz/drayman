@@ -162,6 +162,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       this.options.onRowDragEnd({
         row: event.item.data,
         currentIndex: event.currentIndex,
+        previousIndex: event.previousIndex,
       });
     }
     const prevIndex = this.visibleData.findIndex((d) => d === data);
