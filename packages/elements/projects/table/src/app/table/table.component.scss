@@ -75,6 +75,10 @@ table {
     display: unset;
 }
 
+::ng-deep .mat-form-field-infix {
+    width: auto !important;
+}
+
 :host ::ng-deep .mat-cell .mat-form-field {
     width: 80%;
 }

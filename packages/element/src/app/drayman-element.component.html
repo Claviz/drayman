@@ -6,7 +6,7 @@
 <ng-template #childrenTemplate let-children="children">
     <ng-container *ngFor="let element of children; trackBy: trackByFn">
         <ng-container *ngIf="!isHtmlElement(element.type)">
-            <ax-lazy-element style="min-width: 0;" [ngStyle]="element.style"
+            <ax-lazy-element [ngStyle]="element.style"
                 *axLazyElementDynamic="element.type; url: config?.elementUrl + element.type;"
                 [options]="element.options">
             </ax-lazy-element>
