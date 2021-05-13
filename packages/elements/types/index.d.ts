@@ -16,28 +16,26 @@ import { DraymanTextareaField } from '../dist/types/textarea-field/src/app/model
 import { DraymanTimepicker } from '../dist/types/timepicker/src/app/models/timepicker-options';
 import { DraymanYoutubePlayer } from '../dist/types/youtube-player/src/app/models/youtube-player-options';
 
-// export { DraymanButton };
 declare global {
-    // interface DraymanButtonProps extends DraymanButton { }
     namespace JSX {
         interface IntrinsicElements {
-            'drayman-button': DraymanButton;
-            'drayman-menu': DraymanMenu;
-            'drayman-checkbox': DraymanCheckbox;
-            'drayman-claviz-charts': DraymanClavizCharts;
-            'drayman-datepicker': DraymanDatepicker;
-            'drayman-file-uploader': DraymanFileUploader;
-            'drayman-ngx-charts': DraymanNgxCharts;
-            'drayman-ngx-graph': DraymanNgxGraph;
-            'drayman-number-field': DraymanNumberField;
-            'drayman-pdf-viewer': DraymanPdfViewer;
-            'drayman-radio-group': DraymanRadioGroup;
-            'drayman-select': DraymanSelect;
-            'drayman-table': DraymanTable;
-            'drayman-text-field': DraymanTextField;
-            'drayman-textarea-field': DraymanTextareaField;
-            'drayman-timepicker': DraymanTimepicker;
-            'drayman-youtube-player': DraymanYoutubePlayer;
+            'drayman-button': DraymanButton & DefaultProps;
+            'drayman-menu': DraymanMenu & DefaultProps;
+            'drayman-checkbox': DraymanCheckbox & DefaultProps;
+            'drayman-claviz-charts': DraymanClavizCharts & DefaultProps;
+            'drayman-datepicker': DraymanDatepicker & DefaultProps;
+            'drayman-file-uploader': DraymanFileUploader & DefaultProps;
+            'drayman-ngx-charts': DraymanNgxCharts & DefaultProps;
+            'drayman-ngx-graph': DraymanNgxGraph & DefaultProps;
+            'drayman-number-field': DraymanNumberField & DefaultProps;
+            'drayman-pdf-viewer': DraymanPdfViewer & DefaultProps;
+            'drayman-radio-group': DraymanRadioGroup & DefaultProps;
+            'drayman-select': DraymanSelect & DefaultProps;
+            'drayman-table': DraymanTable & DefaultProps;
+            'drayman-text-field': DraymanTextField & DefaultProps;
+            'drayman-textarea-field': DraymanTextareaField & DefaultProps;
+            'drayman-timepicker': DraymanTimepicker & DefaultProps;
+            'drayman-youtube-player': DraymanYoutubePlayer & DefaultProps;
         }
     }
 }

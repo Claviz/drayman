@@ -16,7 +16,8 @@
     ],
     "types": [
       "jest",
-      "node"
+      "node",
+      "@drayman/types"
     ],
     "lib": [
       "es2018",

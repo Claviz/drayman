@@ -90,6 +90,7 @@
     }
   },
   "dependencies": {
+    "@drayman/types": "^1.0.0-alpha.20",
     "claviz-charts": "0.5.0"
   },
   "devDependencies": {

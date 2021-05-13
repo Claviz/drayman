@@ -1,55 +1,55 @@
 import * as _CSS from 'csstype';
 
-interface DefaultProps {
-    /**
-     * Inline style for an element.
-     */
-    style?: CSS;
-    /**
-     * The tabindex global attribute indicates that its element can be focused, and where it participates in sequential keyboard navigation.
-     */
-    tabindex?: number;
-    /**
-     * This attribute sets up a callback function that will be called whenever user presses specific key or key combination.
-     *  
-     * To set up shortcut, provide required key combination to `onShortcut` attribute after colon symbol: `onShortcut:enter`, `onShortcut:ctrl+i`.
-     *  
-     * Make sure that an element is focusable, otherwise `onShortcut` won't work.
-     *  
-     * Because JSX syntax doesn’t allow special characters in attribute names (like : or +), you need to use spread attributes technique to set up onShortcut:
-     *  
-     * Don’t:
-     * `<div onShortcut:ctrl+i={handleShortcut}></div>`
-     *  
-     * Do:
-     * `<div {...{ 'onShortcut:ctrl+i': handleShortcut }}></div>`
-     */
-    onShortcut?: any;
-}
-
-interface PropsWithChildren extends DefaultProps {
-    children?: JSX.Element;
-}
-
-interface DefaultInputProps extends PropsWithChildren {
-    onValueChangeStart?: () => Promise<void>;
-    updateOnBlur?: boolean;
-    disabled?: boolean;
-}
-
-interface TextInputProps extends DefaultInputProps {
-    type?: 'text';
-    value?: string;
-    onValueChange?: (data: { value: string }) => Promise<void>;
-}
-
-interface NumberInputProps extends DefaultInputProps {
-    type?: 'number';
-    value?: number;
-    onValueChange?: (data: { value: number }) => Promise<void>;
-}
-
 declare global {
+    interface DefaultProps {
+        /**
+         * Inline style for an element.
+         */
+        style?: CSS;
+        /**
+         * The tabindex global attribute indicates that its element can be focused, and where it participates in sequential keyboard navigation.
+         */
+        tabindex?: number;
+        /**
+         * This attribute sets up a callback function that will be called whenever user presses specific key or key combination.
+         *  
+         * To set up shortcut, provide required key combination to `onShortcut` attribute after colon symbol: `onShortcut:enter`, `onShortcut:ctrl+i`.
+         *  
+         * Make sure that an element is focusable, otherwise `onShortcut` won't work.
+         *  
+         * Because JSX syntax doesn’t allow special characters in attribute names (like : or +), you need to use spread attributes technique to set up onShortcut:
+         *  
+         * Don’t:
+         * `<div onShortcut:ctrl+i={handleShortcut}></div>`
+         *  
+         * Do:
+         * `<div {...{ 'onShortcut:ctrl+i': handleShortcut }}></div>`
+         */
+        onShortcut?: any;
+    }
+
+    interface PropsWithChildren extends DefaultProps {
+        children?: JSX.Element;
+    }
+
+    interface DefaultInputProps extends PropsWithChildren {
+        onValueChangeStart?: () => Promise<void>;
+        updateOnBlur?: boolean;
+        disabled?: boolean;
+    }
+
+    interface TextInputProps extends DefaultInputProps {
+        type?: 'text';
+        value?: string;
+        onValueChange?: (data: { value: string }) => Promise<void>;
+    }
+
+    interface NumberInputProps extends DefaultInputProps {
+        type?: 'number';
+        value?: number;
+        onValueChange?: (data: { value: number }) => Promise<void>;
+    }
+
     interface TableDataCellProps extends PropsWithChildren {
         /**
          * This attribute contains a non-negative integer value that indicates for how many columns the cell extends.
