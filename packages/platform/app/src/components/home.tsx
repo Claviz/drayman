@@ -1,4 +1,4 @@
-export const component: DraymanComponent = async ({ Router }) => {
+export const component: DraymanComponent<any> = async ({ Router, props }) => {
 
     const Route = () => {
         switch (Router.url) {
@@ -13,6 +13,9 @@ export const component: DraymanComponent = async ({ Router }) => {
             }
             case 'http://localhost:3033/modal': {
                 return <modal />
+            }
+            case 'http://localhost:3033/update-from-html': {
+                return <update-from-html text={props.text} />
             }
         }
     }

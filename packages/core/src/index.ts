@@ -53,6 +53,9 @@ export const onLocationChange = ({ location, connectionId }) => {
 }
 
 export const onUpdateComponentInstanceProps = ({ componentInstanceId, options, }) => {
+    if (typeof options === 'string') {
+        options = JSON.parse(options);
+    }
     componentInstances[componentInstanceId].process.send({ type: 'updateComponentInstanceProps', payload: { componentInstanceId, options, } });
 }
 

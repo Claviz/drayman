@@ -7,18 +7,17 @@
         "includeDeclarations": true,
         "excludeExternals": true,
         "inputFiles": [
-            "./types/index.d.ts",
-            "./dist/types"
-        ],
-        "toc": [
-            ""
+            "./types/index.d.ts"
         ],
         "media": "./assets"
     },
     "compilerOptions": {
         "outDir": "./dist/types",
         "declaration": true,
-        "emitDeclarationOnly": true
+        "emitDeclarationOnly": true,
+        "types": [
+            "@drayman/types"
+        ],
     },
     "include": [
         "./projects/text-field/src/app/models/text-field-options.ts",

@@ -1,31 +1,3 @@
-/**
- * # <drayman-ngx-charts \/>
- * 
- * Charts powered by [ngx-charts](https://github.com/swimlane/ngx-charts) library.
- *
- * ## Example of usage
- * 
- * ### Simple pie chart
- *
- * ![](media://drayman-ngx-charts.gif)
- *
- * ```typescript
- * export const component: DraymanComponent = async ({ forceUpdate }) => {
- *     return () => (
- *         <drayman-ngx-charts
- *             type="pie"
- *             results={
- *                 [
- *                     { name: 'Cherries', value: 10 },
- *                     { name: 'Blueberries', value: 20 },
- *                 ]
- *             }
- *             labels
- *         />
- *     );
- * }
- * ```
- */
 export interface DraymanNgxCharts {
     /**
      * Executed when user interacts with the chart.

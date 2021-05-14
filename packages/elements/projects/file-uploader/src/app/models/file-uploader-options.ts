@@ -1,31 +1,3 @@
-/**
- * # <drayman-file-uploader \/>
- * 
- * File uploader powered by [FilePond](https://pqina.nl/filepond/) library.
- *
- * ## Example of usage
- *
- * ![](media://drayman-file-uploader.gif)
- *
- * ```typescript
- * export const component: DraymanComponent = async ({ forceUpdate }) => {
- *     let file;
- * 
- *     return () => (
- *         <div>
- *             <drayman-file-uploader
- *                 onUpload={async (_, [uploadedFile]) => {
- *                     file = uploadedFile;
- *                     await forceUpdate();
- *                     return '123';
- *                 }}
- *             />
- *             {file && <img src={`data:${file.mimetype};base64,${file.buffer.toString('base64')}`} style={{ width: '200px;' }} />}
- *         </div>
- *     )
- * }
- * ```
- */
 export interface DraymanFileUploader {
     /**
      * Array of files to show when uploader element appears.

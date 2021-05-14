@@ -1,26 +1,3 @@
-
-/**
- * # <drayman-youtube-player \/>
- *
- * Youtube player powered by [Angular Material](https://material.angular.io/) library.
- *
- * ## Example of usage
- *
- * ### Auto-play youtube video.
- * ```typescript
- * export const component: DraymanComponent = async ({ forceUpdate }) => {
- * 
- *     return () => {
- *         return <div style={{ height: '500px' }}>
- *             <drayman-youtube-player
- *                 videoId="UEzl9JYkH5M"
- *                 playerVars={{ autoplay: 1 }}
- *             />
- *         </div>
- *     }
- * }
- * ```
- */
 export interface DraymanYoutubePlayer {
     /**
      * YouTube Video ID to view.

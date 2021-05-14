@@ -236,7 +236,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         // });
         // }
     }
-    const fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.tsx`));
+    const fnResult = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.tsx`));
     const componentResult = await (Object.values(fnResult)[0] as any)({
         props,
         forceUpdate,

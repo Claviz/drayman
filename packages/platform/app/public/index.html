@@ -17,6 +17,21 @@
     <drayman-element-advanced component="home"></drayman-element-advanced>
 
     <div class="drayman-elements-container"></div>
+
+    <script>
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        (async () => {
+            if (location.pathname === '/update-from-html') {
+                let ready;
+                while (!ready) {
+                    ready = Array.from(document.querySelectorAll('div')).find(el => el.innerText === 'Ready!');
+                    await delay(100);
+                }
+                const draymanElement = document.getElementsByTagName('drayman-element-advanced')[0];
+                draymanElement.setAttribute('options', JSON.stringify({ text: 'Updated!' }));
+            }
+        })();
+    </script>
 </body>
 
 </html>

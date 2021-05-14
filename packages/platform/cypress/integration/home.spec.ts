@@ -46,3 +46,14 @@ context('modal', () => {
     cy.get('app-drayman-modal').should('contain.text', 'I am modal!');
   })
 })
+
+context('update-from-html', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/update-from-html');
+  })
+
+  it(`correctly updates options of component from browser HTML`, () => {
+    cy.contains('Ready!');
+    cy.contains('Updated!');
+  })
+})
