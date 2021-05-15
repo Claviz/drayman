@@ -150,6 +150,18 @@ test(`renders nested array of elements`, async () => {
     expect(result).toMatchSnapshot();
 });
 
+test(`renders fragments as nested array of elements`, async () => {
+    const result = await render(
+        <>
+            <h1>Hello, world!</h1>
+            <>
+                <h1>Hello, world!</h1>
+            </>
+        </>
+    );
+    expect(result).toMatchSnapshot();
+});
+
 test(`renders deprecated elements correctly`, async () => {
     const result = await render(
         <container>

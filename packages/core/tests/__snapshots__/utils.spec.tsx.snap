@@ -356,6 +356,48 @@ Object {
 }
 `;
 
+exports[`renders fragments as nested array of elements 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/h1/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/0/h1",
+      "options": Object {},
+      "style": null,
+      "type": "h1",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/1/h1/0/text",
+          "options": Object {
+            "text": "Hello, world!",
+          },
+          "style": null,
+          "type": "text",
+        },
+      ],
+      "key": "/1/h1",
+      "options": Object {},
+      "style": null,
+      "type": "h1",
+    },
+  ],
+}
+`;
+
 exports[`renders nested array of elements 1`] = `
 Object {
   "events": Object {},

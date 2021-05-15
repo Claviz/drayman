@@ -12,7 +12,9 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
 
     async function traverse(arr, renderedArr = [], parent) {
         for (let item of (Array.isArray(arr) ? arr : [arr])) {
-            if (item?.type) {
+            if (typeof item?.type === 'symbol') {
+                await traverse(item.props?.children, renderedArr, parent);
+            } else if (item?.type) {
                 if (typeof item.type === 'function') {
                     const rendered = await parseFnType(item);
                     item = { ...rendered };
