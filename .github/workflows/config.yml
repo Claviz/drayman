@@ -35,14 +35,14 @@ jobs:
           npm run build
           npm run test
 
-      - name: "@drayman/platform-element"
-        working-directory: ./packages/platform/element
+      - name: "@drayman/framework-element"
+        working-directory: ./packages/framework/element
         run: |
           npm install
           npm run build
 
-      - name: "@drayman/platform"
-        working-directory: ./packages/platform
+      - name: "@drayman/framework"
+        working-directory: ./packages/framework
         run: |
           npm install
           npm run build

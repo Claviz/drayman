@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <drayman-element-advanced component="home"></drayman-element-advanced>
+    <drayman-framework-element component="home"></drayman-framework-element>
 
     <div class="drayman-elements-container"></div>
 
@@ -27,7 +27,7 @@
                     ready = Array.from(document.querySelectorAll('div')).find(el => el.innerText === 'Ready!');
                     await delay(100);
                 }
-                const draymanElement = document.getElementsByTagName('drayman-element-advanced')[0];
+                const draymanElement = document.getElementsByTagName('drayman-framework-element')[0];
                 draymanElement.setAttribute('options', JSON.stringify({ text: 'Updated!' }));
             }
         })();

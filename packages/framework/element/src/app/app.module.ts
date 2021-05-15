@@ -23,7 +23,7 @@ export class AppModule {
   ngDoBootstrap() {
     const strategyFactory = new ElementZoneStrategyFactory(AppComponent, this.injector);
     const elm = createCustomElement(AppComponent, { injector: this.injector, strategyFactory });
-    customElements.define('drayman-element-advanced', elm);
+    customElements.define('drayman-framework-element', elm);
   }
 
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@drayman/platform",
+  "name": "@drayman/framework",
   "version": "1.0.0-alpha.27",
   "description": "",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "element/dist"
   ],
   "bin": {
-    "drayman-platform": "./dist/index.js"
+    "drayman-framework": "./dist/index.js"
   },
   "author": "",
   "license": "ISC",

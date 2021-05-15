@@ -1,5 +1,5 @@
 {
-  "name": "@drayman/platform-element",
+  "name": "@drayman/framework-element",
   "version": "1.0.0-alpha.26",
   "scripts": {
     "build": "ng build --prod --single-bundle --output-hashing=none"

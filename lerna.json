@@ -1,7 +1,7 @@
 {
   "packages": [
     "packages/*",
-    "packages/platform/element"
+    "packages/framework/element"
   ],
   "version": "1.0.0-alpha.27"
 }
