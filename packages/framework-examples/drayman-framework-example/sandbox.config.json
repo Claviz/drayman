@@ -1,9 +1,10 @@
 {
   "template": "node",
+  "infiniteLoopProtection": true,
+  "hardReloadOnChange": false,
+  "view": "browser",
   "container": {
-    "node": "14"
-  },
-  "node": "14",
-  "port": 3033,
-  "startScript": "start:dev"
+    "node": "14",
+    "port": 3033
+  }
 }
