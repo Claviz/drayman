@@ -5,12 +5,13 @@ import _ from 'lodash';
 
 const codeSandboxConfig = {
     template: 'node',
+    infiniteLoopProtection: true,
+    hardReloadOnChange: false,
+    view: 'browser',
     container: {
         node: '14',
+        port: 3033
     },
-    node: '14',
-    port: 3033,
-    startScript: 'start:dev'
 };
 
 (async () => {
@@ -42,5 +43,5 @@ const codeSandboxConfig = {
 //     console.log(`Drayman Framework project successfully created!`);
 //     console.log(`Start by typing:`);
 //     console.log(`cd ${cdPath}`);
-//     console.log(`npm run start:dev`);
+//     console.log(`npm run start`);
 // })();

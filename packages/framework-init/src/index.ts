@@ -28,5 +28,5 @@ const dest = path.resolve(process.cwd(), name);
     console.log(`Drayman Framework project successfully created!`);
     console.log(`Start by typing:`);
     console.log(`cd ${cdPath}`);
-    console.log(`npm run start:dev`);
+    console.log(`npm run start`);
 })();

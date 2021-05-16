@@ -3,7 +3,7 @@
   "version": "1.0.0-alpha.35",
   "private": true,
   "scripts": {
-    "start:dev": "drayman-framework start:dev"
+    "start": "drayman-framework start"
   },
   "devDependencies": {
     "@drayman/types": "^1.0.0-alpha.35",

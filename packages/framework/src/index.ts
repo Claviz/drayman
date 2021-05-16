@@ -177,7 +177,7 @@ const rootDir = process.argv[3] || '.';
 const componentInputDir = path.join(rootDir, `./src/components`);
 
 (async () => {
-    if (command === 'start:dev') {
+    if (command === 'start') {
         await build();
         const io = start();
         fs.watch(componentInputDir, async () => {

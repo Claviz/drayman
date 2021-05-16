@@ -7,8 +7,8 @@
     "build": "tsc",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "drayman:start": "node ./dist/index.js start:dev ./app",
-    "test": "start-server-and-test drayman:start http://localhost:3033 cypress:run"
+    "start": "node ./dist/index.js start ./app",
+    "test": "start-server-and-test start http://localhost:3033 cypress:run"
   },
   "files": [
     "dist",
