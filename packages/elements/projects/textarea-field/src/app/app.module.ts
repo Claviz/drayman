@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { SingleOverlayContainer } from 'mat-single-overlay';
 
 import { TextareaFieldComponent } from './textarea-field/textarea-field.component';
@@ -30,8 +29,7 @@ export class TextareaFieldModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(TextareaFieldComponent, this.injector);
-    const el = createCustomElement(TextareaFieldComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(TextareaFieldComponent, { injector: this.injector, });
     customElements.define('drayman-textarea-field', el);
   }
 }

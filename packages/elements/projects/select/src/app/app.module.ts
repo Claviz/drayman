@@ -4,7 +4,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { SelectComponent } from './select/select.component';
@@ -34,8 +33,7 @@ export class SelectModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(SelectComponent, this.injector);
-    const el = createCustomElement(SelectComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(SelectComponent, { injector: this.injector, });
     customElements.define('drayman-select', el);
   }
 }

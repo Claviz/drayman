@@ -31,29 +31,7 @@
             "styles": [
               "projects/button/src/styles.scss"
             ],
-            "scripts": [
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              }
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -503,8 +481,6 @@
               "projects/file-uploader/src/assets"
             ],
             "styles": [
-              "./node_modules/filepond-plugin-get-file/dist/filepond-plugin-get-file.min.css",
-              "./node_modules/filepond/dist/filepond.min.css",
               "projects/file-uploader/src/styles.scss"
             ],
             "scripts": []
@@ -853,8 +829,6 @@
               "projects/table/src/assets"
             ],
             "styles": [
-              "./node_modules/filepond-plugin-get-file/dist/filepond-plugin-get-file.min.css",
-              "./node_modules/filepond/dist/filepond.min.css",
               "projects/table/src/styles.scss"
             ],
             "scripts": []

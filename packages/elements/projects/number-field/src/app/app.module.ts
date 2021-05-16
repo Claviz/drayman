@@ -2,7 +2,6 @@ import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { NumberFieldComponent } from './number-field/number-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -32,8 +31,7 @@ export class NumberFieldModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(NumberFieldComponent, this.injector);
-    const el = createCustomElement(NumberFieldComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(NumberFieldComponent, { injector: this.injector, });
     customElements.define('drayman-number-field', el);
   }
 }

@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AngularResizedEventModule } from 'angular-resize-event';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { NgxChartsComponent } from './ngx-charts/ngx-charts.component';
 
@@ -23,8 +22,7 @@ export class AppModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(NgxChartsComponent, this.injector);
-    const el = createCustomElement(NgxChartsComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(NgxChartsComponent, { injector: this.injector, });
     customElements.define('drayman-ngx-charts', el);
   }
 }

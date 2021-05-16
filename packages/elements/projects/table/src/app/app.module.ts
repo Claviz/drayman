@@ -15,7 +15,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { SingleOverlayContainer } from 'mat-single-overlay';
 import { ButtonModule } from 'projects/button/src/app/app.module';
 import { CheckboxModule } from 'projects/checkbox/src/app/app.module';
@@ -65,8 +64,7 @@ export class TableModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(TableComponent, this.injector);
-    const el = createCustomElement(TableComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(TableComponent, { injector: this.injector, });
     customElements.define('drayman-table', el);
   }
 }

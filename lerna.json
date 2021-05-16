@@ -1,7 +1,8 @@
 {
   "packages": [
     "packages/*",
-    "packages/framework/element"
+    "packages/framework/element",
+    "packages/framework-init/template"
   ],
   "version": "1.0.0-alpha.27"
 }

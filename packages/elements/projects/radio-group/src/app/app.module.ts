@@ -4,7 +4,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { RadioGroupComponent } from './radio-group/radio-group.component';
 import { MatInputModule } from '@angular/material/input';
@@ -32,8 +31,7 @@ export class RadioGroupModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(RadioGroupComponent, this.injector);
-    const el = createCustomElement(RadioGroupComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(RadioGroupComponent, { injector: this.injector, });
     customElements.define('drayman-radio-group', el);
   }
 }

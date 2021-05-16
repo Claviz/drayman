@@ -1,7 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, Injector } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { AppComponent } from './app.component';
 
@@ -21,8 +20,7 @@ export class AppModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(AppComponent, this.injector);
-    const elm = createCustomElement(AppComponent, { injector: this.injector, strategyFactory });
+    const elm = createCustomElement(AppComponent, { injector: this.injector, });
     customElements.define('drayman-framework-element', elm);
   }
 

@@ -2,7 +2,6 @@ import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { ButtonModule } from 'projects/button/src/app/app.module';
 import { MatMenuModule } from '@angular/material/menu';
 
@@ -30,8 +29,7 @@ export class MenuModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(MenuComponent, this.injector);
-    const el = createCustomElement(MenuComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(MenuComponent, { injector: this.injector, });
     customElements.define('drayman-menu', el);
   }
 }

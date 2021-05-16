@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { SingleOverlayContainer } from 'mat-single-overlay';
 
 import { CheckboxComponent } from './checkbox/checkbox.component';
@@ -29,8 +28,7 @@ export class CheckboxModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(CheckboxComponent, this.injector);
-    const el = createCustomElement(CheckboxComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(CheckboxComponent, { injector: this.injector });
     customElements.define('drayman-checkbox', el);
   }
 }

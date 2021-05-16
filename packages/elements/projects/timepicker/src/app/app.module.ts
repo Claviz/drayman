@@ -10,7 +10,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import { SingleOverlayContainer } from 'mat-single-overlay';
 import { NgxMaskModule } from 'ngx-mask';
 
@@ -40,8 +39,7 @@ export class TimepickerModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(TimepickerComponent, this.injector);
-    const el = createCustomElement(TimepickerComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(TimepickerComponent, { injector: this.injector, });
     customElements.define('drayman-timepicker', el);
   }
 }

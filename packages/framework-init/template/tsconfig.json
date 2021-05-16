@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "CommonJS",
+        "jsxImportSource": "@drayman/core",
+        "jsx": "react-jsx",
+        "rootDir": "src",
+        "outDir": "out",
+        "esModuleInterop": true,
+        "types": [
+            "@drayman/types",
+            "node"
+        ]
+    },
+    "include": [
+        "./src"
+    ]
+}

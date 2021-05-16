@@ -2,7 +2,6 @@ import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { TextFieldComponent } from './text-field/text-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -34,8 +33,7 @@ export class TextFieldModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(TextFieldComponent, this.injector);
-    const el = createCustomElement(TextFieldComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(TextFieldComponent, { injector: this.injector, });
     customElements.define('drayman-text-field', el);
   }
 }

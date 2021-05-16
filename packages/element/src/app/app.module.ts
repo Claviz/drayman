@@ -8,7 +8,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule, } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 // import { AppComponent } from './app.component';
 
 import { DraymanElementComponent } from './drayman-element.component';
@@ -44,8 +43,7 @@ export class AppModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(DraymanElementComponent, this.injector);
-    const elm = createCustomElement(DraymanElementComponent, { injector: this.injector, strategyFactory });
+    const elm = createCustomElement(DraymanElementComponent, { injector: this.injector, });
     customElements.define('drayman-element', elm);
   }
 

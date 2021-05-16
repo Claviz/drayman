@@ -1,5 +1,5 @@
 import { DomElementSchemaRegistry } from '@angular/compiler';
-import { resolve } from 'path';
+import path from 'path';
 import { getProgramFromFiles, generateSchema, Definition } from 'typescript-json-schema';
 
 const dom = new DomElementSchemaRegistry();
@@ -54,7 +54,7 @@ const getBinding = (el: string, prop: string) => {
 
 export const getAngularElements = (): string => {
     const program = getProgramFromFiles(
-        [resolve('node_modules/@drayman/types/types/index.d.ts')]
+        [require.resolve('@drayman/types/types/index.d.ts')]
     );
 
     const schema = generateSchema(program, 'global.JSX.IntrinsicElements', { ref: false, propOrder: true });

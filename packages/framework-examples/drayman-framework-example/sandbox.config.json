@@ -1,0 +1,9 @@
+{
+  "template": "node",
+  "container": {
+    "node": "14"
+  },
+  "node": "14",
+  "port": 3033,
+  "startScript": "start:dev"
+}

@@ -2,7 +2,6 @@ import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { DatepickerComponent } from './datepicker/datepicker.component';
 import { MatInputModule } from '@angular/material/input';
@@ -43,8 +42,7 @@ export class DatepickerModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(DatepickerComponent, this.injector);
-    const el = createCustomElement(DatepickerComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(DatepickerComponent, { injector: this.injector, });
     customElements.define('drayman-datepicker', el);
   }
 }

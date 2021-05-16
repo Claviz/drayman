@@ -2,7 +2,6 @@ import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import FilePondPluginGetFile from 'filepond-plugin-get-file';
 import { FilePondModule, registerPlugin } from 'ngx-filepond';
@@ -27,8 +26,7 @@ export class FileUploaderModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(FileUploaderComponent, this.injector);
-    const el = createCustomElement(FileUploaderComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(FileUploaderComponent, { injector: this.injector, });
     customElements.define('drayman-file-uploader', el);
   }
 }
