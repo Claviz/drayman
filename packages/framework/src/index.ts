@@ -8,11 +8,12 @@ import { Server, Socket } from 'socket.io';
 import * as draymanCore from '@drayman/core';
 import fs from 'fs-extra';
 import ts from 'typescript';
+import chokidar from 'chokidar';
 
 const build = async () => {
-    await fs.ensureDir(componentInputDir);
-    const componentFiles = await fs.readdir(componentInputDir);
-    const templateFilePath = path.join(rootDir, `./src/index.d.ts`);
+    await fs.ensureDir(componentsDir);
+    const componentFiles = (await fs.readdir(componentsDir)).filter(x => x.endsWith('.tsx'));
+    const templateFilePath = path.join(componentsDir, `./index.d.ts`);
     await fs.ensureFile(templateFilePath);
     const template = await fs.readFile(templateFilePath, 'utf8');
     const lines = template.split('\n');
@@ -51,7 +52,7 @@ const start = () => {
     const app = express();
     // let ws;
     app.use(express.json());
-    app.use(express.static(path.join(rootDir, './public')));
+    app.use(express.static(publicDir));
     // app.use(express.static('./app/dist/app'));
     app.get('/drayman-element.js', function (req, res) {
         res.sendFile(path.join(__dirname, '../element/dist/main-es2015.js'));
@@ -121,7 +122,7 @@ const start = () => {
         res.status(500).send(err);
     });
 
-    app.get('*', (req, res) => res.sendFile(path.resolve(rootDir, 'public', 'index.html')));
+    app.get('*', (req, res) => res.sendFile(path.resolve(publicDir, 'index.html')));
 
     process.on('uncaughtException', function (err) {
         console.log(err);
@@ -151,7 +152,7 @@ const start = () => {
             callback({ componentInstanceId });
             draymanCore.onInitializeComponentInstance({
                 componentName: componentId,
-                componentRootDir: path.join(rootDir, `src/components`),
+                componentRootDir: componentsDir,
                 componentInstanceId,
                 componentOptions,
                 location,
@@ -173,14 +174,19 @@ const start = () => {
 }
 
 const command = process.argv[2];
-const rootDir = process.argv[3] || '.';
-const componentInputDir = path.join(rootDir, `./src/components`);
+const draymanConfig = require(path.join(process.cwd(), 'drayman.config.js'));
+const componentsDir = draymanConfig.componentsDir || `./src/components`;
+const publicDir = draymanConfig.publicDir || `./public`;
 
 (async () => {
     if (command === 'start') {
         await build();
         const io = start();
-        fs.watch(componentInputDir, async () => {
+        chokidar.watch(componentsDir, {
+            ignored: (path) => path.endsWith('.d.ts'),
+            ignoreInitial: true,
+        }).on('all', async (a, b) => {
+            console.log(a, b);
             await build();
             io.emit('browserReload');
         });

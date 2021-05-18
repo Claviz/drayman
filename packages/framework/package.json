@@ -7,7 +7,7 @@
     "build": "tsc",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "start": "node ./dist/index.js start ./app",
+    "start": "node ./dist/index.js start",
     "test": "start-server-and-test start http://localhost:3033 cypress:run"
   },
   "files": [
@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "@drayman/core": "^1.0.0-alpha.35",
+    "chokidar": "^3.5.1",
     "express": "^4.17.1",
     "fs-extra": "^9.1.0",
     "multer": "^1.4.2",

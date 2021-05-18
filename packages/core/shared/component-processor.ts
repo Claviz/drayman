@@ -86,9 +86,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
     props = componentOptions || {};
     const componentNames = fs
         .readdirSync(componentRootDir)
-        .filter(x => x
-            .startsWith(componentNamePrefix)
-        )
+        .filter(x => x.startsWith(componentNamePrefix) && x.endsWith('.tsx'))
         .map(x => x
             .replace(componentNamePrefix, '')
             .replace('.tsx', '')

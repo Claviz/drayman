@@ -15,110 +15,110 @@
             <ng-container [ngSwitch]="element.type">
                 <!--ELEMENTS-START-->
 <ng-container *ngSwitchCase="'i'">
-<i [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<i [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </i>
 </ng-container>
 <ng-container *ngSwitchCase="'b'">
-<b [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<b [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </b>
 </ng-container>
 <ng-container *ngSwitchCase="'p'">
-<p [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<p [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </p>
 </ng-container>
 <ng-container *ngSwitchCase="'h1'">
-<h1 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<h1 [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </h1>
 </ng-container>
 <ng-container *ngSwitchCase="'h2'">
-<h2 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<h2 [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </h2>
 </ng-container>
 <ng-container *ngSwitchCase="'h3'">
-<h3 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<h3 [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </h3>
 </ng-container>
 <ng-container *ngSwitchCase="'h4'">
-<h4 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<h4 [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </h4>
 </ng-container>
 <ng-container *ngSwitchCase="'h5'">
-<h5 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<h5 [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </h5>
 </ng-container>
 <ng-container *ngSwitchCase="'h6'">
-<h6 [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<h6 [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </h6>
 </ng-container>
 <ng-container *ngSwitchCase="'td'">
-<td [attr.colspan]="element.options.colspan" [attr.rowspan]="element.options.rowspan" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<td [attr.colspan]="element.options.colspan" [attr.rowspan]="element.options.rowspan" [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </td>
 </ng-container>
 <ng-container *ngSwitchCase="'div'">
-<div [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<div [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </div>
 </ng-container>
 <ng-container *ngSwitchCase="'span'">
-<span [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<span [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </span>
 </ng-container>
 <ng-container *ngSwitchCase="'table'">
-<table [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<table [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </table>
 </ng-container>
 <ng-container *ngSwitchCase="'tbody'">
-<tbody [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<tbody [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </tbody>
 </ng-container>
 <ng-container *ngSwitchCase="'thead'">
-<thead [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<thead [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </thead>
 </ng-container>
 <ng-container *ngSwitchCase="'tfoot'">
-<tfoot [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<tfoot [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </tfoot>
 </ng-container>
 <ng-container *ngSwitchCase="'tr'">
-<tr [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<tr [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </tr>
 </ng-container>
 <ng-container *ngSwitchCase="'th'">
-<th [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<th [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </th>
 </ng-container>
 <ng-container *ngSwitchCase="'input'">
-<app-drayman-input-field [options]="element.options" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<app-drayman-input-field [options]="element.options" [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </app-drayman-input-field>
 </ng-container>
 <ng-container *ngSwitchCase="'img'">
-<img [src]="domSanitizer.bypassSecurityTrustUrl(element.options.src)" [alt]="element.options.alt" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)" />
+<img [src]="domSanitizer.bypassSecurityTrustUrl(element.options.src)" [alt]="element.options.alt" [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)" />
 </ng-container>
 <ng-container *ngSwitchCase="'button'">
-<button (click)="element.options.onClick()" [disabled]="element.options.disabled" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<button (click)="element.options.onClick()" [disabled]="element.options.disabled" [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </button>
 </ng-container>
 <ng-container *ngSwitchCase="'pre'">
-<pre [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
+<pre [class]="element.options.class" [ngStyle]="element.style" [attr.tabindex]="element.options.tabindex" (keydown)="onShortcut($event, element)">
 <ng-container *ngTemplateOutlet="childrenTemplate; context: {children: element.children}"></ng-container>
 </pre>
 </ng-container>

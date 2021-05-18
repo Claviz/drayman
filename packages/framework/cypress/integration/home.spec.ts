@@ -57,3 +57,16 @@ context('update-from-html', () => {
     cy.contains('Updated!');
   })
 })
+
+context('css-class', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/css-class');
+  })
+
+  it(`correctly applies CSS class`, () => {
+    cy.get('.red-box').should('have.css', 'background-color', 'rgb(255, 0, 0)');
+    cy.get('.red-box').should('have.css', 'width', '100px');
+    cy.get('.red-box').should('have.css', 'height', '100px');
+  })
+})
+

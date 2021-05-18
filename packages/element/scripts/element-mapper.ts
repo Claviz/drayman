@@ -18,7 +18,8 @@ const exceptions = {
     '*': {
         'onShortcut': '(keydown)="onShortcut($event, element)"',
         'children': null,
-        'style': '[ngStyle]="element.style"'
+        'style': '[ngStyle]="element.style"',
+        'class': '[class]="element.options.class"'
     },
     'input': {
         'type': '[options]="element.options"',

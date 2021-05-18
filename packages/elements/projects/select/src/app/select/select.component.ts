@@ -31,7 +31,12 @@ export class SelectComponent extends FieldBase<any> {
     }
     this.selectOptions = this.options?.onSearchChange ?
       this.options?.options :
-      this.options?.options?.filter(x => x.label.trim().toLowerCase().includes(this.searchControl?.value?.toLowerCase() || ''));
+      this.options?.options?.filter(x => `${x.label}`.trim().toLowerCase().includes(this.searchControl?.value?.toLowerCase() || ''));
+  }
+
+  clearSelection($event) {
+    $event.stopPropagation();
+    this.formControl.setValue(undefined);
   }
 
   ngOnInit() {

@@ -3,6 +3,10 @@ import * as _CSS from 'csstype';
 declare global {
     interface DefaultProps {
         /**
+         * CSS class definition.
+         */
+        class?: string;
+        /**
          * Inline style for an element.
          */
         style?: CSS;

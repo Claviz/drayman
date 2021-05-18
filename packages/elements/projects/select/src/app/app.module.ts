@@ -21,6 +21,8 @@ import { SingleOverlayContainer } from 'mat-single-overlay';
     MatFormFieldModule,
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   declarations: [SelectComponent],
   exports: [SelectComponent],

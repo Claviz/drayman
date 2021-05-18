@@ -14,6 +14,12 @@
         {{data.label}}
       </mat-option>
     </mat-select>
+    <div *ngIf="formControl.value != null" matSuffix>
+      <button aria-label="Cancel selection" class="mat-datepicker-toggle" mat-icon-button matTooltip="Cancel selection"
+        (click)="clearSelection($event)">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
     <mat-hint>{{options?.helpText}}</mat-hint>
     <mat-error *ngIf="options?.error">
       {{options?.error}}

@@ -17,6 +17,9 @@ export const component: DraymanComponent<any> = async ({ Router, props }) => {
             case 'http://localhost:3033/update-from-html': {
                 return <update-from-html text={props.text} />
             }
+            case 'http://localhost:3033/css-class': {
+                return <css-class />
+            }
         }
     }
 

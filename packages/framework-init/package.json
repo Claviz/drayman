@@ -12,7 +12,8 @@
     "template/src",
     "template/gitignore",
     "template/package.json",
-    "template/tsconfig.json"
+    "template/tsconfig.json",
+    "template/drayman.config.js"
   ],
   "bin": {
     "drayman-framework-init": "./dist/index.js"
