@@ -10,6 +10,6 @@
     "typescript": "~4.1.5"
   },
   "dependencies": {
-    "@drayman/framework": "^1.0.0-alpha.37"
+    "@drayman/framework": "^1.0.0-alpha.38"
   }
 }
