@@ -37,35 +37,25 @@ const build = async () => {
     await fs.outputFile(templateFilePath, lines.join('\n'));
     // const tsConfig = JSON.parse(await fs.readFile(path.join(rootDir, `./tsconfig.json`), 'utf-8'));
     // const componentOutputDir = path.join(rootDir, `./src/components`);
-    // for (const componentFile of componentFiles) {
-    //     const componentScript = await fs.readFile(path.join(componentInputDir, componentFile), 'utf-8');
-    //     const transpiledComponentScript = ts.transpileModule(componentScript, tsConfig);
-    //     await fs.outputFile(path.join(componentOutputDir, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
-    // }
+    for (const componentFile of componentFiles) {
+        const script = await fs.readFile(path.join(componentsDir, componentFile), 'utf-8');
+        await draymanCore.saveComponent({ script, outputFile: path.join(componentsOutputDir, `${componentFile.replace('.tsx', '')}.js`) });
+        // const transpiledComponentScript = ts.transpileModule(componentScript, tsConfig);
+        // await fs.outputFile(path.join(componentOutputDir, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
+    }
     console.log(`Rebuilt!`);
 }
 
 const start = () => {
     const storage = multer.memoryStorage();
     const upload = multer({ storage: storage });
-    // const componentInstances = {};
     const app = express();
-    // let ws;
     app.use(express.json());
     app.use(express.static(publicDir));
-    // app.use(express.static('./app/dist/app'));
     app.get('/drayman-element.js', function (req, res) {
         res.sendFile(path.join(__dirname, '../element/dist/main-es2015.js'));
     });
-    // app.get('/drayman.js', async (req, res) => {
-    //     const script = await fs.readFile(path.join(__dirname, './app/main-es2015.js'), 'utf8');
-    //     res.send(script);
-    // });
-    /**
-     * If user emits some event (on button click, on value change, etc.), we store
-     * this event inside component instance object and send this request to the process.
-     * Then it is a processor responsibility to do something with request.
-     */
+
     app.post('/api/componentEvent', upload.any(), async (req, res, next) => {
         try {
             const { componentInstanceId, eventName } = req.body;
@@ -98,21 +88,10 @@ const start = () => {
         }
     });
 
-    // app.post('/updateComponentInstanceProps', async (req, res, next) => {
-    //     try {
-    //         const { componentInstanceId, options } = req.body;
-    //         componentInstances[componentInstanceId].process.send({ type: 'updateComponentInstanceProps', payload: { options } });
-    //         res.send();
-    //     } catch (err) {
-    //         next(err);
-    //     }
-    // });
-
     app.get('/api/elementScript/:elementTag', async (req, res, next) => {
         try {
             const { elementTag } = req.params;
-            const script = await draymanCore.getElementScriptByTag({ elementTag });
-            res.send(script);
+            res.sendFile(elementsPaths[elementTag]);
         } catch (err) {
             next(err);
         }
@@ -127,8 +106,6 @@ const start = () => {
     process.on('uncaughtException', function (err) {
         console.log(err);
     });
-
-    // import { BrowserEventMessage, CloseModalMessage, ComponentInstanceMessage, CustomDraymanEvent, DraymanEvents, HandleBrowserCallback, InitializeComponentInstance, LocationChange, OpenModalMessage, UpdateComponentInstanceProps, ViewComponentInstanceMessage } from '../shared/types';
 
     const server = app.listen(3033);
     console.log(`Drayman started at http://localhost:3033`);
@@ -152,7 +129,7 @@ const start = () => {
             callback({ componentInstanceId });
             draymanCore.onInitializeComponentInstance({
                 componentName: componentId,
-                componentRootDir: componentsDir,
+                componentRootDir: componentsOutputDir,
                 componentInstanceId,
                 componentOptions,
                 location,
@@ -177,8 +154,11 @@ const command = process.argv[2];
 const draymanConfig = require(path.join(process.cwd(), 'drayman.config.js'));
 const componentsDir = draymanConfig.componentsDir || `./src/components`;
 const publicDir = draymanConfig.publicDir || `./public`;
+const componentsOutputDir = draymanConfig.componentsOutputDir || `./dist/components`;
+let elementsPaths = {};
 
 (async () => {
+    elementsPaths = await draymanCore.getElementsScriptPaths({});
     if (command === 'start') {
         await build();
         const io = start();

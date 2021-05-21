@@ -3,6 +3,7 @@ import path from 'path';
 import execa from 'execa';
 import shortid from 'shortid';
 import { find, name, path as nodeFindPath } from 'node-find';
+import ts from 'typescript';
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
     options = options || {};
@@ -19,29 +20,18 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
     }
 }
 
-
-// app.post('/updateComponentInstanceProps', async (req, res, next) => {
-//     try {
-//         const { componentInstanceId, options } = req.body;
-//         componentInstances[componentInstanceId].process.send({ type: 'updateComponentInstanceProps', payload: { options } });
-//         res.send();
-//     } catch (err) {
-//         next(err);
-//     }
-// });
-
-
-export async function getElementScriptByTag({ elementTag, nodeModulesPath = null }) {
+export async function getElementsScriptPaths({ nodeModulesPath = null }) {
     nodeModulesPath = nodeModulesPath || path.join(process.cwd(), 'node_modules');
     const packages = find(nodeFindPath('*/package.json'), { start: nodeModulesPath });
+    const paths = {};
     for await (const packageJsonPath of packages) {
         const packageJson = await fs.readJSON(packageJsonPath.toString('/'), { throws: false });
-        const scriptPath = packageJson?.drayman?.elements?.[elementTag]?.script;
-        if (scriptPath) {
-            return await fs.readFile(path.join(packageJsonPath.parent.toString('/'), scriptPath), 'utf8');
+        const elements = packageJson?.drayman?.elements || {};
+        for (const element of Object.keys(elements)) {
+            paths[element] = path.join(packageJsonPath.parent.toString('/'), elements[element].script);
         }
     }
-    throw new Error('Element script not found.');
+    return paths;
 }
 
 export const onLocationChange = ({ location, connectionId }) => {
@@ -75,6 +65,25 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
     }
 }
 
+export const saveComponent = async ({ script, outputFile }) => {
+
+    const tsConfig = JSON.parse(
+        await fs.readFile(
+            path.join(
+                __dirname,
+                process.env.NODE_ENV === 'test' ? `../tests/component-processor.tsconfig.test.json` : `../component-processor.tsconfig.json`,
+            ),
+            'utf-8'
+        )
+    );
+    // const componentOutputDir = path.join(rootDir, `./src/components`);
+    // for (const componentFile of componentFiles) {
+    // const componentScript = await fs.readFile(path.join(componentInputDir, componentFile), 'utf-8');
+    const transpiledComponentScript = ts.transpileModule(script, tsConfig);
+    await fs.outputFile(outputFile, transpiledComponentScript.outputText);
+    // }
+}
+
 export const onInitializeComponentInstance = ({
     namespaceId = null,
     extensionsPath = null,
@@ -91,15 +100,8 @@ export const onInitializeComponentInstance = ({
     onComponentInstanceConsole,
 }) => {
     const subprocess = execa.node(
-        `${path.join(path.dirname(require.resolve('ts-node/package.json')), 'dist/bin-transpile')}`,
+        path.join(__dirname, `./component-processor.js`),
         [
-            '--project',
-            path.join(
-                __dirname,
-                process.env.NODE_ENV === 'test' ? `../tests/component-processor.tsconfig.test.json` : `../shared/component-processor.tsconfig.json`,
-            ),
-            '--skip-ignore',
-            path.join(__dirname, '../shared/component-processor.ts'),
             componentInstanceId
         ],
         { nodeOptions: ['--unhandled-rejections=strict'], serialization: 'advanced', }

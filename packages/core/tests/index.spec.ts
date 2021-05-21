@@ -1,11 +1,15 @@
-import { componentInstances, handleComponentEvent, handleEventHubEvent, onDestroyComponentInstance, onInitializeComponentInstance, onLocationChange } from '../src';
-import path from 'path';
-
+import { componentInstances, handleComponentEvent, saveComponent, handleEventHubEvent, onDestroyComponentInstance, onInitializeComponentInstance, onLocationChange } from '../dist';
+import fs from 'fs-extra';
 
 describe('', () => {
 
     const onError = jest.fn();
     const onSuccess = jest.fn();
+
+    beforeAll(async () => {
+        const script = await fs.readFile('./tests/components/buttons.tsx', 'utf-8');
+        await saveComponent({ script, outputFile: './tests/dist/components/buttons.js' });
+    });
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -16,9 +20,11 @@ describe('', () => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
+                isModal: false,
+                onComponentInstanceConsole: ({ text }) => { console.log(text) },
                 componentInstanceId,
                 componentName: 'buttons',
-                componentRootDir: 'tests/components',
+                componentRootDir: 'tests/dist/components',
                 connectionId: 'connection-1',
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {
@@ -59,9 +65,11 @@ describe('', () => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
+                isModal: false,
+                onComponentInstanceConsole: ({ text }) => { console.log(text) },
                 componentInstanceId,
                 componentName: 'buttons',
-                componentRootDir: 'tests/components',
+                componentRootDir: 'tests/dist/components',
                 connectionId: 'connection-1',
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {
@@ -98,9 +106,11 @@ describe('', () => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
+                isModal: false,
+                onComponentInstanceConsole: ({ text }) => { console.log(text) },
                 componentInstanceId,
                 componentName: 'buttons',
-                componentRootDir: 'tests/components',
+                componentRootDir: 'tests/dist/components',
                 connectionId: 'connection-1',
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {
@@ -137,9 +147,11 @@ describe('', () => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
+                isModal: false,
+                onComponentInstanceConsole: ({ text }) => { console.log(text) },
                 componentInstanceId,
                 componentName: 'buttons',
-                componentRootDir: 'tests/components',
+                componentRootDir: 'tests/dist/components',
                 connectionId: 'connection-1',
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {
@@ -175,9 +187,11 @@ describe('', () => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
+                isModal: false,
+                onComponentInstanceConsole: ({ text }) => { console.log(text) },
                 componentInstanceId,
                 componentName: 'buttons',
-                componentRootDir: 'tests/components',
+                componentRootDir: 'tests/dist/components',
                 connectionId: 'connection-1',
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {

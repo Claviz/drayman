@@ -10,8 +10,8 @@
   "files": [
     "jsx-runtime.d.ts",
     "jsx-runtime.js",
-    "dist",
-    "shared"
+    "component-processor.tsconfig.json",
+    "dist"
   ],
   "keywords": [],
   "author": "",

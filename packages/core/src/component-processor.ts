@@ -86,10 +86,10 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
     props = componentOptions || {};
     const componentNames = fs
         .readdirSync(componentRootDir)
-        .filter(x => x.startsWith(componentNamePrefix) && x.endsWith('.tsx'))
+        .filter(x => x.startsWith(componentNamePrefix) && x.endsWith('.js'))
         .map(x => x
             .replace(componentNamePrefix, '')
-            .replace('.tsx', '')
+            .replace('.js', '')
         );
     const Components: { [componentId: string]: any } = {};
     componentNames.forEach(x => Components[x] = x);
@@ -105,7 +105,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         return null;
     }
     const createComponent = async (componentKey: string, initialProps: any) => {
-        pe.alias(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.tsx`), `${componentKey}.tsx`);
+        pe.alias(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`), `${componentKey}.js`);
         // pe.skip(function (traceLine, lineNumber) {
         //     if (traceLine.file !== `${componentNamePrefix}${componentKey}.tsx`) {
         //         return true;
@@ -113,7 +113,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         // });
         const props = { ...initialProps } || {};
         // const child_fnResult = require(path.join(process.cwd(), `./out/components/${componentKey}.tsx`));
-        const child_fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.tsx`));
+        const child_fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
         const child_componentResult = await (Object.values(child_fnResult)[0] as any)({
             forceUpdate,
             props,
@@ -234,7 +234,7 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         // });
         // }
     }
-    const fnResult = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.tsx`));
+    const fnResult = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
     const componentResult = await (Object.values(fnResult)[0] as any)({
         props,
         forceUpdate,

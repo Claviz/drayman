@@ -1,4 +1,4 @@
-import { isEvent, render } from '../shared/utils';
+import { isEvent, render } from '../src/utils';
 
 test('renders single element', async () => {
     const result = await render(

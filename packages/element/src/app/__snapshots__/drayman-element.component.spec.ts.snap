@@ -19,7 +19,9 @@ exports[`DraymanElementComponent should render button 1`] = `
   view={[Function Object]}
   viewTree={[Function Array]}
 >
-  <button>
+  <button
+    class="undefined"
+  >
     
     
     
