@@ -86,7 +86,7 @@ export const saveComponent = async ({ script, outputFile }) => {
 const piscina = new Piscina({
     filename: path.join(__dirname, `./component-processor.js`),
     maxThreads: Infinity,
-    minThreads: 100,
+    // minThreads: 100,
 });
 
 export const onInitializeComponentInstance = ({
