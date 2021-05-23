@@ -248,16 +248,16 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     for (let rowIndex = 0; rowIndex < this.visibleData.length; rowIndex++) {
       const row: GridCellType[] = [];
       for (let columnIndex = 0; columnIndex < this.options?.columns?.length; columnIndex++) {
-        const column = this.options.columns[columnIndex];
-        const cell = this.visibleData[rowIndex][column.field];
-        const style = { ...column.style, ...cell?.style };
+        // const column = this.options.columns[columnIndex];
+        const field = this.options.columns[columnIndex].field;
+        const cell = { ...this.options.columns[columnIndex], ...this.visibleData[rowIndex][field] };
+        // const style = { ...column.style, ...cell?.style };
         if (cell) {
-          const type = cell.type || column.type;
-          if (type === 'button') {
+          if (cell.type === 'button') {
             const buttonCell = cell as DraymanTableButtonCell;
             row.push({
               type: 'button',
-              style,
+              style: cell.style,
               options: {
                 label: buttonCell.value,
                 disabled: buttonCell.disabled,
@@ -269,17 +269,17 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onClick: this.options?.onCellButtonClick ? async () => {
                   return this.options.onCellButtonClick({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     rowIndex,
                   });
                 } : null,
               } as DraymanButton,
             } as GridButtonCell);
-          } else if (type === 'text-field') {
+          } else if (cell.type === 'text-field') {
             const textFieldCell = cell as DraymanTableTextFieldCell;
             row.push({
               type: 'text-field',
-              style,
+              style: cell.style,
               options: {
                 value: textFieldCell.value,
                 error: textFieldCell.error,
@@ -292,7 +292,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onFocus: this.options?.onCellFocus ? async () => {
                   return this.options.onCellFocus({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     rowIndex,
                   });
                 } : null,
@@ -302,18 +302,18 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
                   return this.options.onCellValueChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
                 } : null,
               },
             } as GridTextFieldCell);
-          } else if (type === 'number-field') {
+          } else if (cell.type === 'number-field') {
             const numberFieldCell = cell as DraymanTableNumberFieldCell;
             row.push({
               type: 'number-field',
-              style,
+              style: cell.style,
               options: {
                 value: numberFieldCell.value,
                 error: numberFieldCell.error,
@@ -325,7 +325,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onFocus: this.options?.onCellFocus ? async () => {
                   return this.options.onCellFocus({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     rowIndex,
                   });
                 } : null,
@@ -335,23 +335,24 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
                   return this.options.onCellValueChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
                 } : null,
               },
             } as GridNumberFieldCell);
-          } else if (type === 'select') {
+          } else if (cell.type === 'select') {
             const selectCell = cell as DraymanTableSelectCell;
             row.push({
               type: 'select',
-              style,
+              style: cell.style,
               options: {
                 disabled: selectCell.disabled,
                 error: selectCell.error,
                 value: selectCell.value,
                 options: selectCell.options,
+                appearance: 'standard',
                 multiple: selectCell.multiple,
                 onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
                   return this.options.onCellValueChangeStart();
@@ -359,7 +360,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
                   return this.options.onCellValueChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
@@ -367,43 +368,43 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onSearchChange: this.options?.onSelectSearchChange ? async ({ value }) => {
                   return this.options.onSelectSearchChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
                 } : null,
               },
             } as GridSelectCell);
-          } else if (type === 'file-uploader') {
+          } else if (cell.type === 'file-uploader') {
             const fileUploaderCell = cell as DraymanTableFileUploaderCell;
             row.push({
               type: 'file-uploader',
-              style,
+              style: cell.style,
               options: {
                 allowMultiple: fileUploaderCell.allowMultiple,
                 initialFiles: fileUploaderCell.initialFiles,
                 onUpload: this.options?.onFileUpload ? async (data, files) => {
                   return this.options.onFileUpload({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     rowIndex,
                   }, files);
                 } : null,
                 onRemoveUploaded: this.options?.onRemoveUploadedFile ? async ({ fileId }) => {
                   return this.options.onRemoveUploadedFile({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     fileId: fileId,
                     rowIndex,
                   });
                 } : null,
               },
             } as GridFileUploaderCell);
-          } else if (type === 'checkbox') {
+          } else if (cell.type === 'checkbox') {
             const checkboxFieldCell = cell as DraymanTableCheckboxCell;
             row.push({
               type: 'checkbox',
-              style,
+              style: cell.style,
               options: {
                 value: checkboxFieldCell.value,
                 disabled: checkboxFieldCell.disabled,
@@ -413,18 +414,18 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
                   return this.options.onCellValueChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
                 } : null,
               },
             } as GridCheckboxCell);
-          } else if (type === 'datepicker') {
+          } else if (cell.type === 'datepicker') {
             const datepickerFieldCell = cell as DraymanTableDatepickerCell;
             row.push({
               type: 'datepicker',
-              style,
+              style: cell.style,
               options: {
                 value: datepickerFieldCell.value,
                 error: datepickerFieldCell.error,
@@ -438,18 +439,18 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
                   return this.options.onCellValueChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
                 } : null,
               },
             } as GridDatepickerCell);
-          } else if (type === 'timepicker') {
+          } else if (cell.type === 'timepicker') {
             const timepickerFieldCell = cell as DraymanTableTimepickerCell;
             row.push({
               type: 'timepicker',
-              style,
+              style: cell.style,
               options: {
                 value: timepickerFieldCell.value,
                 error: timepickerFieldCell.error,
@@ -462,7 +463,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
                   return this.options.onCellValueChange({
                     row: this.visibleData[rowIndex],
-                    field: column.field,
+                    field,
                     value,
                     rowIndex,
                   });
@@ -473,14 +474,14 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
             const textCell = cell as DraymanTableTextCell;
             row.push({
               type: 'text',
-              style,
+              style: cell.style,
               value: textCell.value,
             } as GridTextCell);
           }
         } else {
           row.push({
             type: 'text',
-            style,
+            style: cell.style,
             value: null,
           } as GridTextCell);
         }

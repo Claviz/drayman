@@ -1,5 +1,5 @@
 <ng-template #select let-multiple='multiple'>
-  <mat-form-field [attr.aria-label]="options?.label + ' select field'">
+  <mat-form-field [attr.aria-label]="options?.label + ' select field'" [appearance]="options?.appearance || 'outline'">
     <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
     <mat-select [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" [multiple]="multiple">
@@ -14,7 +14,7 @@
         {{data.label}}
       </mat-option>
     </mat-select>
-    <div *ngIf="formControl.value != null" matSuffix>
+    <div fxLayout="row" *ngIf="formControl.value != null" matSuffix>
       <button aria-label="Cancel selection" class="mat-datepicker-toggle" mat-icon-button matTooltip="Cancel selection"
         (click)="clearSelection($event)">
         <mat-icon>clear</mat-icon>
