@@ -6,7 +6,9 @@
             "dom"
         ],
         "types": [
-            "cypress"
+            "cypress",
+            "cypress-file-upload",
+            "node"
         ]
     },
     "include": [

@@ -20,6 +20,9 @@ export const component: DraymanComponent<any> = async ({ Router, props }) => {
             case 'http://localhost:3033/css-class': {
                 return <css-class />
             }
+            case 'http://localhost:3033/third-party-upload': {
+                return <third-party-upload />
+            }
         }
     }
 

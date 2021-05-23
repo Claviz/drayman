@@ -16,12 +16,13 @@ describe('', () => {
     });
 
     test('component user interaction', async () => {
+        const consoleMessages = [];
         const messages = await (() => new Promise<{ type, payload, componentInstanceId }[]>((resolve, reject) => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
                 isModal: false,
-                onComponentInstanceConsole: ({ text }) => { console.log(text) },
+                onComponentInstanceConsole: ({ text }) => { consoleMessages.push(text) },
                 componentInstanceId,
                 componentName: 'buttons',
                 componentRootDir: 'tests/dist/components',
@@ -30,6 +31,7 @@ describe('', () => {
                 emit: async (message) => {
                     messages.push(message);
                     switch (messages.length) {
+                        // received initial view
                         case 1: {
                             handleComponentEvent({
                                 componentInstanceId,
@@ -37,15 +39,17 @@ describe('', () => {
                                 files: [],
                                 options: {},
                                 onError,
-                                onSuccess,
+                                onSuccess: () => {
+                                    onDestroyComponentInstance({ componentInstanceId: componentInstanceId });
+                                },
                             });
-                            expect(Object.values(componentInstances[componentInstanceId].eventRequests)[0]).toEqual({ onError, onSuccess });
                             return;
                         }
+                        // received view after button click
                         case 2: {
-                            onDestroyComponentInstance({ componentInstanceId: componentInstanceId });
                             return;
                         }
+                        // received message about component destroy
                         case 3: {
                             expect(componentInstances[componentInstanceId]).not.toBeDefined();
                             resolve(messages);
@@ -56,8 +60,7 @@ describe('', () => {
             });
         }))();
         expect(messages).toMatchSnapshot();
-        expect(onError.mock.calls.length).toEqual(0);
-        expect(onSuccess.mock.calls.length).toEqual(1);
+        expect(consoleMessages).toMatchSnapshot();
     });
 
     test('trying to perform event on non-existing component instance result in an error', async () => {
@@ -75,20 +78,23 @@ describe('', () => {
                 emit: async (message) => {
                     messages.push(message);
                     switch (messages.length) {
+                        // received initial view
                         case 1: {
                             handleComponentEvent({
                                 componentInstanceId: 'non-existing-instance',
                                 eventName: '/0/button/onClick',
                                 files: [],
                                 options: {},
-                                onError,
+                                onError: () => {
+                                    onDestroyComponentInstance({ componentInstanceId: componentInstanceId });
+                                },
                                 onSuccess,
                             });
-                            expect(componentInstances[componentInstanceId].eventRequests).toEqual({});
-                            onDestroyComponentInstance({ componentInstanceId: componentInstanceId });
                             return;
                         }
+                        // received message about component destroy
                         case 2: {
+                            expect(componentInstances[componentInstanceId]).not.toBeDefined();
                             resolve(messages);
                         }
                     }
@@ -97,8 +103,6 @@ describe('', () => {
             });
         }))();
         expect(messages).toMatchSnapshot();
-        expect(onError.mock.calls.length).toEqual(1);
-        expect(onSuccess.mock.calls.length).toEqual(0);
     });
 
     test('navigating', async () => {
@@ -123,12 +127,13 @@ describe('', () => {
                                 files: [],
                                 options: {},
                                 onError,
-                                onSuccess,
+                                onSuccess: () => {
+                                    onDestroyComponentInstance({ componentInstanceId: componentInstanceId });
+                                },
                             });
                             return;
                         }
                         case 2: {
-                            onDestroyComponentInstance({ componentInstanceId: componentInstanceId });
                             return;
                         }
                         case 3: {
@@ -177,8 +182,6 @@ describe('', () => {
             });
         }))();
         expect(messages).toMatchSnapshot();
-        expect(onError.mock.calls.length).toEqual(0);
-        expect(onSuccess.mock.calls.length).toEqual(0);
     });
 
     test('should not change location for other connection', async () => {
@@ -198,7 +201,7 @@ describe('', () => {
                     messages.push(message);
                     switch (messages.length) {
                         case 1: {
-                            componentInstances[componentInstanceId].process.send = send;
+                            componentInstances[componentInstanceId].messagePort.postMessage = send;
                             onLocationChange({
                                 connectionId: 'connection-2',
                                 location: { href: 'http://localhost/login' },

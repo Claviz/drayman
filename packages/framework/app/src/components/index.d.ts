@@ -7,6 +7,7 @@ interface IntrinsicElements {
 'modal': { [propName: string]: any; };
 'text-input': { [propName: string]: any; };
 'third-party-element': { [propName: string]: any; };
+'third-party-upload': { [propName: string]: any; };
 'update-from-html': { [propName: string]: any; };
 // ELEMENTS-END
 }

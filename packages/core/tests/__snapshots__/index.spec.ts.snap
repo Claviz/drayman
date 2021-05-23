@@ -107,6 +107,13 @@ Array [
 ]
 `;
 
+exports[`component user interaction 2`] = `
+Array [
+  "You've clicked a button!
+",
+]
+`;
+
 exports[`navigating 1`] = `
 Array [
   Object {

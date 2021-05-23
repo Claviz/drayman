@@ -70,3 +70,38 @@ context('css-class', () => {
   })
 })
 
+context('third-party-upload', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/third-party-upload');
+  })
+
+  it(`uploads a file`, () => {
+    cy.fixture('BB.png').then((image) => {
+      const blob = Cypress.Blob.base64StringToBlob(image, 'image/png');
+      const formData = new FormData();
+      formData.append('filepond', blob, 'BB.png');
+
+      cy.get('input[type="file"]').attachFile({
+        fileContent: blob,
+        fileName: 'BB.png',
+        mimeType: 'image/png'
+      });
+
+      const fileInfo = JSON.stringify({
+        fieldname: 'filepond',
+        originalname: 'BB.png',
+        encoding: '7bit',
+        mimetype: 'image/png',
+        size: 185556
+      }, null, 2);
+
+      cy.get('pre').should((x) =>
+        expect(x.text().trim()).to.equal(fileInfo)
+      )
+
+      cy.readFile('image.png');
+      cy.get('.filepond--action-revert-item-processing').click();
+      cy.readFile('image.png').should('not.exist');
+    })
+  })
+})
