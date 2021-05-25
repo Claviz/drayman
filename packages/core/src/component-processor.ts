@@ -7,9 +7,9 @@ import shortid from 'shortid';
 
 import { compare } from 'fast-json-patch';
 import { Writable } from 'stream';
-module.exports = ({ port, componentInstanceId }) => {
+module.exports = ({ port, initData }) => {
     const sendMessage = ({ type, payload }) => {
-        port.postMessage({ type, payload, componentInstanceId })
+        port.postMessage({ type, payload, componentInstanceId: initData.componentInstanceId })
         // process?.send?.({ type, payload, componentInstanceId });
     }
     const portWritable = new Writable({
@@ -321,9 +321,6 @@ module.exports = ({ port, componentInstanceId }) => {
         port.on('message', async (message) => {
             const { type, payload } = message;
             switch (type) {
-                case 'init':
-                    await initializeComponentInstance(payload);
-                    return;
                 case 'updateComponentInstanceProps':
                     await updateComponentInstanceProps(payload);
                     return;
@@ -341,6 +338,6 @@ module.exports = ({ port, componentInstanceId }) => {
             }
         });
 
-        // sendMessage({ type: 'ready', payload: {} });
+        await initializeComponentInstance(initData);
     });
 };

@@ -117,10 +117,7 @@ export const onInitializeComponentInstance = ({
     const { signal } = abortController;
     // port2.on('message', (message) => console.log('received', message));
     // port2.postMessage({ foo: 'bar' });
-    piscina.run({ port: port1, componentInstanceId }, { transferList: [port1], signal, }).catch(e => {
-        delete componentInstances[componentInstanceId];
-        emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
-    });
+
 
     componentInstances[componentInstanceId] = {
         abortController,
@@ -187,7 +184,14 @@ export const onInitializeComponentInstance = ({
             emit({ type, payload, componentInstanceId });
         }
     })
-    port2.postMessage({ type: 'init', payload: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal } });
+    // port2.postMessage({ type: 'init', payload: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal } });
+    piscina.run({
+        port: port1,
+        initData: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal }
+    }, { transferList: [port1], signal, }).catch(e => {
+        delete componentInstances[componentInstanceId];
+        emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
+    });
 }
 
 export const onDisconnect = ({ connectionId }) => {

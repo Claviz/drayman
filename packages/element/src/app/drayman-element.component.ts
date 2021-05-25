@@ -34,6 +34,7 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
   view = {};
   previouslySerializedTree = [];
   viewTree: any[] = [];
+  shouldDestroy = false;
 
   constructor(
     @Optional() private dialogRef: MatDialogRef<DraymanModalComponent>,
@@ -56,7 +57,11 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.config?.connection.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
+    if (this.componentInstanceId) {
+      this.config?.connection.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
+    } else {
+      this.shouldDestroy = true;
+    }
   }
 
   traverseTree(tree: any) {
@@ -78,6 +83,10 @@ export class DraymanElementComponent implements OnChanges, OnInit, OnDestroy {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     this.componentInstanceId = await this.config.connection.initializeComponent({ componentId: this.component, componentOptions: this.options, location: { href: window.location.href }, isModal: this.isModal });
+    if (this.shouldDestroy) {
+      this.config?.connection.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
+      return;
+    }
     this.config.connection.onEvent(this.componentInstanceId, ({ type, payload }) => {
       this.ngZone.run(() => {
         if (type === 'closeModal') {

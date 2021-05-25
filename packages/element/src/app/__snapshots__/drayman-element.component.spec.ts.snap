@@ -15,6 +15,7 @@ exports[`DraymanElementComponent should render button 1`] = `
   options={[Function Object]}
   previouslySerializedTree={[Function Array]}
   ref={[Function ViewRef_]}
+  shouldDestroy="false"
   snackBar={[Function Object]}
   view={[Function Object]}
   viewTree={[Function Array]}

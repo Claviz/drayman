@@ -2,6 +2,9 @@
     "compilerOptions": {
         "jsxImportSource": "@drayman/core",
         "jsx": "react-jsx",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "target": "esnext",
+        "module": "CommonJS",
+        "moduleResolution": "Node"
     }
 }
