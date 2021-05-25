@@ -201,7 +201,7 @@ describe('', () => {
                     messages.push(message);
                     switch (messages.length) {
                         case 1: {
-                            componentInstances[componentInstanceId].messagePort.postMessage = send;
+                            componentInstances[componentInstanceId].worker.handleLocationChange = send;
                             onLocationChange({
                                 connectionId: 'connection-2',
                                 location: { href: 'http://localhost/login' },

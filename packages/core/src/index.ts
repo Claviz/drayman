@@ -3,8 +3,9 @@ import path from 'path';
 import shortid from 'shortid';
 import { find, name, path as nodeFindPath } from 'node-find';
 import ts from 'typescript';
-import Piscina from 'piscina';
-import { MessageChannel, MessagePort } from 'worker_threads';
+// import Piscina from 'piscina';
+// import { MessageChannel, MessagePort } from 'worker_threads';
+import { spawn, Thread, Worker } from "threads"
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
     options = options || {};
@@ -14,7 +15,7 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
     const requestId = shortid.generate();
     if (Object.keys(componentInstances).includes(componentInstanceId)) {
         componentInstances[componentInstanceId].eventRequests[requestId] = { onSuccess, onError };
-        componentInstances[componentInstanceId].messagePort.postMessage({ type: 'componentEvent', payload: { eventName, requestId, options, files, } });
+        componentInstances[componentInstanceId].worker.handleComponentEvent({ eventName, requestId, options, files, });
     } else {
         onError({ err: `Component instance was not found.` });
         // res.status(500).send(`Component instance was not found.`);
@@ -38,7 +39,7 @@ export async function getElementsScriptPaths({ nodeModulesPath = null }) {
 export const onLocationChange = ({ location, connectionId }) => {
     for (const key of Object.keys(componentInstances)) {
         if (componentInstances[key].connectionId === connectionId) {
-            componentInstances[key].messagePort.postMessage({ type: 'handleLocationChange', payload: { location } });
+            componentInstances[key].worker.handleLocationChange({ location });
         }
     }
 }
@@ -47,19 +48,19 @@ export const onUpdateComponentInstanceProps = ({ componentInstanceId, options, }
     if (typeof options === 'string') {
         options = JSON.parse(options);
     }
-    componentInstances[componentInstanceId].messagePort.postMessage({ type: 'updateComponentInstanceProps', payload: { componentInstanceId, options, } });
+    componentInstances[componentInstanceId].worker.updateComponentInstanceProps({ options, });
 }
 
 export const onHandleBrowserCallback = ({ callbackId, data, }) => {
     for (const key of Object.keys(componentInstances)) {
-        componentInstances[key].messagePort.postMessage({ type: 'handleBrowserCallback', payload: { callbackId, data, } });
+        componentInstances[key].worker.handleBrowserCallback({ callbackId, data, });
     }
 }
 
 export const handleEventHubEvent = async ({ data, groupId = null, type, namespaceId = null }) => {
     for (const key of Object.keys(componentInstances)) {
         if (componentInstances[key].namespaceId === namespaceId) {
-            componentInstances[key].messagePort.postMessage({ type: 'eventHubEvent', payload: { type, data, groupId } });
+            componentInstances[key].worker.handleEventHubEvent({ type, data, groupId });
         }
     }
 }
@@ -83,13 +84,13 @@ export const saveComponent = async ({ script, outputFile }) => {
     // }
 }
 
-const piscina = new Piscina({
-    filename: path.join(__dirname, `./component-processor.js`),
-    maxThreads: Infinity,
-    // minThreads: 100,
-});
+// const piscina = new Piscina({
+//     filename: path.join(__dirname, `./component-processor.js`),
+//     maxThreads: Infinity,
+//     // minThreads: 100,
+// });
 
-export const onInitializeComponentInstance = ({
+export const onInitializeComponentInstance = async ({
     namespaceId = null,
     extensionsPath = null,
     extensionsOptions = null,
@@ -112,24 +113,14 @@ export const onInitializeComponentInstance = ({
     //     ],
     //     { nodeOptions: ['--unhandled-rejections=strict'], serialization: 'advanced', }
     // );
-    const abortController = new AbortController();
-    const { port1, port2 } = new MessageChannel();
-    const { signal } = abortController;
+    // const abortController = new AbortController();
+    // const { port1, port2 } = new MessageChannel();
+    // const { signal } = abortController;
     // port2.on('message', (message) => console.log('received', message));
     // port2.postMessage({ foo: 'bar' });
 
 
-    componentInstances[componentInstanceId] = {
-        abortController,
-        messagePort: port2,
-        // process: subprocess,
-        /**
-         * Used to store user event requests (on button click, on input, etc.).
-         */
-        eventRequests: {},
-        connectionId,
-        namespaceId,
-    };
+
     // // // subprocess.stdout?.on('data', (data) => {
     // // //     onComponentInstanceConsole?.({ text: data.toString('utf8') });
     // // //     // console.log(data.toString('utf8'));
@@ -158,56 +149,92 @@ export const onInitializeComponentInstance = ({
     /**
      * Handles messages sent by component instance process.
      */
-    port2.on('message', ({ type, payload, componentInstanceId }: any) => {
+    const worker = await spawn(new Worker(`./component-processor.js`));
+    componentInstances[componentInstanceId] = {
+        // abortController,
+        // messagePort: port2,
+        worker,
+        terminate: async () => {
+            await Thread.terminate(worker);
+            delete componentInstances[componentInstanceId];
+            emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
+        },
+        // process: subprocess,
         /**
-         * When there is a response to user event request.
+         * Used to store user event requests (on button click, on input, etc.).
          */
-        if (type === 'response') {
-            const { requestId, result, err } = payload;
-            if (err) {
-                // emit({ type: 'componentEventError', payload: { err, requestId }, componentInstanceId });
-                componentInstances[componentInstanceId].eventRequests[requestId].onError({ err });
-                // componentInstances[componentInstanceId].eventRequests[requestId].status(500).send(`${err}`);
+        eventRequests: {},
+        connectionId,
+        namespaceId,
+    };
+    if (toTerminate[componentInstanceId]) {
+        componentInstances[componentInstanceId].terminate();
+        delete toTerminate[componentInstanceId];
+    } else {
+        worker.events().subscribe(({ type, payload }) => {
+            /**
+             * When there is a response to user event request.
+             */
+            if (type === 'response') {
+                const { requestId, result, err } = payload;
+                if (err) {
+                    // emit({ type: 'componentEventError', payload: { err, requestId }, componentInstanceId });
+                    componentInstances[componentInstanceId].eventRequests[requestId].onError({ err });
+                    // componentInstances[componentInstanceId].eventRequests[requestId].status(500).send(`${err}`);
+                } else {
+                    // emit({ type: 'componentEventSuccess', payload: { result, requestId }, componentInstanceId });
+                    componentInstances[componentInstanceId].eventRequests[requestId].onSuccess({ result });
+                    // componentInstances[componentInstanceId].eventRequests[requestId].json(result || null);
+                }
+                delete componentInstances[componentInstanceId].eventRequests[requestId];
+            } else if (type === 'eventHubEvent') {
+                const { eventPayload, groupId, type } = payload;
+                handleEventHubEvent({ data: eventPayload, groupId, type, namespaceId });
+            } else if (type === 'console') {
+                const { text } = payload;
+                onComponentInstanceConsole?.({ text });
             } else {
-                // emit({ type: 'componentEventSuccess', payload: { result, requestId }, componentInstanceId });
-                componentInstances[componentInstanceId].eventRequests[requestId].onSuccess({ result });
-                // componentInstances[componentInstanceId].eventRequests[requestId].json(result || null);
+                emit({ type, payload, componentInstanceId });
             }
-            delete componentInstances[componentInstanceId].eventRequests[requestId];
-        } else if (type === 'eventHubEvent') {
-            const { eventPayload, groupId, type } = payload;
-            handleEventHubEvent({ data: eventPayload, groupId, type, namespaceId });
-        } else if (type === 'console') {
-            const { text } = payload;
-            onComponentInstanceConsole?.({ text });
-        } else {
-            emit({ type, payload, componentInstanceId });
-        }
-    })
+        })
+        worker.initializeComponentInstance({ componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal });
+    }
+
     // port2.postMessage({ type: 'init', payload: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal } });
-    piscina.run({
-        port: port1,
-        initData: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal }
-    }, { transferList: [port1], signal, }).catch(e => {
-        delete componentInstances[componentInstanceId];
-        emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
-    });
+    // Thread.
+    // piscina.run({
+    //     port: port1,
+    //     initData: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal }
+    // }, { transferList: [port1], signal, }).catch(e => {
+    //     delete componentInstances[componentInstanceId];
+    //     emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
+    // });
 }
 
 export const onDisconnect = ({ connectionId }) => {
     for (const componentInstanceId of Object.keys(componentInstances).filter(x => componentInstances[x].connectionId === connectionId)) {
-        componentInstances[componentInstanceId].abortController.abort();
+        onDestroyComponentInstance({ componentInstanceId });
     }
 }
 
+const toTerminate = {};
+
 export const onDestroyComponentInstance = ({ componentInstanceId }) => {
-    componentInstances[componentInstanceId].abortController.abort();
+    if (!componentInstances[componentInstanceId]) {
+        toTerminate[componentInstanceId] = true;
+    } else {
+        componentInstances[componentInstanceId].terminate();
+    }
+    //     delete componentInstances[componentInstanceId];
+    //     emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
 }
 
 export const componentInstances: {
     [componentInstanceId: string]: {
-        messagePort: MessagePort;
-        abortController: AbortController;
+        // messagePort: MessagePort;
+        // abortController: AbortController;
+        terminate: () => Promise<void>;
+        worker: any;
         eventRequests: {
             [requestId: string]: {
                 onSuccess: (data: { result: any }) => void,
