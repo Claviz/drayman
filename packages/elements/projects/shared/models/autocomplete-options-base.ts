@@ -11,7 +11,7 @@ export interface AutocompleteOptionsBase<T> extends InputFieldOptionsBase<T> {
     /**
      * Executed when autocomplete field is focused.
      */
-    onFocus?: () => Promise<void>;
+    onFocus?: ElementEvent<{}>;
     /**
      * Specify the width of the autocomplete panel. Can be any CSS sizing value, otherwise it will match the width of its host.
      */

@@ -13,12 +13,12 @@ export interface DraymanSelect extends FieldOptionsBase<any> {
      * Accepts value of the search input. Can be `null`.
      * If this function is not defined, options will be filtered client-side. 
      */
-    onSearchChange?: (data: {
+    onSearchChange?: ElementEvent<{
         /**
          * Value of the search input.
          */
         value: string
-    }) => Promise<void>;
+    }>;
     /**
      * Whether the user should be allowed to select multiple options.
      */

@@ -7,72 +7,26 @@ Array [
     "payload": Object {
       "view": Array [
         Object {
-          "op": "add",
-          "path": "/0",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/0/button/0/text",
-                "options": Object {
-                  "text": "Hello, world!",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/0/button",
-            "options": Object {
-              "onClick": true,
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/button/0/text",
+              "text": "Hello, world!",
             },
-            "style": null,
-            "type": "button",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/1",
-          "value": Object {
-            "children": Array [],
-            "key": "/1/h1",
-            "options": Object {},
-            "style": null,
-            "type": "h1",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/2",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/2/div/0/text",
-                "options": Object {
-                  "text": "Current location: http://localhost. Previous location: ",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/2/div",
-            "options": Object {},
-            "style": null,
-            "type": "div",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/3",
-          "value": Object {
-            "children": Array [],
-            "key": "/3/button",
-            "options": Object {
-              "onClick": true,
+          ],
+          "data": Object {
+            "on": Object {
+              "click": true,
             },
-            "style": null,
-            "type": "button",
           },
+          "key": "/0/button",
+          "sel": "button",
+        },
+        Object {
+          "children": Array [],
+          "data": Object {},
+          "key": "/1/h1",
+          "sel": "h1",
         },
       ],
     },
@@ -83,17 +37,32 @@ Array [
     "payload": Object {
       "view": Array [
         Object {
-          "op": "add",
-          "path": "/1/children/0",
-          "value": Object {
-            "children": Array [],
-            "key": "/1/h1/0/text",
-            "options": Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/button/0/text",
               "text": "Hello, world!",
             },
-            "style": null,
-            "type": "text",
+          ],
+          "data": Object {
+            "on": Object {
+              "click": true,
+            },
           },
+          "key": "/0/button",
+          "sel": "button",
+        },
+        Object {
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/1/h1/0/text",
+              "text": "Hello, world!",
+            },
+          ],
+          "data": Object {},
+          "key": "/1/h1",
+          "sel": "h1",
         },
       ],
     },
@@ -114,284 +83,6 @@ Array [
 ]
 `;
 
-exports[`navigating 1`] = `
-Array [
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {
-      "view": Array [
-        Object {
-          "op": "add",
-          "path": "/0",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/0/button/0/text",
-                "options": Object {
-                  "text": "Hello, world!",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/0/button",
-            "options": Object {
-              "onClick": true,
-            },
-            "style": null,
-            "type": "button",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/1",
-          "value": Object {
-            "children": Array [],
-            "key": "/1/h1",
-            "options": Object {},
-            "style": null,
-            "type": "h1",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/2",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/2/div/0/text",
-                "options": Object {
-                  "text": "Current location: http://localhost. Previous location: ",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/2/div",
-            "options": Object {},
-            "style": null,
-            "type": "div",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/3",
-          "value": Object {
-            "children": Array [],
-            "key": "/3/button",
-            "options": Object {
-              "onClick": true,
-            },
-            "style": null,
-            "type": "button",
-          },
-        },
-      ],
-    },
-    "type": "view",
-  },
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {
-      "path": "/home",
-    },
-    "type": "navigate",
-  },
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {},
-    "type": "componentInstanceDestroyed",
-  },
-]
-`;
-
-exports[`should change location for specific connection 1`] = `
-Array [
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {
-      "view": Array [
-        Object {
-          "op": "add",
-          "path": "/0",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/0/button/0/text",
-                "options": Object {
-                  "text": "Hello, world!",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/0/button",
-            "options": Object {
-              "onClick": true,
-            },
-            "style": null,
-            "type": "button",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/1",
-          "value": Object {
-            "children": Array [],
-            "key": "/1/h1",
-            "options": Object {},
-            "style": null,
-            "type": "h1",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/2",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/2/div/0/text",
-                "options": Object {
-                  "text": "Current location: http://localhost. Previous location: ",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/2/div",
-            "options": Object {},
-            "style": null,
-            "type": "div",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/3",
-          "value": Object {
-            "children": Array [],
-            "key": "/3/button",
-            "options": Object {
-              "onClick": true,
-            },
-            "style": null,
-            "type": "button",
-          },
-        },
-      ],
-    },
-    "type": "view",
-  },
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {
-      "view": Array [
-        Object {
-          "op": "replace",
-          "path": "/2/children/0/options/text",
-          "value": "Current location: http://localhost/login. Previous location: http://localhost",
-        },
-      ],
-    },
-    "type": "view",
-  },
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {},
-    "type": "componentInstanceDestroyed",
-  },
-]
-`;
-
-exports[`should not change location for other connection 1`] = `
-Array [
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {
-      "view": Array [
-        Object {
-          "op": "add",
-          "path": "/0",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/0/button/0/text",
-                "options": Object {
-                  "text": "Hello, world!",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/0/button",
-            "options": Object {
-              "onClick": true,
-            },
-            "style": null,
-            "type": "button",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/1",
-          "value": Object {
-            "children": Array [],
-            "key": "/1/h1",
-            "options": Object {},
-            "style": null,
-            "type": "h1",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/2",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/2/div/0/text",
-                "options": Object {
-                  "text": "Current location: http://localhost. Previous location: ",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/2/div",
-            "options": Object {},
-            "style": null,
-            "type": "div",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/3",
-          "value": Object {
-            "children": Array [],
-            "key": "/3/button",
-            "options": Object {
-              "onClick": true,
-            },
-            "style": null,
-            "type": "button",
-          },
-        },
-      ],
-    },
-    "type": "view",
-  },
-  Object {
-    "componentInstanceId": "instance-1",
-    "payload": Object {},
-    "type": "componentInstanceDestroyed",
-  },
-]
-`;
-
 exports[`trying to perform event on non-existing component instance result in an error 1`] = `
 Array [
   Object {
@@ -399,72 +90,26 @@ Array [
     "payload": Object {
       "view": Array [
         Object {
-          "op": "add",
-          "path": "/0",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/0/button/0/text",
-                "options": Object {
-                  "text": "Hello, world!",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/0/button",
-            "options": Object {
-              "onClick": true,
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/button/0/text",
+              "text": "Hello, world!",
             },
-            "style": null,
-            "type": "button",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/1",
-          "value": Object {
-            "children": Array [],
-            "key": "/1/h1",
-            "options": Object {},
-            "style": null,
-            "type": "h1",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/2",
-          "value": Object {
-            "children": Array [
-              Object {
-                "children": Array [],
-                "key": "/2/div/0/text",
-                "options": Object {
-                  "text": "Current location: http://localhost. Previous location: ",
-                },
-                "style": null,
-                "type": "text",
-              },
-            ],
-            "key": "/2/div",
-            "options": Object {},
-            "style": null,
-            "type": "div",
-          },
-        },
-        Object {
-          "op": "add",
-          "path": "/3",
-          "value": Object {
-            "children": Array [],
-            "key": "/3/button",
-            "options": Object {
-              "onClick": true,
+          ],
+          "data": Object {
+            "on": Object {
+              "click": true,
             },
-            "style": null,
-            "type": "button",
           },
+          "key": "/0/button",
+          "sel": "button",
+        },
+        Object {
+          "children": Array [],
+          "data": Object {},
+          "key": "/1/h1",
+          "sel": "h1",
         },
       ],
     },

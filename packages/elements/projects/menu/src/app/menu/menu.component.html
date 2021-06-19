@@ -1,4 +1,5 @@
-<drayman-button-internal class="trigger-btn" [options]="options" [matMenuTriggerFor]="menu.childMenu">
+<drayman-button-internal class="trigger-btn" [label]="label" [view]="view" [icon]="icon" [tooltip]="tooltip"
+    [disabled]="disabled" [imgUrl]="imgUrl" [buttonStyle]="buttonStyle" [matMenuTriggerFor]="menu.childMenu">
 </drayman-button-internal>
-<drayman-menu-item-internal #menu [items]="options?.items" (itemClick)="onItemClick($event)">
+<drayman-menu-item-internal #menu [items]="items" (itemClick)="onItemClick($event)">
 </drayman-menu-item-internal>

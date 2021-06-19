@@ -8,7 +8,7 @@ export const component: DraymanComponent = async ({ forceUpdate }) => {
 
     return () => {
         return (
-            <button onClick={onBtnClick}>Times clicked: {count}</button>
+            <button onclick={onBtnClick}>Times clicked: {count}</button>
         )
     }
 }

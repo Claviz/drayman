@@ -1,8 +1,8 @@
 <ng-template #select let-multiple='multiple'>
-  <mat-form-field [attr.aria-label]="options?.label + ' select field'" [appearance]="options?.appearance || 'outline'">
-    <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
-    <mat-select [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
-      [errorStateMatcher]="errorStateMatcher" [multiple]="multiple">
+  <mat-form-field [attr.aria-label]="label + ' select field'" [appearance]="appearance || 'outline'">
+    <mat-label *ngIf="label">{{label}}</mat-label>
+    <mat-select [placeholder]="placeholder || label" [formControl]="formControl" [errorStateMatcher]="errorStateMatcher"
+      [multiple]="multiple">
       <mat-option>
         <ngx-mat-select-search aria-label="Select search field" [formControl]="searchControl"
           [placeholderLabel]="'Search...'" [noEntriesFoundLabel]="'No entries found'" [clearSearchInput]="false"
@@ -20,14 +20,14 @@
         <mat-icon>clear</mat-icon>
       </button>
     </div>
-    <mat-hint>{{options?.helpText}}</mat-hint>
-    <mat-error *ngIf="options?.error">
-      {{options?.error}}
+    <mat-hint>{{helpText}}</mat-hint>
+    <mat-error *ngIf="error">
+      {{error}}
     </mat-error>
   </mat-form-field>
 </ng-template>
 
-<ng-container *ngIf="options?.multiple" [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ multiple:true }">
+<ng-container *ngIf="multiple" [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ multiple:true }">
 </ng-container>
-<ng-container *ngIf="!options?.multiple" [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ multiple:false }">
+<ng-container *ngIf="!multiple" [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ multiple:false }">
 </ng-container>

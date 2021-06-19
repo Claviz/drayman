@@ -5,7 +5,7 @@ import { find, name, path as nodeFindPath } from 'node-find';
 import ts from 'typescript';
 // import Piscina from 'piscina';
 // import { MessageChannel, MessagePort } from 'worker_threads';
-import { spawn, Thread, Worker } from "threads"
+import { spawn, Thread, Worker } from 'threads';
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
     options = options || {};
@@ -34,14 +34,6 @@ export async function getElementsScriptPaths({ nodeModulesPath = null }) {
         }
     }
     return paths;
-}
-
-export const onLocationChange = ({ location, connectionId }) => {
-    for (const key of Object.keys(componentInstances)) {
-        if (componentInstances[key].connectionId === connectionId) {
-            componentInstances[key].worker.handleLocationChange({ location });
-        }
-    }
 }
 
 export const onUpdateComponentInstanceProps = ({ componentInstanceId, options, }) => {
@@ -99,13 +91,14 @@ export const onInitializeComponentInstance = async ({
     componentRootDir,
     componentInstanceId,
     componentOptions,
-    location,
     connectionId,
     emit,
-    isModal,
     onComponentInstanceConsole,
+    browserCommands,
 }) => {
-
+    if (componentOptions && typeof componentOptions === 'string') {
+        componentOptions = JSON.parse(componentOptions);
+    }
     // const subprocess = execa.node(
     //     path.join(__dirname, `./component-processor.js`),
     //     [
@@ -197,18 +190,8 @@ export const onInitializeComponentInstance = async ({
                 emit({ type, payload, componentInstanceId });
             }
         })
-        worker.initializeComponentInstance({ componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal });
+        worker.initializeComponentInstance({ browserCommands, componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, extensionsPath, extensionsOptions });
     }
-
-    // port2.postMessage({ type: 'init', payload: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal } });
-    // Thread.
-    // piscina.run({
-    //     port: port1,
-    //     initData: { componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, location, extensionsPath, extensionsOptions, isModal }
-    // }, { transferList: [port1], signal, }).catch(e => {
-    //     delete componentInstances[componentInstanceId];
-    //     emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
-    // });
 }
 
 export const onDisconnect = ({ connectionId }) => {

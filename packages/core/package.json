@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm run build && jest --coverage",
+    "test": "jest --coverage",
     "build": "tsc"
   },
   "files": [
@@ -33,7 +33,6 @@
     "fs-extra": "^9.1.0",
     "node-find": "^0.7.2",
     "pretty-error": "^3.0.3",
-    "react": "^17.0.2",
     "shortid": "^2.2.16",
     "threads": "^1.6.4",
     "ts-node": "^9.1.1",

@@ -1,3 +1,8 @@
-'use strict';
+function jsx(type, props) {
+    return { type: type ? type : '$$fragment', props };
+}
 
-module.exports = require('react/cjs/react-jsx-runtime.production.min.js');
+module.exports = {
+    jsx,
+    jsxs: jsx,
+}

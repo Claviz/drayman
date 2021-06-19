@@ -12,9 +12,11 @@
     "build:types": "tsc -p ./tsconfig.types.json",
     "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run typedoc",
+    "build": "npm run build:snack-bar && npm run build:modal && npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run typedoc",
     "test:button": "jest --config ./projects/button/jest.config.js",
     "build:button": "ng build button --prod --single-bundle --output-hashing=none",
+    "build:modal": "ng build modal --prod --single-bundle --output-hashing=none",
+    "build:snack-bar": "ng build snack-bar --prod --single-bundle --output-hashing=none",
     "build:text-field": "ng build text-field --prod --single-bundle --output-hashing=none",
     "build:claviz-charts": "ng build claviz-charts --prod --single-bundle --output-hashing=none",
     "build:file-uploader": "ng build file-uploader --prod --single-bundle --output-hashing=none",
@@ -44,6 +46,12 @@
       },
       "drayman-button": {
         "script": "./dist/button/main-es2015.js"
+      },
+      "drayman-modal": {
+        "script": "./dist/modal/main-es2015.js"
+      },
+      "drayman-snack-bar": {
+        "script": "./dist/snack-bar/main-es2015.js"
       },
       "drayman-claviz-charts": {
         "script": "./dist/claviz-charts/main-es2015.js"

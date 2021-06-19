@@ -10,7 +10,13 @@ import { DraymanNgxGraph } from '../models/ngx-graph-options';
 })
 export class NgxGraphComponent implements OnChanges {
 
-  @Input() options: DraymanNgxGraph;
+  @Input() links?: any[];
+  @Input() nodes?: any[];
+  @Input() clusters?: any;
+  @Input() showMiniMap?: boolean;
+  @Input() draggingEnabled?: boolean;
+  @Input() autoCenter?: boolean;
+  @Input() autoZoom?: boolean;
 
   ngOnChanges() {
   }

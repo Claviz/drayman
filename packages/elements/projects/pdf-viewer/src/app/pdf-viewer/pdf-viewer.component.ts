@@ -9,7 +9,8 @@ import { DraymanPdfViewer } from '../models/pdf-viewer-options';
 })
 export class PdfViewerComponent implements OnInit, OnChanges {
 
-  @Input() options: DraymanPdfViewer;
+  @Input() src: string;
+  @Input() page?: number;
 
   @ViewChild('wrapper', { static: false }) wrapper;
 

@@ -24,6 +24,7 @@ import {
   DraymanTable,
   DraymanTableButtonCell,
   DraymanTableCheckboxCell,
+  DraymanTableColumn,
   DraymanTableDatepickerCell,
   DraymanTableFileUploaderCell,
   DraymanTableNumberFieldCell,
@@ -32,6 +33,7 @@ import {
   DraymanTableTextCell,
   DraymanTableTextFieldCell,
   DraymanTableTimepickerCell,
+  DraymanToolbarButton,
   GridButtonCell,
   GridCellType,
   GridCheckboxCell,
@@ -51,11 +53,93 @@ import {
 })
 export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
-  @Input() options: DraymanTable;
+  @Input() title?: string;
+  @Input() columns: DraymanTableColumn[];
+  @Input() data: DraymanTableRow[];
+  @Input() rowStyle?: any[];
+  @Input() rowDrag?: boolean;
+  @Input() search?: boolean;
+  @Input() pagination?: boolean;
+  @Input() sort?: boolean;
+  @Input() pageSize?: number;
+  @Input() pageIndex?: number;
+  @Input() itemCount?: number;
+  @Input() pageSizeOptions?: number[];
+  @Input() initialSearchValue?: string;
+  @Input() onCellButtonClick?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    rowIndex: number;
+  }) => Promise<void>;
+  @Input() onRowDragEnd?: (data: {
+    row: DraymanTableRow;
+    currentIndex: number;
+    previousIndex: number;
+  }) => Promise<void>;
+  @Input() onPageChange?: (data: {
+    pageIndex: number;
+    pageSize: number;
+  }) => Promise<void>;
+  @Input() onSortChange?: (data: {
+    field: string;
+    order: 'asc' | 'desc';
+  }) => Promise<void>;
+  @Input() onCellValueChange?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    value: any;
+    rowIndex: number;
+  }) => Promise<void>;
+  @Input() onCellClick?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    rowIndex: number;
+  }) => Promise<void>;
+  @Input() onCellDblClick?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    rowIndex: number;
+  }) => Promise<void>;
+  @Input() onSearchChange?: (data: {
+    value: string
+  }) => Promise<void>;
+  @Input() disableInternalProcessing?: boolean;
+  @Input() disableHeader?: boolean;
+  @Input() select?: boolean;
+  @Input() toolbarButtons?: DraymanToolbarButton[];
+  @Input() onToolbarButtonClick?: (data: {
+    selectedRows: {
+      row: DraymanTableRow;
+      rowIndex: number;
+    }[];
+    buttonDefinition: DraymanToolbarButton;
+  }) => Promise<void>;
+  @Input() onSelectSearchChange?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    value: string;
+    rowIndex: number;
+  }) => Promise<void>;
+  @Input() onCellFocus?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    rowIndex: number;
+  }) => Promise<void>;
+  @Input() onFileUpload?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    rowIndex: number;
+  }, files: (File | any)[]) => Promise<string>;
+  @Input() onRemoveUploadedFile?: (data: {
+    row: DraymanTableRow;
+    field: string;
+    fileId: string;
+    rowIndex: number;
+  }) => Promise<string>;
 
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) matSort: MatSort;
 
   displayedColumns: string[] = [];
   visibleData: DraymanTableRow[] = [];
@@ -96,8 +180,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         tap(() => this.loading = true),
         debounceTime(500),
         tap(({ actionName, parameters }) => {
-          if (this.options?.[actionName]) {
-            this.options[actionName](parameters).finally(() => this.loading = false);
+          if (this[actionName]) {
+            this[actionName](parameters).finally(() => this.loading = false);
           } else {
             this.loading = false;
             this.renderVisibleData();
@@ -122,8 +206,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       map(() => ({
         actionName: 'onSortChange',
         parameters: {
-          field: this.sort.active,
-          direction: this.sort.direction,
+          field: this.matSort.active,
+          direction: this.matSort.direction,
         }
       })),
       this.loadingPipe()
@@ -147,19 +231,19 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   ngOnChanges(changes: SimpleChanges) {
     if (changes.options) {
       if (changes.options.firstChange) {
-        this.searchControl.setValue(this.options?.initialSearchValue, { emitEvent: false });
+        this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
       }
       this.renderVisibleData();
-      this.displayedColumns = [...(this.options?.select ? ['__select__'] : []), ...this.options?.columns?.map(x => x.field) || []];
-      this.paginator.pageSizeOptions = this.options?.pageSizeOptions || [5, 10, 25, 100];
+      this.displayedColumns = [...(this.select ? ['__select__'] : []), ...this.columns?.map(x => x.field) || []];
+      this.paginator.pageSizeOptions = this.pageSizeOptions || [5, 10, 25, 100];
       this.selection.clear();
     }
   }
 
-  onRowDragEnd(event: CdkDragDrop<DraymanTableRow[]>) {
+  onTableRowDragEnd(event: CdkDragDrop<DraymanTableRow[]>) {
     const data = event.item.data;
-    if (this.options?.onRowDragEnd) {
-      this.options.onRowDragEnd({
+    if (this.onRowDragEnd) {
+      this.onRowDragEnd({
         row: event.item.data,
         currentIndex: event.currentIndex,
         previousIndex: event.previousIndex,
@@ -170,12 +254,12 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     this.table.renderRows();
   }
 
-  onCellClick(rowIndex, field: string) {
+  onTableCellClick(rowIndex, field: string) {
     this.cellClickCount++;
     if (this.cellClickCount === 1) {
       this.cellClickTimer = setTimeout(() => {
         this.cellClickCount = 0;
-        this.options?.onCellClick?.({
+        this.onCellClick?.({
           field,
           rowIndex,
           row: this.visibleData[rowIndex],
@@ -184,7 +268,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     } else if (this.cellClickCount === 2) {
       clearTimeout(this.cellClickTimer);
       this.cellClickCount = 0;
-      this.options?.onCellDblClick?.({
+      this.onCellDblClick?.({
         field,
         rowIndex,
         row: this.visibleData[rowIndex],
@@ -193,11 +277,11 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   renderVisibleData() {
-    let newVisibleData = this.options?.data;
-    if (!this.options?.disableInternalProcessing) {
-      if (this.options?.search) {
+    let newVisibleData = this.data;
+    if (!this.disableInternalProcessing) {
+      if (this.search) {
         const searchValue = (this.searchControl.value || '').trim().toLowerCase();
-        newVisibleData = this.options?.data?.filter(x => {
+        newVisibleData = this.data?.filter(x => {
           for (const key of Object.keys(x)) {
             if (JSON.stringify(x[key].value).trim().toLowerCase().includes(searchValue)) {
               return true;
@@ -206,26 +290,26 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
           return false;
         });
       }
-      if (this.sort.active && this.sort.direction) {
+      if (this.matSort.active && this.matSort.direction) {
         newVisibleData = newVisibleData.sort((a, b) => {
-          if (a[this.sort.active].value < b[this.sort.active].value) {
-            return this.sort.direction === 'asc' ? -1 : 1;
+          if (a[this.matSort.active].value < b[this.matSort.active].value) {
+            return this.matSort.direction === 'asc' ? -1 : 1;
           }
-          if (a[this.sort.active].value > b[this.sort.active].value) {
-            return this.sort.direction === 'asc' ? 1 : -1;
+          if (a[this.matSort.active].value > b[this.matSort.active].value) {
+            return this.matSort.direction === 'asc' ? 1 : -1;
           }
           return 0;
         });
       }
-      if (this.options?.pagination) {
+      if (this.pagination) {
         this.paginator.length = newVisibleData.length;
         newVisibleData = newVisibleData.slice(this.paginator.pageIndex * this.paginator.pageSize, (this.paginator.pageIndex + 1) * this.paginator.pageSize);
       }
     } else {
-      if (this.options?.pagination) {
-        this.paginator.length = this.options?.itemCount;
-        this.paginator.pageSize = this.options?.pageSize;
-        this.paginator.pageIndex = this.options?.pageIndex;
+      if (this.pagination) {
+        this.paginator.length = this.itemCount;
+        this.paginator.pageSize = this.pageSize;
+        this.paginator.pageIndex = this.pageIndex;
       }
     }
     this.visibleData = newVisibleData;
@@ -233,24 +317,24 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   get rowDragEnabled() {
-    return this.options?.rowDrag &&
-      !this.options?.pagination &&
-      !this.options?.search &&
-      !this.options?.sort;
+    return this.rowDrag &&
+      !this.pagination &&
+      !this.search &&
+      !this.sort;
   }
 
   grid: GridCellType[][] = [];
-  toolbarButtons: {
+  currentToolbarButtons: {
     options: DraymanButton;
   }[] = [];
   renderGrid() {
     const newGrid: GridCellType[][] = [];
     for (let rowIndex = 0; rowIndex < this.visibleData.length; rowIndex++) {
       const row: GridCellType[] = [];
-      for (let columnIndex = 0; columnIndex < this.options?.columns?.length; columnIndex++) {
+      for (let columnIndex = 0; columnIndex < this.columns?.length; columnIndex++) {
         // const column = this.options.columns[columnIndex];
-        const field = this.options.columns[columnIndex].field;
-        const cell = { ...this.options.columns[columnIndex], ...this.visibleData[rowIndex][field] };
+        const field = this.columns[columnIndex].field;
+        const cell = { ...this.columns[columnIndex], ...this.visibleData[rowIndex][field] };
         // const style = { ...column.style, ...cell?.style };
         if (cell) {
           if (cell.type === 'button') {
@@ -266,8 +350,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 style: buttonCell.buttonStyle,
                 tooltip: buttonCell.tooltip,
                 view: buttonCell.view,
-                onClick: this.options?.onCellButtonClick ? async () => {
-                  return this.options.onCellButtonClick({
+                onClick: this.onCellButtonClick ? async () => {
+                  return this.onCellButtonClick({
                     row: this.visibleData[rowIndex],
                     field,
                     rowIndex,
@@ -289,18 +373,15 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 suggestions: textFieldCell.suggestions,
                 suggestionsPanelWidth: textFieldCell.suggestionsPanelWidth,
                 mask: textFieldCell.mask,
-                onFocus: this.options?.onCellFocus ? async () => {
-                  return this.options.onCellFocus({
+                onFocus: this.onCellFocus ? async () => {
+                  return this.onCellFocus({
                     row: this.visibleData[rowIndex],
                     field,
                     rowIndex,
                   });
                 } : null,
-                onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
-                  return this.options.onCellValueChangeStart();
-                } : null,
-                onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
-                  return this.options.onCellValueChange({
+                onValueChange: this.onCellValueChange ? async ({ value }) => {
+                  return this.onCellValueChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
@@ -322,18 +403,15 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 appearance: 'standard',
                 suggestions: numberFieldCell.suggestions,
                 suggestionsPanelWidth: numberFieldCell.suggestionsPanelWidth,
-                onFocus: this.options?.onCellFocus ? async () => {
-                  return this.options.onCellFocus({
+                onFocus: this.onCellFocus ? async () => {
+                  return this.onCellFocus({
                     row: this.visibleData[rowIndex],
                     field,
                     rowIndex,
                   });
                 } : null,
-                onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
-                  return this.options.onCellValueChangeStart();
-                } : null,
-                onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
-                  return this.options.onCellValueChange({
+                onValueChange: this.onCellValueChange ? async ({ value }) => {
+                  return this.onCellValueChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
@@ -354,19 +432,16 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 options: selectCell.options,
                 appearance: 'standard',
                 multiple: selectCell.multiple,
-                onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
-                  return this.options.onCellValueChangeStart();
-                } : null,
-                onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
-                  return this.options.onCellValueChange({
+                onValueChange: this.onCellValueChange ? async ({ value }) => {
+                  return this.onCellValueChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
                     rowIndex,
                   });
                 } : null,
-                onSearchChange: this.options?.onSelectSearchChange ? async ({ value }) => {
-                  return this.options.onSelectSearchChange({
+                onSearchChange: this.onSelectSearchChange ? async ({ value }) => {
+                  return this.onSelectSearchChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
@@ -383,15 +458,15 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
               options: {
                 allowMultiple: fileUploaderCell.allowMultiple,
                 initialFiles: fileUploaderCell.initialFiles,
-                onUpload: this.options?.onFileUpload ? async (data, files) => {
-                  return this.options.onFileUpload({
+                onUpload: this.onFileUpload ? async (data, files) => {
+                  return this.onFileUpload({
                     row: this.visibleData[rowIndex],
                     field,
                     rowIndex,
                   }, files);
                 } : null,
-                onRemoveUploaded: this.options?.onRemoveUploadedFile ? async ({ fileId }) => {
-                  return this.options.onRemoveUploadedFile({
+                onRemoveUploaded: this.onRemoveUploadedFile ? async ({ fileId }) => {
+                  return this.onRemoveUploadedFile({
                     row: this.visibleData[rowIndex],
                     field,
                     fileId: fileId,
@@ -408,11 +483,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
               options: {
                 value: checkboxFieldCell.value,
                 disabled: checkboxFieldCell.disabled,
-                onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
-                  return this.options.onCellValueChangeStart();
-                } : null,
-                onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
-                  return this.options.onCellValueChange({
+                onValueChange: this.onCellValueChange ? async ({ value }) => {
+                  return this.onCellValueChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
@@ -433,11 +505,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 appearance: 'standard',
                 dateFormat: datepickerFieldCell.dateFormat,
                 showTodayButton: datepickerFieldCell.showTodayButton,
-                onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
-                  return this.options.onCellValueChangeStart();
-                } : null,
-                onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
-                  return this.options.onCellValueChange({
+                onValueChange: this.onCellValueChange ? async ({ value }) => {
+                  return this.onCellValueChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
@@ -457,11 +526,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 disabled: timepickerFieldCell.disabled,
                 appearance: 'standard',
                 showNowButton: timepickerFieldCell.showNowButton,
-                onValueChangeStart: this.options?.onCellValueChangeStart ? async () => {
-                  return this.options.onCellValueChangeStart();
-                } : null,
-                onValueChange: this.options?.onCellValueChange ? async ({ value }) => {
-                  return this.options.onCellValueChange({
+                onValueChange: this.onCellValueChange ? async ({ value }) => {
+                  return this.onCellValueChange({
                     row: this.visibleData[rowIndex],
                     field,
                     value,
@@ -492,7 +558,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     const buttons: {
       options: DraymanButton;
     }[] = [];
-    for (let button of (this.options?.toolbarButtons || [])) {
+    for (let button of (this.toolbarButtons || [])) {
       if (!button.selectionButton || this.selection.hasValue()) {
         const draymanButton: {
           options: DraymanButton;
@@ -505,8 +571,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
             buttonStyle: button.buttonStyle,
             tooltip: button.tooltip,
             view: button.view,
-            onClick: this.options?.onToolbarButtonClick ? async () => {
-              return this.options.onToolbarButtonClick({
+            onClick: this.onToolbarButtonClick ? async () => {
+              return this.onToolbarButtonClick({
                 selectedRows: this.selection.selected.map(x => ({
                   row: x,
                   rowIndex: this.visibleData.indexOf(x),
@@ -519,6 +585,6 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         buttons.push(draymanButton);
       }
     }
-    this.toolbarButtons = buttons;
+    this.currentToolbarButtons = buttons;
   }
 }

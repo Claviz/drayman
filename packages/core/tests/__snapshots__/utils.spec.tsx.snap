@@ -1,28 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`converts camel-cased styles to kebab-case 1`] = `
+exports[`bindings are working 1`] = `
 Object {
   "events": Object {},
   "tree": Array [
     Object {
       "children": Array [
         Object {
-          "children": Array [],
-          "key": "/0/div/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "children": Array [
+            Object {
+              "children": Array [],
+              "key": "/0/div/0/div/0/text",
+              "text": "Hello, world!",
+            },
+          ],
+          "data": Object {},
+          "key": "/0/div/0/div",
+          "sel": "div",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": Object {
-        "background-color": "red",
-        "padding-top": "15px",
-      },
-      "type": "div",
+      "sel": "div",
     },
   ],
 }
@@ -37,19 +36,16 @@ Object {
         Object {
           "children": Array [],
           "key": "/0/div/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, world!",
         },
       ],
-      "key": "/0/div",
-      "options": Object {},
-      "style": Object {
-        "--theme-color": "black",
+      "data": Object {
+        "style": Object {
+          "--theme-color": "black",
+        },
       },
-      "type": "div",
+      "key": "/0/div",
+      "sel": "div",
     },
   ],
 }
@@ -66,57 +62,41 @@ Object {
             Object {
               "children": Array [],
               "key": "/0/div/0/p/0/text",
-              "options": Object {
-                "text": "This is item 0 in the list",
-              },
-              "style": null,
-              "type": "text",
+              "text": "This is item 0 in the list",
             },
           ],
+          "data": Object {},
           "key": "/0/div/0/p",
-          "options": Object {},
-          "style": null,
-          "type": "p",
+          "sel": "p",
         },
         Object {
           "children": Array [
             Object {
               "children": Array [],
               "key": "/0/div/1/p/0/text",
-              "options": Object {
-                "text": "This is item 1 in the list",
-              },
-              "style": null,
-              "type": "text",
+              "text": "This is item 1 in the list",
             },
           ],
+          "data": Object {},
           "key": "/0/div/1/p",
-          "options": Object {},
-          "style": null,
-          "type": "p",
+          "sel": "p",
         },
         Object {
           "children": Array [
             Object {
               "children": Array [],
               "key": "/0/div/2/p/0/text",
-              "options": Object {
-                "text": "This is item 2 in the list",
-              },
-              "style": null,
-              "type": "text",
+              "text": "This is item 2 in the list",
             },
           ],
+          "data": Object {},
           "key": "/0/div/2/p",
-          "options": Object {},
-          "style": null,
-          "type": "p",
+          "sel": "p",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": null,
-      "type": "div",
+      "sel": "div",
     },
   ],
 }
@@ -133,57 +113,41 @@ Object {
             Object {
               "children": Array [],
               "key": "/0/div/0/p/0/text",
-              "options": Object {
-                "text": "This is item 0 in the list",
-              },
-              "style": null,
-              "type": "text",
+              "text": "This is item 0 in the list",
             },
           ],
+          "data": Object {},
           "key": "/0/div/0/p",
-          "options": Object {},
-          "style": null,
-          "type": "p",
+          "sel": "p",
         },
         Object {
           "children": Array [
             Object {
               "children": Array [],
               "key": "/0/div/1/p/0/text",
-              "options": Object {
-                "text": "This is item 1 in the list",
-              },
-              "style": null,
-              "type": "text",
+              "text": "This is item 1 in the list",
             },
           ],
+          "data": Object {},
           "key": "/0/div/1/p",
-          "options": Object {},
-          "style": null,
-          "type": "p",
+          "sel": "p",
         },
         Object {
           "children": Array [
             Object {
               "children": Array [],
               "key": "/0/div/2/p/0/text",
-              "options": Object {
-                "text": "This is item 2 in the list",
-              },
-              "style": null,
-              "type": "text",
+              "text": "This is item 2 in the list",
             },
           ],
+          "data": Object {},
           "key": "/0/div/2/p",
-          "options": Object {},
-          "style": null,
-          "type": "p",
+          "sel": "p",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": null,
-      "type": "div",
+      "sel": "div",
     },
   ],
 }
@@ -200,23 +164,17 @@ Object {
             Object {
               "children": Array [],
               "key": "/0/div/0/h1/0/text",
-              "options": Object {
-                "text": "Hello, world!",
-              },
-              "style": null,
-              "type": "text",
+              "text": "Hello, world!",
             },
           ],
+          "data": Object {},
           "key": "/0/div/0/h1",
-          "options": Object {},
-          "style": null,
-          "type": "h1",
+          "sel": "h1",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": null,
-      "type": "div",
+      "sel": "div",
     },
   ],
 }
@@ -233,124 +191,100 @@ Object {
             Object {
               "children": Array [],
               "key": "/0/div/0/h3/0/text",
-              "options": Object {
-                "text": "Hello, world!",
-              },
-              "style": null,
-              "type": "text",
+              "text": "Hello, world!",
             },
           ],
+          "data": Object {},
           "key": "/0/div/0/h3",
-          "options": Object {},
-          "style": null,
-          "type": "h3",
+          "sel": "h3",
         },
         Object {
           "children": Array [],
-          "key": "/0/div/1/not-child",
-          "options": Object {
-            "message": "Hello, world!",
+          "data": Object {
+            "props": Object {
+              "message": "Hello, world!",
+            },
           },
-          "style": null,
-          "type": "not-child",
+          "key": "/0/div/1/not-child",
+          "sel": "not-child",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": null,
-      "type": "div",
+      "sel": "div",
     },
     Object {
       "children": Array [
         Object {
           "children": Array [],
           "key": "/1/h3/0/text",
-          "options": Object {
-            "text": "Hello, orphan!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, orphan!",
         },
       ],
+      "data": Object {},
       "key": "/1/h3",
-      "options": Object {},
-      "style": null,
-      "type": "h3",
+      "sel": "h3",
     },
     Object {
       "children": Array [
         Object {
           "children": Array [],
           "key": "/2/h3/0/text",
-          "options": Object {
-            "text": "Hello, func orphan!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, func orphan!",
         },
       ],
+      "data": Object {},
       "key": "/2/h3",
-      "options": Object {},
-      "style": null,
-      "type": "h3",
+      "sel": "h3",
     },
     Object {
       "children": Array [
         Object {
           "children": Array [],
           "key": "/3/h6/0/text",
-          "options": Object {
-            "text": "Hello, other child!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, other child!",
         },
       ],
+      "data": Object {},
       "key": "/3/h6",
-      "options": Object {},
-      "style": null,
-      "type": "h6",
+      "sel": "h6",
     },
   ],
 }
 `;
 
-exports[`renders deprecated elements correctly 1`] = `
+exports[`renders elements mixed with text 1`] = `
 Object {
   "events": Object {},
   "tree": Array [
     Object {
       "children": Array [
         Object {
+          "children": Array [],
+          "key": "/0/div/0/text",
+          "text": "Hello,",
+        },
+        Object {
           "children": Array [
             Object {
-              "children": Array [
-                Object {
-                  "children": Array [],
-                  "key": "/0/div/0/div/0/h1/0/text",
-                  "options": Object {
-                    "text": "Hello, world!",
-                  },
-                  "style": null,
-                  "type": "text",
-                },
-              ],
-              "key": "/0/div/0/div/0/h1",
-              "options": Object {},
-              "style": null,
-              "type": "h1",
+              "children": Array [],
+              "key": "/0/div/1/button/0/text",
+              "text": "world",
             },
           ],
-          "key": "/0/div/0/div",
-          "options": Object {},
-          "style": null,
-          "type": "div",
+          "data": Object {},
+          "key": "/0/div/1/button",
+          "sel": "button",
+        },
+        Object {
+          "children": Array [],
+          "key": "/0/div/2/text",
+          "text": "!",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": null,
-      "type": "div",
+      "sel": "div",
     },
   ],
 }
@@ -365,34 +299,24 @@ Object {
         Object {
           "children": Array [],
           "key": "/0/h1/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, world!",
         },
       ],
+      "data": Object {},
       "key": "/0/h1",
-      "options": Object {},
-      "style": null,
-      "type": "h1",
+      "sel": "h1",
     },
     Object {
       "children": Array [
         Object {
           "children": Array [],
           "key": "/1/h1/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, world!",
         },
       ],
+      "data": Object {},
       "key": "/1/h1",
-      "options": Object {},
-      "style": null,
-      "type": "h1",
+      "sel": "h1",
     },
   ],
 }
@@ -407,34 +331,24 @@ Object {
         Object {
           "children": Array [],
           "key": "/0/h1/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, world!",
         },
       ],
+      "data": Object {},
       "key": "/0/h1",
-      "options": Object {},
-      "style": null,
-      "type": "h1",
+      "sel": "h1",
     },
     Object {
       "children": Array [
         Object {
           "children": Array [],
           "key": "/1/h1/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, world!",
         },
       ],
+      "data": Object {},
       "key": "/1/h1",
-      "options": Object {},
-      "style": null,
-      "type": "h1",
+      "sel": "h1",
     },
   ],
 }
@@ -451,44 +365,37 @@ Object {
             Object {
               "children": Array [],
               "key": "/0/div/0/button/0/text",
-              "options": Object {
-                "text": "Red button",
-              },
-              "style": null,
-              "type": "text",
+              "text": "Red button",
             },
           ],
-          "key": "/0/div/0/button",
-          "options": Object {},
-          "style": Object {
-            "color": "red",
+          "data": Object {
+            "style": Object {
+              "color": "red",
+            },
           },
-          "type": "button",
+          "key": "/0/div/0/button",
+          "sel": "button",
         },
         Object {
           "children": Array [
             Object {
               "children": Array [],
               "key": "/0/div/1/button/0/text",
-              "options": Object {
-                "text": "Blue button",
-              },
-              "style": null,
-              "type": "text",
+              "text": "Blue button",
             },
           ],
-          "key": "/0/div/1/button",
-          "options": Object {},
-          "style": Object {
-            "color": "blue",
+          "data": Object {
+            "style": Object {
+              "color": "blue",
+            },
           },
-          "type": "button",
+          "key": "/0/div/1/button",
+          "sel": "button",
         },
       ],
+      "data": Object {},
       "key": "/0/div",
-      "options": Object {},
-      "style": null,
-      "type": "div",
+      "sel": "div",
     },
   ],
 }
@@ -503,19 +410,16 @@ Object {
         Object {
           "children": Array [],
           "key": "/0/button/0/text",
-          "options": Object {
-            "text": "Click me!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Click me!",
         },
       ],
-      "key": "/0/button",
-      "options": Object {},
-      "style": Object {
-        "color": "red",
+      "data": Object {
+        "style": Object {
+          "color": "red",
+        },
       },
-      "type": "button",
+      "key": "/0/button",
+      "sel": "button",
     },
   ],
 }
@@ -530,21 +434,81 @@ Object {
         Object {
           "children": Array [],
           "key": "/0/div/0/text",
-          "options": Object {
-            "text": "Hello, world!",
-          },
-          "style": null,
-          "type": "text",
+          "text": "Hello, world!",
         },
       ],
-      "key": "/0/div",
-      "options": Object {},
-      "style": Object {
-        "flex": 1,
-        "height": "50px",
-        "width": "100px",
+      "data": Object {
+        "style": Object {
+          "flex": 1,
+          "height": "50px",
+          "width": "100px",
+        },
       },
-      "type": "div",
+      "key": "/0/div",
+      "sel": "div",
+    },
+  ],
+}
+`;
+
+exports[`returns options for events 1`] = `
+Object {
+  "events": Object {
+    "/0/input/input": [Function],
+  },
+  "tree": Array [
+    Object {
+      "children": Array [],
+      "data": Object {
+        "attrs": Object {
+          "type": "text",
+        },
+        "on": Object {
+          "input": Object {
+            "debounce": 500,
+          },
+        },
+        "props": Object {
+          "type": "text",
+        },
+      },
+      "key": "/0/input",
+      "sel": "input",
+    },
+  ],
+}
+`;
+
+exports[`sets SVG attributes 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "data": Object {
+            "attrs": Object {
+              "cx": "50",
+              "cy": "50",
+              "fill": "yellow",
+              "r": "20",
+              "stroke": "green",
+              "stroke-width": "4",
+            },
+          },
+          "key": "/0/svg/0/circle",
+          "sel": "circle",
+        },
+      ],
+      "data": Object {
+        "attrs": Object {
+          "height": "100",
+          "width": "100",
+        },
+      },
+      "key": "/0/svg",
+      "sel": "svg",
     },
   ],
 }
@@ -553,20 +517,44 @@ Object {
 exports[`stores events correctly 1`] = `
 Object {
   "events": Object {
-    "/0/input/onValueChange": [Function],
-    "/0/input/onValueChangeStart": [Function],
+    "/0/input/input": [Function],
   },
   "tree": Array [
     Object {
       "children": Array [],
-      "key": "/0/input",
-      "options": Object {
-        "onValueChange": true,
-        "onValueChangeStart": true,
-        "type": "text",
+      "data": Object {
+        "attrs": Object {
+          "type": "text",
+        },
+        "on": Object {
+          "input": true,
+        },
+        "props": Object {
+          "type": "text",
+        },
       },
-      "style": null,
-      "type": "input",
+      "key": "/0/input",
+      "sel": "input",
+    },
+  ],
+}
+`;
+
+exports[`stores events for custom elements correctly 1`] = `
+Object {
+  "events": Object {
+    "/0/custom-element/onInput": [Function],
+  },
+  "tree": Array [
+    Object {
+      "children": Array [],
+      "data": Object {
+        "props": Object {
+          "onInput": true,
+        },
+      },
+      "key": "/0/custom-element",
+      "sel": "custom-element",
     },
   ],
 }

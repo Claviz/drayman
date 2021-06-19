@@ -1,18 +1,18 @@
 <mat-radio-group [formControl]="formControl">
   <div class="section">
-    <mat-label class="radio-label" *ngIf="options?.label">{{options?.label}}</mat-label>
+    <mat-label class="radio-label" *ngIf="label">{{label}}</mat-label>
   </div>
-  <div class="options" [fxLayout]="options?.direction || 'column'" fxLayoutGap="10px">
-    <mat-radio-button *ngFor="let option of options?.options" [value]="option.value">
+  <div class="options" [fxLayout]="direction || 'column'" fxLayoutGap="10px">
+    <mat-radio-button *ngFor="let option of options" [value]="option.value">
       {{option.label}}
     </mat-radio-button>
   </div>
   <div class="section">
-    <mat-error class="radio-error" *ngIf="options?.error">
-      {{options?.error}}
+    <mat-error class="radio-error" *ngIf="error">
+      {{error}}
     </mat-error>
-    <mat-hint class="radio-label" *ngIf="!options?.error && options?.helpText">
-      {{options?.helpText}}
+    <mat-hint class="radio-label" *ngIf="!error && helpText">
+      {{helpText}}
     </mat-hint>
   </div>
 </mat-radio-group>

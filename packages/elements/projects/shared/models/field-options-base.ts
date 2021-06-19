@@ -26,16 +26,7 @@ export interface FieldOptionsBase<T> {
     /**
      * Executed with an input value from user.
      */
-    onValueChange?: (data: {
-        /**
-         * Value of the input
-         */
-        value: T;
-    }) => Promise<void>;
-    /**
-     * Executed when user starts typing.
-     */
-    onValueChangeStart?: () => Promise<void>;
+    onValueChange?: ElementEvent<{ value: T }>;
     /**
      * Wether value of the field should be emitted when user is blurred out of the control.
      */

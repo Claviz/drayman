@@ -4,7 +4,7 @@ export interface DraymanClavizCharts extends ContainerChartOptions {
     /**
      * Function that will be executed when user clicks a chart element.
      */
-    onClick?: (data: any) => Promise<void>;
+    onClick?: (data: any) => ElementEvent<void>;
     /**
      * @ignore
      */

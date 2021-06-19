@@ -4,11 +4,10 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import shortid from 'shortid';
-import { Server, Socket } from 'socket.io';
 import * as draymanCore from '@drayman/core';
 import fs from 'fs-extra';
-import ts from 'typescript';
 import chokidar from 'chokidar';
+import WebSocket from 'ws';
 
 const build = async () => {
     await fs.ensureDir(componentsDir);
@@ -52,8 +51,8 @@ const start = () => {
     const app = express();
     app.use(express.json());
     app.use(express.static(publicDir));
-    app.get('/drayman-element.js', function (req, res) {
-        res.sendFile(path.join(__dirname, '../element/dist/main-es2015.js'));
+    app.get('/drayman-framework-client.js', function (req, res) {
+        res.sendFile(path.join(__dirname, '../client/dist/index.js'));
     });
 
     app.post('/api/componentEvent', upload.any(), async (req, res, next) => {
@@ -110,44 +109,51 @@ const start = () => {
     const server = app.listen(3033);
     console.log(`Drayman started at http://localhost:3033`);
     server.setTimeout(0);
-    const io = new Server(server);
 
-    io.on('connection', (socket: Socket) => {
-        console.log(`CONNECTED`);
-        socket.on('locationChange', ({ location }) => {
-            draymanCore.onLocationChange({ location, connectionId: socket.id });
+    const wss = new WebSocket.Server({ server });
+    wss.on('connection', function connection(ws) {
+        const connectionId = shortid();
+        console.log('connect', connectionId);
+        ws.on('close', () => {
+            console.log('close', connectionId);
+            draymanCore.onDisconnect({ connectionId });
         });
-        socket.on('updateComponentInstanceProps', ({ componentInstanceId, options }) => {
-            draymanCore.onUpdateComponentInstanceProps({ componentInstanceId, options });
-        });
-        socket.on('handleBrowserCallback', ({ callbackId, data }) => {
-            draymanCore.onHandleBrowserCallback({ callbackId, data });
-        });
-        socket.on('initializeComponentInstance', ({ componentId, componentOptions, location, isModal }, callback) => {
-            console.log(`initializeComponentInstance`);
-            const componentInstanceId = shortid();
-            callback({ componentInstanceId });
-            draymanCore.onInitializeComponentInstance({
-                componentName: componentId,
-                componentRootDir: componentsOutputDir,
-                componentInstanceId,
-                componentOptions,
-                location,
-                connectionId: socket.id,
-                emit: (message) => socket.emit('event', message),
-                isModal,
-                onComponentInstanceConsole: ({ text }) => { console.log(text) },
-            });
-        });
-        socket.on('disconnect', () => {
-            draymanCore.onDisconnect({ connectionId: socket.id });
-        });
-        socket.on('destroyComponentInstance', ({ componentInstanceId }) => {
-            draymanCore.onDestroyComponentInstance({ componentInstanceId });
+        ws.on('message', function incoming(message: string) {
+            console.log(message);
+            const { id, data, type } = JSON.parse(message);
+            if (type === 'initializeComponentInstance') {
+                const { componentId, componentOptions, browserCommands } = data;
+                const componentInstanceId = shortid();
+                ws.send(JSON.stringify({ id, data: { componentInstanceId } }));
+                draymanCore.onInitializeComponentInstance({
+                    componentName: componentId,
+                    componentRootDir: componentsOutputDir,
+                    componentInstanceId,
+                    componentOptions,
+                    connectionId,
+                    emit: (message) => ws.send(JSON.stringify({ data: message, type: 'event' })),
+                    onComponentInstanceConsole: ({ text }) => { console.log(text) },
+                    browserCommands,
+                });
+            } else if (type === 'eventHubEvent') {
+                const { type, groupId } = data;
+                draymanCore.handleEventHubEvent({ type, data: data.data, groupId });
+            } else if (type === 'updateComponentInstanceProps') {
+                const { componentInstanceId, options } = data;
+                draymanCore.onUpdateComponentInstanceProps({ componentInstanceId, options });
+            } else if (type === 'handleBrowserCallback') {
+                const { callbackId } = data;
+                draymanCore.onHandleBrowserCallback({ callbackId, data: data.data });
+            } else if (type === 'destroyComponentInstance') {
+                const { componentInstanceId } = data;
+                draymanCore.onDestroyComponentInstance({ componentInstanceId });
+            }
         });
     });
 
-    return io;
+    return (data) => wss.clients.forEach((ws) => {
+        ws.send(JSON.stringify(data));
+    })
 }
 
 const command = process.argv[2];
@@ -161,14 +167,14 @@ let elementsPaths = {};
     elementsPaths = await draymanCore.getElementsScriptPaths({});
     if (command === 'start') {
         await build();
-        const io = start();
+        const broadcast = start();
         chokidar.watch(componentsDir, {
             ignored: (path) => path.endsWith('.d.ts'),
             ignoreInitial: true,
         }).on('all', async (a, b) => {
             console.log(a, b);
             await build();
-            io.emit('browserReload');
+            broadcast({ type: 'browserReload' })
         });
     } else if (command === 'build') {
         await build();

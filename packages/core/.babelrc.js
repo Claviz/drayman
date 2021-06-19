@@ -10,6 +10,8 @@ module.exports = {
             '@babel/plugin-transform-react-jsx',
             {
                 'runtime': 'automatic',
+                'importSource': '../',
+                'throwIfNamespace': false
             }
         ]
     ],

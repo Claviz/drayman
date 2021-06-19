@@ -10,6 +10,18 @@ import { DraymanRadioGroup } from '../models/radio-group-options';
 })
 export class RadioGroupComponent extends FieldBase<string> {
 
-  @Input() options: DraymanRadioGroup;
+  @Input() options?: {
+    value: any;
+    label: string;
+  }[];
+  @Input() direction?: 'column' | 'row';
+  @Input() value?: string;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() onValueChange?: ElementEvent<{ value: string }>;
+  @Input() updateOnBlur?: boolean;
 
 }

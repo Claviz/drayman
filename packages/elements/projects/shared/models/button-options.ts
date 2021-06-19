@@ -4,5 +4,5 @@ export interface DraymanButton extends ButtonOptionsBase {
     /**
      * Executed when user clicks a button.
      */
-    onClick?: () => Promise<void>;
+    onClick?: ElementEvent<{}>;
 }

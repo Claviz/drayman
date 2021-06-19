@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AutocompleteOptionsBase } from '../models/autocomplete-options-base';
 
@@ -7,12 +7,13 @@ import { FieldBase } from './field-base';
 @Injectable()
 export class AutocompleteFieldBase<T> extends FieldBase<T> {
 
-    options: AutocompleteOptionsBase<T>;
-    suggestions: { value: any; label: any }[] = [];
+    suggestions?;
+    onFocus?;
+    filteredSuggestions: { value: any; label: any }[] = [];
     autocompleteChanges$: Subscription;
 
-    ngOnChanges() {
-        super.ngOnChanges();
+    ngOnChanges(changes: SimpleChanges) {
+        super.ngOnChanges(changes);
         this.filter();
     }
 
@@ -30,7 +31,7 @@ export class AutocompleteFieldBase<T> extends FieldBase<T> {
     }
 
     get suggestionStyle() {
-        if (this.suggestions.length === 1 && !this.suggestions[0]) {
+        if (this.filteredSuggestions.length === 1 && !this.filteredSuggestions[0]) {
             return { display: 'none' };
         }
         return null;
@@ -39,12 +40,12 @@ export class AutocompleteFieldBase<T> extends FieldBase<T> {
     filter() {
         const filterValue = `${this.formControl.value || ''}`.toLowerCase();
 
-        this.suggestions = this.options?.suggestions?.filter(option => option.label?.toLowerCase()?.includes(filterValue) || '') || [];
-        this.suggestions = this.suggestions.length ? this.suggestions : [null];
+        this.filteredSuggestions = this.suggestions?.filter(option => option.label?.toLowerCase()?.includes(filterValue) || '') || [];
+        this.filteredSuggestions = this.filteredSuggestions.length ? this.filteredSuggestions : [null];
     }
 
-    onFocus() {
-        this.options?.onFocus?.();
+    triggerFocus() {
+        this.onFocus?.();
     }
 
 }

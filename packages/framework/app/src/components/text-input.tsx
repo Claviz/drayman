@@ -3,17 +3,17 @@ export const component: DraymanComponent = async ({ forceUpdate }) => {
 
     return () => {
         return (
-            <div>
+            <>
                 <input
                     type="text"
                     value={text}
-                    onValueChange={async ({ value }) => {
+                    oninput={async ({ value }) => {
                         text = value;
                         await forceUpdate();
                     }}
                 />
-                {text}
-            </div>
+                <p>{text}</p>
+            </>
         )
     }
 }

@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { generateContainerChart } from 'claviz-charts';
-
-import { DraymanClavizCharts } from '../models/claviz-charts-options';
+import { ContainerChartLine, ContainerChartOptions } from 'claviz-charts/lib/models/container-chart-options';
 
 @Component({
   selector: 'drayman-claviz-charts-internal',
@@ -10,7 +9,12 @@ import { DraymanClavizCharts } from '../models/claviz-charts-options';
 })
 export class ClavizChartsComponent implements OnChanges, AfterViewInit {
 
-  @Input() options: DraymanClavizCharts;
+  @Input() padding?: number;
+  @Input() data: ContainerChartLine[];
+  @Input() reversed?: boolean;
+  @Input() orientation?: 'horizontal' | 'vertical';
+  @Input() verticalTextTopDown?: boolean;
+  @Input() onClick?: (data: any) => ElementEvent<void>;
 
   @ViewChild('wrapper', { static: false }) wrapper;
 
@@ -19,29 +23,25 @@ export class ClavizChartsComponent implements OnChanges, AfterViewInit {
   constructor() { }
 
   ngOnChanges() {
-    if (this.changeChartOptions) {
-      this.changeChartOptions({
-        ...this.options,
-        select: this.onSelect,
-      });
-    }
+    this.changeChartOptions?.(this.options);
   }
 
   ngAfterViewInit() {
     this.changeChartOptions = generateContainerChart(
       this.wrapper.nativeElement,
-      {
-        ...this.options,
-        select: this.onSelect,
-        data: this.options?.data || [],
-      }
+      this.options,
     );
   }
 
-  onSelect = ($event) => {
-    if (this.options?.onClick) {
-      this.options?.onClick($event);
-    }
+  get options() {
+    const options: ContainerChartOptions = { data: this.data || [] };
+    if (this.orientation) { options.orientation = this.orientation };
+    if (this.padding) { options.padding = this.padding };
+    if (this.reversed) { options.reversed = this.reversed };
+    if (this.verticalTextTopDown) { options.verticalTextTopDown = this.verticalTextTopDown };
+    if (this.onClick) { options.select = this.onClick };
+
+    return options
   }
 
 }

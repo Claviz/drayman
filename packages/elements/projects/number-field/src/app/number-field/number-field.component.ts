@@ -10,6 +10,20 @@ import { DraymanNumberField } from '../models/number-field-options';
     styleUrls: ['./number-field.component.scss']
 })
 export class NumberFieldComponent extends AutocompleteFieldBase<number> {
-    @Input() options: DraymanNumberField;
+    @Input() suggestions?: {
+        value: any;
+        label: string;
+    }[];
+    @Input() onFocus?: () => Promise<void>;
+    @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
+    @Input() suggestionsPanelWidth?: string | number;
+    @Input() value?: number;
+    @Input() label?: string;
+    @Input() disabled?: boolean;
+    @Input() placeholder?: string;
+    @Input() helpText?: string;
+    @Input() error?: string;
+    @Input() onValueChange?: ElementEvent<{ value: number }>;
+    @Input() updateOnBlur?: boolean;
 }
 

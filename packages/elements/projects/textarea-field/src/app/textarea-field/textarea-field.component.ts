@@ -9,6 +9,15 @@ import { DraymanTextareaField } from '../models/textarea-field-options';
 })
 export class TextareaFieldComponent extends FieldBase<string> {
 
-  @Input() options: DraymanTextareaField;
+  @Input() rows?: number;
+  @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
+  @Input() value?: string;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() onValueChange?: ElementEvent<{ value: string }>;
+  @Input() updateOnBlur?: boolean;
 
 }

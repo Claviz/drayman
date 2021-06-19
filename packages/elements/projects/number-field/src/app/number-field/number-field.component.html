@@ -1,16 +1,16 @@
-<mat-form-field [appearance]="options?.appearance || 'outline'" [floatLabel]="'auto'">
-  <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
-  <input matInput type="number" [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
+<mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
+  <mat-label *ngIf="label">{{label}}</mat-label>
+  <input matInput type="number" [placeholder]="placeholder || label" [formControl]="formControl"
     [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="onFocus()"
-    [panelWidth]="options?.suggestionsPanelWidth">
+    [panelWidth]="suggestionsPanelWidth">
     <mat-option *ngFor="let option of suggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
       [disabled]="!!suggestionStyle">
       {{option?.label}}
     </mat-option>
   </mat-autocomplete>
-  <mat-hint>{{options?.helpText}}</mat-hint>
-  <mat-error *ngIf="options?.error">
-    {{options?.error}}
+  <mat-hint>{{helpText}}</mat-hint>
+  <mat-error *ngIf="error">
+    {{error}}
   </mat-error>
 </mat-form-field>

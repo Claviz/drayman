@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import * as dayjs from 'dayjs';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import * as utc from 'dayjs/plugin/utc';
@@ -17,7 +17,18 @@ dayjs.extend(customParseFormat);
 })
 export class DatepickerComponent extends FieldBase<string> implements OnChanges {
   @ViewChild('dateDirectivePicker') datePickerDirective: DatePickerDirective;
-  @Input() options: DraymanDatepicker;
+
+  @Input() dateFormat?: string;
+  @Input() showTodayButton?: boolean;
+  @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
+  @Input() value?: string;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() onValueChange?: ElementEvent<{ value: string }>;
+  @Input() updateOnBlur?: boolean;
 
   opened = false;
   defaultDateFormat = 'YYYY-MM-DD';
@@ -26,29 +37,27 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     openOnClick: false,
     openOnFocus: false,
     format: this.defaultDateFormat,
-    appendTo: '.drayman-elements-container',
+    appendTo: 'body',
     firstDayOfWeek: 'mo',
   };
 
-  ngOnChanges() {
-    if (this.options) {
-      // todo: remove when fix will be available
-      this.options.updateOnBlur = false;
-      this.options.dateFormat = this.options?.dateFormat || this.defaultDateFormat;
-    }
-    if (this.config.format !== this.options.dateFormat) {
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    // todo: remove when fix will be available
+    this.updateOnBlur = false;
+    this.dateFormat = this.dateFormat || this.defaultDateFormat;
+    if (this.config.format !== this.dateFormat) {
       this.config = {
         ...this.config,
-        format: this.options?.dateFormat || this.defaultDateFormat,
+        format: this.dateFormat,
       };
     }
-    if (this.options.value) {
-      this.options.value = dayjs.utc(this.options.value).format(this.config.format);
+    if (this.value) {
+      this.value = dayjs.utc(this.value).format(this.config.format);
     }
     const format = this.config.format;
     this.mask = format?.length === 10 && ['YYYY', 'MM', 'DD'].every(x => format.includes(x)) ?
       format.replace('YYYY', '0000').replace('MM', 'M0').replace('DD', 'd0') : null;
-    super.ngOnChanges();
+    super.ngOnChanges(simpleChanges);
   }
 
   setTodayDate() {

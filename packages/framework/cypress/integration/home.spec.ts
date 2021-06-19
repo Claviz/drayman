@@ -17,10 +17,10 @@ context('text-input', () => {
   })
 
   it(`inputs text`, () => {
-    cy.get('drayman-element > div').should('contain.text', 'Hello');
+    cy.get('p').should('contain.text', 'Hello');
     cy.get('input').type(', world!');
     cy.get('input').should('contain.value', 'Hello, world!');
-    cy.get('drayman-element > div').should('contain.text', 'Hello, world!');
+    cy.get('p').should('contain.text', 'Hello, world!');
   })
 })
 
@@ -30,20 +30,8 @@ context('third-party-element', () => {
   })
 
   it(`renders third-party element`, () => {
-    cy.get('button').should('contain.text', 'Hello, world!');
-    cy.get('button').should('have.attr', 'mat-raised-button');
-  })
-})
-
-context('modal', () => {
-  beforeEach(() => {
-    cy.visit('http://localhost:3033/modal');
-  })
-
-  it(`correctly opens and detects component inside modal`, () => {
-    cy.get('h3').should('contain.text', 'I am not modal!');
-    cy.get('button').click();
-    cy.get('app-drayman-modal').should('contain.text', 'I am modal!');
+    cy.get('drayman-button').find('button').should('contain.text', 'Hello, world!');
+    cy.get('drayman-button').find('button').should('have.attr', 'mat-raised-button');
   })
 })
 
@@ -79,16 +67,16 @@ context('third-party-upload', () => {
     cy.fixture('BB.png').then((image) => {
       const blob = Cypress.Blob.base64StringToBlob(image, 'image/png');
       const formData = new FormData();
-      formData.append('filepond', blob, 'BB.png');
+      formData.append('file', blob, 'BB.png');
 
-      cy.get('input[type="file"]').attachFile({
+      cy.get('drayman-file-uploader').find('input[type="file"]').attachFile({
         fileContent: blob,
         fileName: 'BB.png',
         mimeType: 'image/png'
       });
 
       const fileInfo = JSON.stringify({
-        fieldname: 'filepond',
+        fieldname: 'file',
         originalname: 'BB.png',
         encoding: '7bit',
         mimetype: 'image/png',
@@ -100,8 +88,51 @@ context('third-party-upload', () => {
       )
 
       cy.readFile('image.png');
-      cy.get('.filepond--action-revert-item-processing').click();
+      cy.get('drayman-file-uploader').find('.filepond--action-revert-item-processing').click();
       cy.readFile('image.png').should('not.exist');
     })
+  })
+})
+
+context('third-party-upload', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/file-upload');
+  })
+
+  it(`uploads a file`, () => {
+    cy.fixture('BB.png').then((image) => {
+      const blob = Cypress.Blob.base64StringToBlob(image, 'image/png');
+      const formData = new FormData();
+      formData.append('file', blob, 'BB.png');
+
+      cy.get('input[type="file"]').attachFile({
+        fileContent: blob,
+        fileName: 'BB.png',
+        mimeType: 'image/png'
+      });
+
+      const fileInfo = JSON.stringify({
+        fieldname: 'file',
+        originalname: 'BB.png',
+        encoding: '7bit',
+        mimetype: 'image/png',
+        size: 185556
+      }, null, 2);
+
+      cy.get('pre').should((x) =>
+        expect(x.text().trim()).to.equal(fileInfo)
+      )
+    })
+  })
+})
+
+context('communication using EventHub', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/communication-ping')
+  })
+
+  it(`two componnents communicate`, () => {
+    cy.get('button').click();
+    cy.get('p').should('contain.text', 'Pong!');
   })
 })

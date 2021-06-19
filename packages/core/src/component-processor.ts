@@ -5,9 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import shortid from 'shortid';
 
-import { compare } from 'fast-json-patch';
-import { expose } from "threads/worker"
-import { Observable, Subject } from "threads/observable"
+// import { compare } from 'fast-json-patch';
+import { expose } from 'threads/worker'
+import { Observable, Subject } from 'threads/observable'
 
 let subject = new Subject();
 import { Writable } from 'stream';
@@ -49,14 +49,6 @@ class EventHubClass {
         }
     }
 }
-class RouterClass {
-    url: string;
-    onRouteChange;
-    navigate = async (path) => {
-        sendMessage({ type: 'navigate', payload: { path } })
-    }
-}
-const Router = new RouterClass();
 const EventHub = new EventHubClass();
 // const componentInstanceId = process.argv[2];
 let browserCallbacks: {
@@ -76,7 +68,6 @@ let prevProps = {};
 let props = {};
 // const $meta = {};
 let extensions: { importable: any } = { importable: null };
-// const modalPrefix = `$$modal-`;
 
 const serializeComponentInstanceOptions = (options: any) => {
     const serialized: { [key: string]: any } = {};
@@ -91,11 +82,21 @@ const serializeComponentInstanceOptions = (options: any) => {
 
 const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
 
-const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, location, isModal = false, componentNamePrefix = '' }) => {
+const initializeComponentInstance = async ({ browserCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
     if (extensionsPath) {
         extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
     }
-    Router.url = location.href;
+    const Browser = {};
+    for (const command of browserCommands) {
+        Browser[command] = async (data) => new Promise<any>((resolve, reject) => {
+            const callbackId = shortid.generate();
+            browserCallbacks[callbackId] = {
+                callback: (response) => resolve(response),
+                once: true,
+            };
+            sendMessage({ type: 'browserCommand', payload: { data, callbackId, command } });
+        })
+    }
     props = componentOptions || {};
     const componentNames = fs
         .readdirSync(componentRootDir)
@@ -130,12 +131,10 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         const child_componentResult = await (Object.values(child_fnResult)[0] as any)({
             forceUpdate,
             props,
-            UI,
             EventHub,
-            Router,
             Components,
+            Browser,
             ...extensions.importable,
-            // isModal,
         });
         let prevChildProps = {};
         return async (newProps: any) => {
@@ -144,58 +143,6 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
             prevChildProps = { ...props };
             return res;
         };
-    }
-    const UI = {
-        isModal,
-        openModal: async (component, options, modalOptions) => {
-            let onCloseCallbackId;
-            if (modalOptions?.onClose) {
-                onCloseCallbackId = `${shortid.generate()}`;
-                browserCallbacks[onCloseCallbackId] = {
-                    callback: modalOptions.onClose,
-                    once: true,
-                };
-            }
-            sendMessage({
-                type: 'openModal',
-                payload: {
-                    component,
-                    options: serializeComponentInstanceOptions(options),
-                    onCloseCallbackId,
-                    modalOptions: {
-                        width: modalOptions?.width,
-                        height: modalOptions?.height,
-                    }
-                }
-            })
-        },
-        closeModal: async (data: any) => {
-            sendMessage({ type: 'closeModal', payload: { data }, });
-        },
-        openWindow: async (url: string, windowName: string, windowFeatures: any) => {
-            sendMessage({ type: 'openWindow', payload: { url, windowName, windowFeatures }, });
-        },
-        copyToClipboard: async (text: string) => {
-            sendMessage({ type: 'copyToClipboard', payload: { text } });
-            // await httpClient.copyToClipboard({
-            //     value,
-            // });
-        },
-        openSnackBar: async (message: string, options: any, onClose: any) => {
-            let onCloseCallbackId;
-            if (onClose) {
-                onCloseCallbackId = shortid.generate();
-                browserCallbacks[onCloseCallbackId] = {
-                    callback: onClose,
-                    once: true,
-                };
-            }
-            sendMessage({ type: 'openSnackBar', payload: { message, options, onCloseCallbackId } });
-            // await httpClient.openSnackBar({
-            //     message,
-            //     options: { ...options, callbackId },
-            // });
-        },
     }
     forceUpdate = async () => {
         const compResult = await componentResult({ prevProps });
@@ -237,10 +184,10 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
         // const viewTree = arrayToTree(viewArr, { id: 'key', parentId: 'parent', dataField: null, });
 
         // const delta = jsondiff.diff(previouslySerializedTree, result.tree);
-        const delta = compare(previouslySerializedTree, result.tree);
-        sendMessage({ type: 'view', payload: { view: delta } });
+        // const delta = compare(previouslySerializedTree, result.tree);
+        sendMessage({ type: 'view', payload: { view: result.tree } });
         // previouslySerializedTree = { ...result.tree };
-        previouslySerializedTree = JSON.parse(JSON.stringify(result.tree));
+        // previouslySerializedTree = JSON.parse(JSON.stringify(result.tree));
         // process?.send?.({ type: 'view', payload: { view: serializedView } });
         // await httpClient.sendView({
         //     view: serializedView,
@@ -251,13 +198,10 @@ const initializeComponentInstance = async ({ extensionsPath, extensionsOptions, 
     const componentResult = await (Object.values(fnResult)[0] as any)({
         props,
         forceUpdate,
-        UI,
         EventHub,
-        Router,
         Components,
-        // EventHub,
+        Browser,
         ...extensions.importable,
-        // isModal,
     });
 
     await forceUpdate();
@@ -313,38 +257,9 @@ const handleEventHubEvent = async ({ type, data, groupId }) => {
     await EventHub._execute(type, data, groupId);
 }
 
-const handleLocationChange = async ({ location }) => {
-    const previousUrl = Router.url;
-    Router.url = location.href;
-    if (Router.onRouteChange) {
-        await Router.onRouteChange({ previousUrl });
-    }
-}
-
-// port.on('message', async (message) => {
-//     const { type, payload } = message;
-//     switch (type) {
-//         case 'updateComponentInstanceProps':
-//             await updateComponentInstanceProps(payload);
-//             return;
-//         case 'handleLocationChange':
-//             await handleLocationChange(payload);
-//             return;
-//         case 'handleBrowserCallback':
-//             await handleBrowserCallback(payload);
-//         case 'componentEvent':
-//             await handleComponentEvent(payload);
-//             return;
-//         case 'eventHubEvent':
-//             await handleEventHubEvent(payload);
-//             return;
-//     }
-// });
-
 expose({
     initializeComponentInstance,
     updateComponentInstanceProps,
-    handleLocationChange,
     handleBrowserCallback,
     handleComponentEvent,
     handleEventHubEvent,

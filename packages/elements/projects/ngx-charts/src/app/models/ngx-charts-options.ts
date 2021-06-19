@@ -3,7 +3,7 @@ export interface DraymanNgxCharts {
      * Executed when user interacts with the chart.
      * Emits data defined by `onSelect` output of [ngx-charts](https://github.com/swimlane/ngx-charts) library.
      */
-    onSelect?: (data: any) => Promise<void>;
+    onSelect?: ElementEvent<{ data: any }>;
     type: 'pie' | 'verticalBar' | 'numberCard' | 'gauge' | 'areaNormalized' | 'areaStacked' | 'line';
     /**
      * Chart data.

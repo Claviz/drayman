@@ -8,13 +8,18 @@ import { FieldOptionsBase } from '../models/field-options-base';
 @Injectable()
 export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
 
-    options: FieldOptionsBase<T>;
-    errorStateMatcher: ErrorStateMatcher = { isErrorState: () => !!this.options?.error || (!this.valueCanBeChanged && this.formControl.dirty) };
+    errorStateMatcher: ErrorStateMatcher = { isErrorState: () => !!this.error || (!this.valueCanBeChanged && this.formControl.dirty) };
     formControl = new FormControl('');
+    error?;
+    value?;
+    // onValueChangeStart?;
+    onValueChange?;
+    updateOnBlur?;
+    disabled?;
     private valueChanges$: Subscription;
-    private debouncing = false;
-    private debounce = 500;
-    private pendingRequests = 0;
+    // private debouncing = false;
+    // private debounce = 500;
+    // private pendingRequests = 0;
     private valueCanBeChanged = false;
     private formValue;
 
@@ -24,45 +29,46 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
         this.valueChanges$ = this.formControl.valueChanges.pipe(
             filter((value) => {
                 this.valueCanBeChanged = this.shouldValueChange(value);
-                let optionsValue = this.options?.value || null;
+                let optionsValue = this.value || null;
                 this.formValue = value || null;
                 return optionsValue !== this.formValue && this.valueCanBeChanged;
             }),
-            tap(() => {
-                if (!this.debouncing && this.options?.onValueChangeStart) {
-                    this.options.onValueChangeStart();
-                }
-                this.debouncing = true;
-            }),
-            debounceTime(this.debounce),
+            // tap(() => {
+            //     if (!this.debouncing && this.onValueChangeStart) {
+            //         this.onValueChangeStart();
+            //     }
+            //     this.debouncing = true;
+            // }),
+            // debounceTime(this.debounce),
         ).subscribe(() => {
-            if (!this.options?.updateOnBlur) {
-                this.onValueChange(this.formValue);
+            if (!this.updateOnBlur) {
+                this.triggerValueChange(this.formValue);
             }
         });
     }
 
-    onValueChange(value) {
-        if (this.options?.onValueChange) {
-            this.debouncing = false;
-            this.pendingRequests++;
-            this.options
-                .onValueChange({ value: this.modifyValueBeforeChange(value) })
-                .then(() => this.pendingRequests--);
+    triggerValueChange(value) {
+        if (this.onValueChange) {
+            // this.debouncing = false;
+            // this.pendingRequests++;
+            this.onValueChange({ value: this.modifyValueBeforeChange(value) })
+            // .then(() => this.pendingRequests--);
         }
     }
 
     onBlur() {
-        if (this.options?.updateOnBlur && this.shouldValueChange(this.formControl.value)) {
-            this.onValueChange(this.formControl.value);
+        if (this.updateOnBlur && this.shouldValueChange(this.formControl.value)) {
+            this.triggerValueChange(this.formControl.value);
         }
     }
 
-    ngOnChanges() {
-        this.options?.disabled ? this.formControl.disable({ emitEvent: false }) : this.formControl.enable({ emitEvent: false });
-        if (!this.debouncing && this.pendingRequests === 0) {
-            this.formControl.setValue(this.options?.value, { emitEvent: false });
+    ngOnChanges(changes: SimpleChanges) {
+        this.disabled ? this.formControl.disable({ emitEvent: false }) : this.formControl.enable({ emitEvent: false });
+        // if (!this.debouncing && this.pendingRequests === 0) {
+        if (changes.value) {
+            this.formControl.setValue(this.value, { emitEvent: false });
         }
+        // }
     }
 
     modifyValueBeforeChange(value: any): T {

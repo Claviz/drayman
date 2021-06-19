@@ -1,33 +1,32 @@
-<ng-container *ngIf="!options?.mask">
-  <mat-form-field [appearance]="options?.appearance || 'outline'" [floatLabel]="'auto'">
-    <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
-    <input matInput type="text" [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
+<ng-container *ngIf="!mask">
+  <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
+    <mat-label *ngIf="label">{{label}}</mat-label>
+    <input matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="onFocus()"
-      [panelWidth]="options?.suggestionsPanelWidth">
-      <mat-option *ngFor="let option of suggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="triggerFocus()"
+      [panelWidth]="suggestionsPanelWidth">
+      <mat-option *ngFor="let option of filteredSuggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
         [disabled]="!!suggestionStyle">
         {{option?.label}}
       </mat-option>
     </mat-autocomplete>
-    <mat-hint>{{options?.helpText}}</mat-hint>
-    <mat-error *ngIf="options?.error">
-      {{options?.error}}
+    <mat-hint>{{helpText}}</mat-hint>
+    <mat-error *ngIf="error">
+      {{error}}
     </mat-error>
   </mat-form-field>
 </ng-container>
-<ng-container *ngIf="options?.mask">
-  <mat-form-field [appearance]="options?.appearance || 'outline'" [floatLabel]="'auto'">
-    <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
-    <input matInput type="text" [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
-      [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [mask]="options?.mask?.expression"
-      [suffix]="options?.mask?.suffix || ''" [prefix]="options?.mask?.prefix || ''"
-      [dropSpecialCharacters]="!options?.mask?.emitSpecialCharacters" [showMaskTyped]="options?.mask?.showMaskTyped"
-      [thousandSeparator]="options?.mask?.thousandSeparator" [leadZeroDateTime]="options?.mask?.leadZeroDateTime"
-      [allowNegativeNumbers]="options?.mask?.allowNegativeNumbers">
-    <mat-hint>{{options?.helpText}}</mat-hint>
-    <mat-error *ngIf="options?.error">
-      {{options?.error}}
+<ng-container *ngIf="mask">
+  <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
+    <mat-label *ngIf="label">{{label}}</mat-label>
+    <input matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
+      [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [mask]="mask?.expression"
+      [suffix]="mask?.suffix || ''" [prefix]="mask?.prefix || ''" [dropSpecialCharacters]="!mask?.emitSpecialCharacters"
+      [showMaskTyped]="mask?.showMaskTyped" [thousandSeparator]="mask?.thousandSeparator"
+      [leadZeroDateTime]="mask?.leadZeroDateTime" [allowNegativeNumbers]="mask?.allowNegativeNumbers">
+    <mat-hint>{{helpText}}</mat-hint>
+    <mat-error *ngIf="error">
+      {{error}}
     </mat-error>
   </mat-form-field>
 </ng-container>

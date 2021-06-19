@@ -13,25 +13,38 @@ import { DraymanSelect } from '../models/select-options';
 })
 export class SelectComponent extends FieldBase<any> {
 
-  @Input() options: DraymanSelect;
+  @Input() options?: {
+    value: any;
+    label: string;
+  }[];
+  @Input() onSearchChange?: (data: { value: string }) => Promise<void>;
+  @Input() multiple?: boolean;
+  @Input() value?: any;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() onValueChange?: ElementEvent<{ value: any }>;
+  @Input() updateOnBlur?: boolean;
 
   searchControl: FormControl;
   searchChanges$: Subscription;
   selectOptions: { value: any; label: any }[] = [];
   searching = false;
 
-  ngOnChanges() {
-    super.ngOnChanges();
-    if (this.options?.value) {
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    super.ngOnChanges(simpleChanges);
+    if (this.value) {
       const missingValues = this.getMissingValues(
-        this.options?.options,
-        Array.isArray(this.options?.value) ? this.options?.value : [this.options?.value]
+        this.options,
+        Array.isArray(this.value) ? this.value : [this.value]
       );
-      this.options.options = [...missingValues.map(x => ({ value: x, label: x })), ...this.options.options];
+      this.options = [...missingValues.map(x => ({ value: x, label: x })), ...this.options];
     }
-    this.selectOptions = this.options?.onSearchChange ?
-      this.options?.options :
-      this.options?.options?.filter(x => `${x.label}`.trim().toLowerCase().includes(this.searchControl?.value?.toLowerCase() || ''));
+    this.selectOptions = this.onSearchChange ?
+      this.options :
+      this.options?.filter(x => `${x.label}`.trim().toLowerCase().includes(this.searchControl?.value?.toLowerCase() || ''));
   }
 
   clearSelection($event) {
@@ -55,12 +68,12 @@ export class SelectComponent extends FieldBase<any> {
   }
 
   search(value: string = '') {
-    if (this.options?.onSearchChange) {
+    if (this.onSearchChange) {
       this.searching = true;
-      this.options.onSearchChange({ value }).finally(() => this.searching = false);
+      this.onSearchChange({ value }).finally(() => this.searching = false);
     } else {
       value = value.toLowerCase();
-      this.selectOptions = this.options?.options?.filter(x => x.label.trim().toLowerCase().includes(value));
+      this.selectOptions = this.options?.filter(x => x.label.trim().toLowerCase().includes(value));
     }
   }
 

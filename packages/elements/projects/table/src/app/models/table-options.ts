@@ -67,68 +67,67 @@ export interface DraymanTable {
     /**
      * Event fired when user clicks a cell with the `button` type.
      */
-    onCellButtonClick?: (data: {
+    onCellButtonClick?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         rowIndex: number;
-    }) => Promise<void>;
+    }>
     /**
      * Event fired when user rearranges some row.
      */
-    onRowDragEnd?: (data: {
+    onRowDragEnd?: ElementEvent<{
         row: DraymanTableRow;
         currentIndex: number;
         previousIndex: number;
-    }) => Promise<void>;
+    }>;
     /**
      * Event fired when user changes a page or page size.
      */
-    onPageChange?: (data: {
+    onPageChange?: ElementEvent<{
         pageIndex: number;
         pageSize: number;
-    }) => Promise<void>;
+    }>;
     /**
      * Event fired when user performs a sort on some column.
      */
-    onSortChange?: (data: {
+    onSortChange?: ElementEvent<{
         field: string;
         order: 'asc' | 'desc';
-    }) => Promise<void>;
+    }>;
     /**
      * Event fired when user changes a value of cell with the `text-field`, `number-field` or `selection`.
      */
-    onCellValueChange?: (data: {
+    onCellValueChange?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         value: any;
         rowIndex: number;
-    }) => Promise<void>;
+    }>;
     /**
      * Event fired when user clicks a cell.
      */
-    onCellClick?: (data: {
+    onCellClick?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         rowIndex: number;
-    }) => Promise<void>;
+    }>;
     /**
      * Event fired when user double-clicks a cell.
      */
-    onCellDblClick?: (data: {
+    onCellDblClick?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         rowIndex: number;
-    }) => Promise<void>;
-    onCellValueChangeStart?: () => Promise<void>;
+    }>;
     /**
      * Event fired when user performs a search.
      */
-    onSearchChange?: (data: {
+    onSearchChange?: ElementEvent<{
         /**
          * Value of the search input.
          */
         value: string
-    }) => Promise<void>;
+    }>;
     // actions?: ButtonOptionsBase[];
     /**
      * Disables internal pagination, sorting and search algorithms applied after every data change and firing of event.
@@ -150,19 +149,19 @@ export interface DraymanTable {
     /**
      * Event fired when user clicks a toolbar button.
      */
-    onToolbarButtonClick?: (data: {
+    onToolbarButtonClick?: ElementEvent<{
         selectedRows: {
             row: DraymanTableRow;
             rowIndex: number;
         }[];
         buttonDefinition: DraymanToolbarButton;
-    }) => Promise<void>;
+    }>;
     /**
      * This function can be used to override default cells with `select` type search algorithm.
      * Accepts value of the search input. Can be `null`.
      * If this function is not defined, options will be filtered client-side. 
      */
-    onSelectSearchChange?: (data: {
+    onSelectSearchChange?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         /**
@@ -170,36 +169,36 @@ export interface DraymanTable {
          */
         value: string;
         rowIndex: number;
-    }) => Promise<void>;
+    }>;
     /**
      * Manages `onFocus` event.
      */
-    onCellFocus?: (data: {
+    onCellFocus?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         rowIndex: number;
-    }) => Promise<void>;
+    }>;
     /**
      * Executed when file is uploaded.
      * This function contains uploaded file and must return a unique file ID.
      * This unique ID is then used to revert uploads.
      */
-    onFileUpload?: (data: {
+    onFileUpload?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         rowIndex: number;
-    }, files: (File | any)[]) => Promise<string>;
+    }>;
     /**
      * Executed when user wants to remove a file.
      * Receives unique file ID `fileId`.
      * This function is usually used to remove a specific file from file system.
      */
-    onRemoveUploadedFile?: (data: {
+    onRemoveUploadedFile?: ElementEvent<{
         row: DraymanTableRow;
         field: string;
         fileId: string;
         rowIndex: number;
-    }) => Promise<string>;
+    }>;
 }
 
 export type CellType = 'text' | 'text-field' | 'button' | 'number-field' | 'select' | 'file-uploader' | 'checkbox' | 'datepicker' | 'timepicker';

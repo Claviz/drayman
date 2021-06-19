@@ -8,7 +8,7 @@ export interface DraymanMenu extends ButtonOptionsBase {
     /**
      * Executed when user clicks a menu item.
      */
-    onItemClick?: ({ item: DraymanMenuItem }) => Promise<void>;
+    onItemClick?: ElementEvent<{ item: DraymanMenuItem }>;
 }
 
 export interface DraymanMenuItem {

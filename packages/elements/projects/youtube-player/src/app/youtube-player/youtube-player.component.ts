@@ -10,7 +10,10 @@ import { DraymanYoutubePlayer } from '../models/youtube-player-options';
 })
 export class YoutubePlayerComponent implements OnInit {
 
-  @Input() options: DraymanYoutubePlayer;
+  @Input() videoId?: string;
+  @Input() startSeconds?: number;
+  @Input() endSeconds?: number;
+  @Input() playerVars?: { [param: string]: any };
 
   width: number;
   height: number;

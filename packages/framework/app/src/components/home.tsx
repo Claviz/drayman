@@ -1,7 +1,9 @@
-export const component: DraymanComponent<any> = async ({ Router, props }) => {
+export const component: DraymanComponent<any> = async ({ Browser, props }) => {
+
+    const url = await Browser.getCurrentUrl();
 
     const Route = () => {
-        switch (Router.url) {
+        switch (url) {
             case 'http://localhost:3033/counter': {
                 return <counter />
             }
@@ -11,9 +13,6 @@ export const component: DraymanComponent<any> = async ({ Router, props }) => {
             case 'http://localhost:3033/third-party-element': {
                 return <third-party-element />
             }
-            case 'http://localhost:3033/modal': {
-                return <modal />
-            }
             case 'http://localhost:3033/update-from-html': {
                 return <update-from-html text={props.text} />
             }
@@ -22,6 +21,12 @@ export const component: DraymanComponent<any> = async ({ Router, props }) => {
             }
             case 'http://localhost:3033/third-party-upload': {
                 return <third-party-upload />
+            }
+            case 'http://localhost:3033/file-upload': {
+                return <file-upload />
+            }
+            case 'http://localhost:3033/communication-ping': {
+                return <communication-ping />
             }
         }
     }

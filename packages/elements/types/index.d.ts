@@ -1,3 +1,4 @@
+import { DraymanModal } from '../dist/types/modal/src/app/models/modal-options';
 import { DraymanCheckbox } from '../dist/types/checkbox/src/app/models/checkbox-options';
 import { DraymanClavizCharts } from '../dist/types/claviz-charts/src/app/models/claviz-charts-options';
 import { DraymanDatepicker } from '../dist/types/datepicker/src/app/models/datepicker-options';
@@ -47,7 +48,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanButtonProps extends DraymanButton, DefaultProps { }
+    interface DraymanButtonProps extends DraymanButton { }
     /**
      * # <drayman-table \/>
      *
@@ -195,7 +196,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTableProps extends DraymanTable, DefaultProps { }
+    interface DraymanTableProps extends DraymanTable { }
     /**
      * # <drayman-checkbox \/>
      *
@@ -227,7 +228,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanCheckboxProps extends DraymanCheckbox, DefaultProps { }
+    interface DraymanCheckboxProps extends DraymanCheckbox { }
     /**
      * # <drayman-claviz-charts \/>
      *
@@ -290,7 +291,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanClavizChartsProps extends DraymanClavizCharts, DefaultProps { }
+    interface DraymanClavizChartsProps extends DraymanClavizCharts { }
     /**
      * # <drayman-datepicker \/>
      *
@@ -331,7 +332,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanDatepickerProps extends DraymanDatepicker, DefaultProps { }
+    interface DraymanDatepickerProps extends DraymanDatepicker { }
     /**
      * # <drayman-file-uploader \/>
      *
@@ -360,7 +361,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanFileUploaderProps extends DraymanFileUploader, DefaultProps { }
+    interface DraymanFileUploaderProps extends DraymanFileUploader { }
     /**
      * # <drayman-ngx-charts \/>
      *
@@ -389,7 +390,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanNgxChartsProps extends DraymanNgxCharts, DefaultProps { }
+    interface DraymanNgxChartsProps extends DraymanNgxCharts { }
     /**
      * # <drayman-ngx-graph \/>
      *
@@ -451,7 +452,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanNgxGraphProps extends DraymanNgxGraph, DefaultProps { }
+    interface DraymanNgxGraphProps extends DraymanNgxGraph { }
     /**
      * # <drayman-number-field \/>
      *
@@ -493,7 +494,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanNumberFieldProps extends DraymanNumberField, DefaultProps { }
+    interface DraymanNumberFieldProps extends DraymanNumberField { }
     /**
      * # <drayman-pdf-viewer \/>
      *
@@ -566,7 +567,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanPdfViewerProps extends DraymanPdfViewer, DefaultProps { }
+    interface DraymanPdfViewerProps extends DraymanPdfViewer { }
     /**
      * # <drayman-radio-group \/>
      *
@@ -636,7 +637,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanRadioGroupProps extends DraymanRadioGroup, DefaultProps { }
+    interface DraymanRadioGroupProps extends DraymanRadioGroup { }
     /**
      * # <drayman-select \/>
      *
@@ -732,7 +733,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanSelectProps extends DraymanSelect, DefaultProps { }
+    interface DraymanSelectProps extends DraymanSelect { }
     /**
      * # <drayman-text-field \/>
      *
@@ -827,7 +828,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTextFieldProps extends DraymanTextField, DefaultProps { }
+    interface DraymanTextFieldProps extends DraymanTextField { }
     /**
      * # <drayman-textarea-field \/>
      *
@@ -861,7 +862,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTextareaFieldProps extends DraymanTextareaField, DefaultProps { }
+    interface DraymanTextareaFieldProps extends DraymanTextareaField { }
     /**
      * # <drayman-timepicker \/>
      *
@@ -917,7 +918,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTimepickerProps extends DraymanTimepicker, DefaultProps { }
+    interface DraymanTimepickerProps extends DraymanTimepicker { }
     /**
      * # <drayman-youtube-player \/>
      *
@@ -940,7 +941,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanYoutubePlayerProps extends DraymanYoutubePlayer, DefaultProps { }
+    interface DraymanYoutubePlayerProps extends DraymanYoutubePlayer { }
     /**
      * # <drayman-menu \/>
      *
@@ -985,7 +986,33 @@ declare global {
      * }
      * ```
      */
-    interface DraymanMenuProps extends DraymanMenu, DefaultProps { }
+    interface DraymanMenuProps extends DraymanMenu { }
+    /**
+     * # <drayman-modal \/>
+     *
+     * Modal powered by [Angular Material](https://material.angular.io/) library.
+     *
+     * ## Example of usage
+     * 
+     * ![](media://drayman-modal.gif)
+     *
+     * ### Simple modal.
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     *
+     *     return () => {
+     *         return <div style={{ height: '500px' }}>
+     *             <drayman-youtube-player
+     *                 videoId="UEzl9JYkH5M"
+     *                 playerVars={{ autoplay: 1 }}
+     *             />
+     *         </div>
+     *     }
+     * }
+     * ```
+     */
+    interface DraymanModalProps extends DraymanModal { }
+    interface DraymanSnackBarProps { }
     namespace JSX {
         export interface IntrinsicElements {
             'drayman-button': DraymanButtonProps;
@@ -1005,6 +1032,8 @@ declare global {
             'drayman-textarea-field': DraymanTextareaFieldProps;
             'drayman-timepicker': DraymanTimepickerProps;
             'drayman-youtube-player': DraymanYoutubePlayerProps;
+            'drayman-modal': DraymanModalProps;
+            'drayman-snack-bar': DraymanSnackBarProps;
         }
     }
 }

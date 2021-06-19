@@ -8,17 +8,19 @@ import { DraymanMenu, DraymanMenuItem } from '../models/menu-options';
 })
 export class MenuComponent implements OnInit {
 
-  @Input() options: DraymanMenu;
+  @Input() items: DraymanMenuItem[];
+  @Input() onItemClick?: ({ item: DraymanMenuItem }) => Promise<void>;
+  @Input() label?: string;
+  @Input() view?: 'basic' | 'raised' | 'flat' | 'stroked' | 'icon' | 'fab' | 'miniFab';
+  @Input() icon?: string;
+  @Input() tooltip?: string;
+  @Input() disabled?: boolean;
+  @Input() imgUrl?: string;
+  @Input() buttonStyle?: any;
 
   constructor() { }
 
   ngOnInit() {
-  }
-
-  onItemClick(item: DraymanMenuItem) {
-    if (this.options?.onItemClick) {
-      this.options.onItemClick({ item });
-    }
   }
 
 }

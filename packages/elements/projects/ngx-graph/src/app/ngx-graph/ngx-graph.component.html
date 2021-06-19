@@ -1,5 +1,5 @@
 <div style="width: 100%; height: 100%" (resized)="onResized($event)">
-  <ngx-graph *ngIf="options" [showMiniMap]="options?.showMiniMap" [draggingEnabled]="options?.draggingEnabled"
+  <ngx-graph *ngIf="nodes?.length" [showMiniMap]="options?.showMiniMap" [draggingEnabled]="options?.draggingEnabled"
     [links]="options?.links" [nodes]="options?.nodes" [autoCenter]="options?.autoCenter" [autoZoom]="options?.autoZoom">
     <ng-template #defsTemplate>
       <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">

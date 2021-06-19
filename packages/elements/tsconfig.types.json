@@ -7,17 +7,18 @@
         "includeDeclarations": true,
         "excludeExternals": true,
         "inputFiles": [
-            "./types/index.d.ts"
+            "./types/index.d.ts",
+            "./node_modules/@drayman/types/types/index.d.ts",
         ],
-        "media": "./assets"
+        "media": "./assets",
+        "toc": [
+            ""
+        ]
     },
     "compilerOptions": {
         "outDir": "./dist/types",
         "declaration": true,
-        "emitDeclarationOnly": true,
-        "types": [
-            "@drayman/types"
-        ],
+        "emitDeclarationOnly": true
     },
     "include": [
         "./projects/text-field/src/app/models/text-field-options.ts",
@@ -32,11 +33,13 @@
         "./projects/ngx-graph/src/app/models/ngx-graph-options.ts",
         "./projects/pdf-viewer/src/app/models/pdf-viewer-options.ts",
         "./projects/checkbox/src/app/models/checkbox-options.ts",
+        "./projects/modal/src/app/models/modal-options.ts",
         "./projects/textarea-field/src/app/models/textarea-field-options.ts",
         "./projects/radio-group/src/app/models/radio-group-options.ts",
         "./projects/claviz-charts/src/app/models/claviz-charts-options.ts",
         "./projects/file-uploader/src/app/models/file-uploader-options.ts",
         "./node_modules/claviz-charts/lib/models/container-chart-options.d.ts",
+        "./node_modules/@drayman/types/types/index.d.ts",
         "./projects/shared/models/button-options.ts"
     ],
 }

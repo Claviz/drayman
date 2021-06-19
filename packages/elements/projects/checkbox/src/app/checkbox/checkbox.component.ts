@@ -1,7 +1,5 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FieldBase } from '../../../../shared/components/field-base';
-import { DraymanCheckbox } from '../models/checkbox-options';
-import { generate } from 'shortid';
 
 @Component({
   selector: 'drayman-checkbox-internal',
@@ -10,14 +8,18 @@ import { generate } from 'shortid';
 })
 export class CheckboxComponent extends FieldBase<boolean> implements OnChanges {
 
-  @Input() options: DraymanCheckbox;
-  id = generate();
+  @Input() onValueChange?: (data: { value: boolean; }) => Promise<void>;
+  @Input() value?: boolean;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() updateOnBlur?: boolean;
 
   //todo: remove when fix will be available
-  ngOnChanges() {
-    if (this.options) {
-      this.options.updateOnBlur = false;
-    }
-    super.ngOnChanges();
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    this.updateOnBlur = false;
+    super.ngOnChanges(simpleChanges);
   }
 }

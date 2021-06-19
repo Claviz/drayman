@@ -1,19 +1,19 @@
-<mat-form-field aria-label="Timepicker field" [appearance]="options?.appearance || 'outline'" [floatLabel]="'auto'">
-  <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
+<mat-form-field aria-label="Timepicker field" [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
+  <mat-label *ngIf="label">{{label}}</mat-label>
   <input matInput [formControl]="formControl" [errorStateMatcher]="errorStateMatcher" autocomplete="off"
     (blur)="onBlur()" mask="Hh:m0" [leadZeroDateTime]="true" [dropSpecialCharacters]="false">
   <div fxLayout="row" matSuffix>
     <!-- <button aria-label="Open timepicker" class="mat-datepicker-toggle" mat-icon-button matTooltip="Open timepicker"
-      [disabled]="options?.disabled" (click)="toggleOpen()">
+      [disabled]="disabled" (click)="toggleOpen()">
       <mat-icon>keyboard_arrow_down</mat-icon>
     </button> -->
-    <button aria-label="Now" *ngIf="options?.showNowButton" class="mat-datepicker-toggle" mat-icon-button
-      matTooltip="Now" (click)="setCurrentTime()" [disabled]="options?.disabled">
+    <button aria-label="Now" *ngIf="showNowButton" class="mat-datepicker-toggle" mat-icon-button matTooltip="Now"
+      (click)="setCurrentTime()" [disabled]="disabled">
       <mat-icon>access_time</mat-icon>
     </button>
   </div>
-  <mat-hint>{{options?.helpText}}</mat-hint>
-  <mat-error *ngIf="options?.error">
-    {{options?.error}}
+  <mat-hint>{{helpText}}</mat-hint>
+  <mat-error *ngIf="error">
+    {{error}}
   </mat-error>
 </mat-form-field>

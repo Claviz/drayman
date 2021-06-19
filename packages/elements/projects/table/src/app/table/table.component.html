@@ -1,12 +1,11 @@
-<div [ngClass]="options?.pagination ? 'table-wrapper' : 'table-wrapper-no-pagination'" class="table-wrapper"
-  fxLayout="column">
-  <div [attr.aria-label]="options?.title ? options?.title + ' table' : 'Table'" fxLayout="column"
+<div [ngClass]="pagination ? 'table-wrapper' : 'table-wrapper-no-pagination'" class="table-wrapper" fxLayout="column">
+  <div [attr.aria-label]="title ? title + ' table' : 'Table'" fxLayout="column"
     [ngClass]="{'table-header-selection-active': selection.selected.length}">
     <div aria-label="Table header" fxLayout="row" fxLayoutAlign="center center" class="table-header">
       <h3 *ngIf="selection.selected.length">{{selection.selected.length}} row(s) selected</h3>
-      <h3 *ngIf="!selection.selected.length">{{options?.title || 'Table'}}</h3>
+      <h3 *ngIf="!selection.selected.length">{{title || 'Table'}}</h3>
       <span fxFlex></span>
-      <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px" [fxHide]="!options?.search">
+      <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px" [fxHide]="!search">
         <input aria-label="Search field input" matInput [formControl]="searchControl" placeholder="Search" autofocus
           autocomplete="off">
         <mat-icon style="vertical-align: bottom" matPrefix>search</mat-icon>
@@ -24,9 +23,9 @@
   </div>
   <div class="table-body" [ngClass]="{'disable-interaction': loading}" cdkScrollable>
     <table mat-table matSort #table [dataSource]="visibleData" [trackBy]="trackByFn" cdkDropList
-      [cdkDropListData]="visibleData" (cdkDropListDropped)="onRowDragEnd($event)"
+      [cdkDropListData]="visibleData" (cdkDropListDropped)="onTableRowDragEnd($event)"
       [cdkDropListAutoScrollDisabled]="false" [cdkDropListDisabled]="!rowDragEnabled"
-      (matSortChange)="sortChange.next()" [matSortDisabled]="!options?.sort">
+      (matSortChange)="sortChange.next()" [matSortDisabled]="!matSort">
 
       <ng-container matColumnDef="__select__" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef>
@@ -42,14 +41,14 @@
         </td>
       </ng-container>
 
-      <ng-container *ngFor="let column of options?.columns; let columnIndex = index" [matColumnDef]="column.field"
+      <ng-container *ngFor="let column of columns; let columnIndex = index" [matColumnDef]="column.field"
         [sticky]="column.pinned === 'left'" [stickyEnd]="column.pinned === 'right'">
         <th mat-header-cell mat-sort-header *matHeaderCellDef [ngStyle]="column.style">
           {{column.label}}
         </th>
         <td [attr.aria-label]="'Row ' + rowIndex + ' column ' + columnIndex" mat-cell
           *matCellDef="let obj; let rowIndex = index" [ngStyle]="grid[rowIndex][columnIndex]?.style"
-          (click)="onCellClick(rowIndex, column.field)">
+          (click)="onTableCellClick(rowIndex, column.field)">
           <ng-container [ngSwitch]="grid[rowIndex][columnIndex]?.type">
             <ng-container *ngSwitchCase="'button'">
               <drayman-button-internal [options]="grid[rowIndex][columnIndex].options"></drayman-button-internal>
@@ -101,7 +100,7 @@
     </table>
   </div>
 </div>
-<div aria-label="Table footer" [hidden]="!options?.pagination">
+<div aria-label="Table footer" [hidden]="!pagination">
   <mat-paginator aria-label="Table paginator" [showFirstLastButtons]="true" (page)="pageChange.next()">
   </mat-paginator>
 </div>
