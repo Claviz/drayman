@@ -1,6 +1,6 @@
 {
   "name": "@drayman/element",
-  "version": "1.0.0-alpha.44",
+  "version": "1.0.0-alpha.46",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
