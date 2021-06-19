@@ -36,7 +36,6 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
         socket.send(JSON.stringify(request));
     }
 
-
     const config = {
         browserCommands,
         eventOptions: options?.eventOptions,
