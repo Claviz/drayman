@@ -12,14 +12,12 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
     const handlers = {};
     const socket = await waitForConnection();
     socket.onmessage = (event) => {
-        console.log(event.data);
         const { id, data, type } = JSON.parse(event.data);
         if (id) {
             requests[id](data);
             delete requests[id];
         }
         if (type === 'event') {
-            console.log({ data })
             const { payload, type, componentInstanceId } = data;
             for (const handler of (handlers[componentInstanceId] || [])) {
                 handler({ payload, type, componentInstanceId });
@@ -41,7 +39,7 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
 
     const config = {
         browserCommands,
-        eventOptions: options.eventOptions,
+        eventOptions: options?.eventOptions,
         connection: {
             onEvent: (componentInstanceId, handler) => {
                 if (handlers[componentInstanceId]) {
@@ -53,7 +51,6 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
             initializeComponent: (options) => {
                 return new Promise((resolve, reject) => {
                     send('initializeComponentInstance', options, ({ componentInstanceId }) => {
-                        console.log({ componentInstanceId })
                         resolve(componentInstanceId);
                     })
                 });
@@ -65,7 +62,6 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
                 })).json();
             },
             handleBrowserCallback: (options) => {
-                console.log({ options })
                 send('handleBrowserCallback', options);
             },
             destroyComponentInstance: ({ componentInstanceId }) => {

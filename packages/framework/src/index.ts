@@ -172,7 +172,6 @@ let elementsPaths = {};
             ignored: (path) => path.endsWith('.d.ts'),
             ignoreInitial: true,
         }).on('all', async (a, b) => {
-            console.log(a, b);
             await build();
             broadcast({ type: 'browserReload' })
         });

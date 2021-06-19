@@ -41,7 +41,6 @@ const patch = init([
 function debounce(func, wait, options) {
     let timeout;
     return function () {
-        console.log({ arguments })
         let context = this,
             args = arguments,
             later,
@@ -170,7 +169,6 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     attributeChangedCallback(attrName, oldValue, newValue) {
-        console.log('ATTRIB CHANGE!', attrName, oldValue, newValue);
         if (attrName === 'options' && this.config) {
             this.config.connection.updateComponentInstanceProps({ componentInstanceId: this.componentInstanceId, options: this.options });
         }
@@ -206,7 +204,6 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     emit = async (eventName: string, info = {}, options = {}, files: any[] = []) => {
-        console.log({ eventName, options, files, info })
         const formData = new FormData();
         formData.append('eventName', eventName);
         formData.append('componentInstanceId', this.componentInstanceId);
@@ -233,7 +230,6 @@ customElements.define('drayman-element', class extends HTMLElement {
             }
             const scriptId = `elements/${child.sel}`;
             if (!document.getElementById(scriptId)) {
-                console.log(child.sel)
                 const my_awesome_script = document.createElement('script');
                 my_awesome_script.setAttribute('id', scriptId);
                 my_awesome_script.setAttribute('src', `/api/elementScript/${child.sel}`);
@@ -279,7 +275,6 @@ customElements.define('drayman-element', class extends HTMLElement {
             }
             child.data.on[optionName] = (x) => {
                 // x.preventDefault();
-                console.log(x, x.target?.files);
                 const files = [];
                 if (x.target?.files) {
                     for (const file of x.target.files) {
@@ -318,7 +313,6 @@ customElements.define('drayman-element', class extends HTMLElement {
     once = false;
     async connectedCallback() {
         document.addEventListener('draymanInit', async (e: CustomEvent) => {
-            console.log('initing. config exists?', !!this.config)
             if (this.config) {
                 return;
             }
@@ -329,7 +323,6 @@ customElements.define('drayman-element', class extends HTMLElement {
             //     console.log(`waiting for config`);
             //     await new Promise(resolve => setTimeout(resolve, 100));
             // }
-            console.log(`config received`, this.config, this.component);
             // const script = await fetch(`/api/elementScript/drayman-button`);
             // console.log(script);
             // console.log('attrib get', this.getAttribute('options'))
@@ -338,9 +331,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 componentOptions: this.options,
                 browserCommands: Object.keys(this.config.browserCommands || {}),
             });
-            console.log(`INITED!!!`)
             this.config.connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
-                console.log(`onevent`, this.componentInstanceId)
                 if (type === 'view') {
                     // applyPatch(this.previouslySerializedTree, (payload.view || []));
                     // const tree = JSON.parse(JSON.stringify(this.previouslySerializedTree));
@@ -349,7 +340,6 @@ customElements.define('drayman-element', class extends HTMLElement {
                     // this.viewTree = tree;
                     patch(rootNode, newNode);
                     rootNode = newNode;
-                    console.log(rootNode)
                     // this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
                     // const node = document.getElementsByClassName('.rofl')[0];
                     // console.log({ node })
