@@ -39,6 +39,7 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
     const config = {
         browserCommands,
         eventOptions: options?.eventOptions,
+        elementUrl: '/api/elementScript/',
         connection: {
             onEvent: (componentInstanceId, handler) => {
                 if (handlers[componentInstanceId]) {

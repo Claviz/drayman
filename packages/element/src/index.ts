@@ -232,7 +232,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             if (!document.getElementById(scriptId)) {
                 const my_awesome_script = document.createElement('script');
                 my_awesome_script.setAttribute('id', scriptId);
-                my_awesome_script.setAttribute('src', `/api/elementScript/${child.sel}`);
+                my_awesome_script.setAttribute('src', `${this.config.elementUrl}${child.sel}`);
                 document.head.appendChild(my_awesome_script);
             }
             // child.data.props.options = options;
