@@ -1,18 +1,23 @@
 import {
     init,
-    // classModule,
     propsModule,
     styleModule,
     eventListenersModule,
     h,
     attributesModule,
     VNode,
-    Module
-} from "snabbdom";
+    VNodeData
+} from 'snabbdom';
 
 function updateProps(oldVnode: VNode, vnode: VNode): void {
     const element = vnode.elm as any;
-
+    let oldProps = oldVnode.data?.props || {};
+    let props = vnode.data?.props || {};
+    for (const key of (Object.keys(oldProps))) {
+        if (props[key] === undefined) {
+            props[key] = null;
+        }
+    }
     if (element instanceof HTMLInputElement && element === document.activeElement) {
         delete vnode?.data?.props?.value;
     }
@@ -138,6 +143,7 @@ function mapEvent(event): EventOptions {
 //     console.log({ object })
 //     return object;
 // }
+const createdElements = {};
 
 customElements.define('drayman-element', class extends HTMLElement {
     config: any;
@@ -239,7 +245,8 @@ customElements.define('drayman-element', class extends HTMLElement {
                     // delete child.data.props[option];
                 }
             }
-            if (!customElements.get(child.sel)) {
+            if (!customElements.get(child.sel) && !createdElements[child.sel]) {
+                createdElements[child.sel] = true;
                 const my_awesome_script = document.createElement('script');
                 my_awesome_script.setAttribute('src', `${this.config.elementUrl}${child.sel}`);
                 document.head.appendChild(my_awesome_script);
