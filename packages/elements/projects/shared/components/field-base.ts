@@ -1,6 +1,7 @@
-import { OnChanges, OnInit, SimpleChanges, OnDestroy, Injectable } from '@angular/core';
+import { OnChanges, OnInit, SimpleChanges, OnDestroy, Injectable, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, filter, map, tap } from 'rxjs/operators';
 import { FieldOptionsBase } from '../models/field-options-base';
@@ -8,6 +9,7 @@ import { FieldOptionsBase } from '../models/field-options-base';
 @Injectable()
 export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
 
+    input: MatInput;
     errorStateMatcher: ErrorStateMatcher = { isErrorState: () => !!this.error || (!this.valueCanBeChanged && this.formControl.dirty) };
     formControl = new FormControl('');
     error?;
@@ -65,7 +67,7 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
     ngOnChanges(changes: SimpleChanges) {
         this.disabled ? this.formControl.disable({ emitEvent: false }) : this.formControl.enable({ emitEvent: false });
         // if (!this.debouncing && this.pendingRequests === 0) {
-        if (changes.value) {
+        if (changes.value && !this.input?.focused) {
             this.formControl.setValue(this.value, { emitEvent: false });
         }
         // }

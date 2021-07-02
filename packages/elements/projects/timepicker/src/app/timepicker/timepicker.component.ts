@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 import { FieldBase } from 'projects/shared/components/field-base';
 
 import { DraymanTimepicker } from '../models/timepicker-options';
@@ -9,6 +10,8 @@ import { DraymanTimepicker } from '../models/timepicker-options';
   styleUrls: ['./timepicker.component.scss']
 })
 export class TimepickerComponent extends FieldBase<string> implements OnChanges {
+  @ViewChild(MatInput) input: MatInput;
+
   @Input() showNowButton?: boolean;
   @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
   @Input() value?: string;

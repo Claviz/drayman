@@ -1,4 +1,5 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-field-base';
 
 @Component({
@@ -7,6 +8,7 @@ import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-f
   styleUrls: ['./text-field.component.scss'],
 })
 export class TextFieldComponent extends AutocompleteFieldBase<string> {
+  @ViewChild(MatInput) input: MatInput;
 
   @Input() onValueChange?: ElementEvent<{ value: string; }>;
   @Input() onFocus?: () => Promise<void>;

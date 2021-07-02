@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 import * as dayjs from 'dayjs';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import * as utc from 'dayjs/plugin/utc';
@@ -16,6 +17,7 @@ dayjs.extend(customParseFormat);
   styleUrls: ['./datepicker.component.scss']
 })
 export class DatepickerComponent extends FieldBase<string> implements OnChanges {
+  @ViewChild(MatInput) input: MatInput;
   @ViewChild('dateDirectivePicker') datePickerDirective: DatePickerDirective;
 
   @Input() dateFormat?: string;

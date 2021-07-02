@@ -90,6 +90,9 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
                     if (Object.keys(on).length) {
                         newItem.data.on = on;
                     }
+                    if (options.is) {
+                        newItem.data.is = options.is;
+                    }
                     renderedArr.push(newItem);
                     // if (parentEl?.sel === 'select') {
                     //     if (parentEl.data.props.multiple && parentEl.data.props.value.includes(newItem.data.props.value)) {

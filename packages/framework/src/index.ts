@@ -87,7 +87,7 @@ const start = () => {
         }
     });
 
-    app.get('/api/elementScript/:elementTag', async (req, res, next) => {
+    app.get('/elements/:elementTag', async (req, res, next) => {
         try {
             const { elementTag } = req.params;
             res.sendFile(elementsPaths[elementTag]);

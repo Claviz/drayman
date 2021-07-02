@@ -6,13 +6,24 @@ import {
     eventListenersModule,
     h,
     attributesModule,
-    vnode,
+    VNode,
+    Module
 } from "snabbdom";
+
+function updateProps(oldVnode: VNode, vnode: VNode): void {
+    const element = vnode.elm as any;
+
+    if (element instanceof HTMLInputElement && element === document.activeElement) {
+        delete vnode?.data?.props?.value;
+    }
+}
+
 // const someFn = () => console.log(123);
 // const anotherEventHandler = () => console.log(456);
 // import { applyPatch } from 'fast-json-patch';
 
 const patch = init([
+    { update: updateProps, create: updateProps },
     // Init patch function with chosen modules
     // classModule, // makes it easy to toggle classes
     attributesModule,
@@ -228,10 +239,8 @@ customElements.define('drayman-element', class extends HTMLElement {
                     // delete child.data.props[option];
                 }
             }
-            const scriptId = `elements/${child.sel}`;
-            if (!document.getElementById(scriptId)) {
+            if (!customElements.get(child.sel)) {
                 const my_awesome_script = document.createElement('script');
-                my_awesome_script.setAttribute('id', scriptId);
                 my_awesome_script.setAttribute('src', `${this.config.elementUrl}${child.sel}`);
                 document.head.appendChild(my_awesome_script);
             }
@@ -323,7 +332,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             //     console.log(`waiting for config`);
             //     await new Promise(resolve => setTimeout(resolve, 100));
             // }
-            // const script = await fetch(`/api/elementScript/drayman-button`);
+            // const script = await fetch(`/elements/drayman-button`);
             // console.log(script);
             // console.log('attrib get', this.getAttribute('options'))
             this.componentInstanceId = await this.config.connection.initializeComponent({

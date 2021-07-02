@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-field-base';
 import { FieldBase } from 'projects/shared/components/field-base';
 
@@ -10,6 +11,8 @@ import { DraymanNumberField } from '../models/number-field-options';
     styleUrls: ['./number-field.component.scss']
 })
 export class NumberFieldComponent extends AutocompleteFieldBase<number> {
+    @ViewChild(MatInput) input: MatInput;
+
     @Input() suggestions?: {
         value: any;
         label: string;
