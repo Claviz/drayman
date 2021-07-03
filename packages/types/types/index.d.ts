@@ -255,7 +255,7 @@ declare global {
 
     interface CSS extends _CSS.StandardProperties<number | string>, _CSS.SvgProperties<number | string> { }
 
-    interface DraymanComponent<Props = void, EventHubExtend = void, DataExtend = void> {
+    interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void> {
         (data: {
             props: Props;
             forceUpdate: () => Promise<void>;
@@ -265,7 +265,7 @@ declare global {
             } & EventHubExtend;
             Browser: {
                 [command: string]: (options?: any) => Promise<any>
-            }
+            } & BrowserExtend;
         } & DataExtend): any;
     }
 }
