@@ -333,6 +333,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 return;
             }
             this.config = e.detail.config;
+            const browserCommands = this.config.browserCommands?.((callbackId, data) => this.config?.connection.handleBrowserCallback({ callbackId, data, })) || {};
             let rootNode = document.createElement('drayman-element-container') as any;
             this.appendChild(rootNode);
             // while (!this.config) {
@@ -345,7 +346,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             this.componentInstanceId = await this.config.connection.initializeComponent({
                 componentId: this.component,
                 componentOptions: this.options,
-                browserCommands: Object.keys(this.config.browserCommands || {}),
+                browserCommands: Object.keys(browserCommands),
             });
             this.config.connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
                 if (type === 'view') {
@@ -366,7 +367,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 } else if (type === 'browserCommand') {
                     const { data, callbackId, command } = payload;
                     // snackbar.afterDismissed().subscribe((data) => {
-                    const response = await this.config.browserCommands[command](data);
+                    const response = await browserCommands[command](data);
                     this.config?.connection.handleBrowserCallback({ callbackId, data: response });
                     // })
                 }

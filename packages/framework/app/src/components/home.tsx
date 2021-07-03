@@ -28,6 +28,9 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/communication-ping': {
                 return <communication-ping />
             }
+            case 'http://localhost:3033/modal': {
+                return <modal />
+            }
         }
     }
 

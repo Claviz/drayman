@@ -136,3 +136,17 @@ context('communication using EventHub', () => {
     cy.get('p').should('contain.text', 'Pong!');
   })
 })
+
+context.only('modal', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/modal')
+  })
+
+  it(`opens & closes modal using Browser hooks`, () => {
+    cy.get('p').should('contain.text', 'Modal is opened: no');
+    cy.get('button').contains('Open modal').click();
+    cy.get('p').should('contain.text', 'Modal is opened: yes');
+    cy.get('button').contains('Close modal').click();
+    cy.get('p').should('contain.text', 'Modal is opened: no');
+  })
+})

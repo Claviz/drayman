@@ -8,7 +8,7 @@ const waitForConnection = () => new Promise<WebSocket>((resolve, reject) => {
 async function initializeDraymanFramework(options?: { browserCommands: any, eventOptions: any, }) {
     const requests = {};
     let sequence = 1;
-    const browserCommands = options?.browserCommands || {};
+    const browserCommands = options?.browserCommands;
     const handlers = {};
     const socket = await waitForConnection();
     socket.onmessage = (event) => {

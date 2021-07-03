@@ -88,13 +88,26 @@ const initializeComponentInstance = async ({ browserCommands = [], extensionsPat
     }
     const Browser = {};
     for (const command of browserCommands) {
-        Browser[command] = async (data) => new Promise<any>((resolve, reject) => {
+        Browser[command] = async (data: any = {}) => new Promise<any>((resolve, reject) => {
+            const newData = {};
+            for (const key of Object.keys(data)) {
+                if (typeof data[key] === 'function') {
+                    const callbackId = shortid.generate();
+                    newData[key] = callbackId;
+                    browserCallbacks[callbackId] = {
+                        callback: async (response) => await data[key](response),
+                        once: false,
+                    };
+                } else {
+                    newData[key] = data[key];
+                }
+            }
             const callbackId = shortid.generate();
             browserCallbacks[callbackId] = {
                 callback: (response) => resolve(response),
                 once: true,
             };
-            sendMessage({ type: 'browserCommand', payload: { data, callbackId, command } });
+            sendMessage({ type: 'browserCommand', payload: { data: newData, callbackId, command } });
         })
     }
     props = componentOptions || {};

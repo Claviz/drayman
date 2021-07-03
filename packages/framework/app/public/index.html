@@ -12,17 +12,35 @@
     <link rel="stylesheet" href="https://unpkg.com/filepond@4.27.1/dist/filepond.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/zone.js@0.8.18/dist/zone.min.js"></script>
+    <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
     <script src="/drayman-framework-client.js"></script>
 </head>
 
 <body>
     <drayman-element component="home"></drayman-element>
 
+    <div class="modal" id="modal-1" aria-hidden="true">
+        <div tabindex="-1" data-micromodal-close>
+            <div role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header>
+                    <h2 id="modal-1-title">Modal Title</h2>
+                    <button aria-label="Close modal" data-micromodal-close>Close modal</button>
+                </header>
+                <div id="modal-1-content">Modal Content</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         initializeDraymanFramework({
-            browserCommands: {
+            browserCommands: (emit) => ({
                 getCurrentUrl: async () => window.location.href,
-            },
+                openModal: async ({ onClose }) => {
+                    MicroModal.show('modal-1', {
+                        onClose: (modal) => emit(onClose),
+                    });
+                }
+            }),
             // eventOptions: { debounce: { wait: 500, trailing: true } }
         });
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
