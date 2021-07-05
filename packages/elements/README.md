@@ -26,8 +26,6 @@ Default drayman elements library.
 * [drayman-textarea-field](https://drayman-elements-new.netlify.app/interfaces/__global.draymantextareafieldprops.html)
 * [drayman-timepicker](https://drayman-elements-new.netlify.app/interfaces/__global.draymantimepickerprops.html)
 * [drayman-youtube-player](https://drayman-elements-new.netlify.app/interfaces/__global.draymanyoutubeplayerprops.html)
-* [drayman-modal](https://drayman-elements-new.netlify.app/interfaces/__global.draymanmodalprops.html)
-* [drayman-snack-bar](https://drayman-elements-new.netlify.app/interfaces/__global.draymansnackbarprops.html)
 
 ## Development
 

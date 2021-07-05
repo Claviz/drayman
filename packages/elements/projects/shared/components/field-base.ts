@@ -23,7 +23,7 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
     // private debounce = 500;
     // private pendingRequests = 0;
     private valueCanBeChanged = false;
-    private formValue;
+    // private formValue;
 
     constructor() { }
 
@@ -31,9 +31,10 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
         this.valueChanges$ = this.formControl.valueChanges.pipe(
             filter((value) => {
                 this.valueCanBeChanged = this.shouldValueChange(value);
-                let optionsValue = this.value || null;
-                this.formValue = value || null;
-                return optionsValue !== this.formValue && this.valueCanBeChanged;
+                return this.valueCanBeChanged;
+                // let optionsValue = this.value || null;
+                // this.formValue = value || null;
+                // return optionsValue !== this.formValue && this.valueCanBeChanged;
             }),
             // tap(() => {
             //     if (!this.debouncing && this.onValueChangeStart) {
@@ -42,9 +43,9 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
             //     this.debouncing = true;
             // }),
             // debounceTime(this.debounce),
-        ).subscribe(() => {
+        ).subscribe((value) => {
             if (!this.updateOnBlur) {
-                this.triggerValueChange(this.formValue);
+                this.triggerValueChange(value);
             }
         });
     }

@@ -33,7 +33,6 @@
         "./projects/ngx-graph/src/app/models/ngx-graph-options.ts",
         "./projects/pdf-viewer/src/app/models/pdf-viewer-options.ts",
         "./projects/checkbox/src/app/models/checkbox-options.ts",
-        "./projects/modal/src/app/models/modal-options.ts",
         "./projects/textarea-field/src/app/models/textarea-field-options.ts",
         "./projects/radio-group/src/app/models/radio-group-options.ts",
         "./projects/claviz-charts/src/app/models/claviz-charts-options.ts",

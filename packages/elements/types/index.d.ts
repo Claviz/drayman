@@ -1,4 +1,3 @@
-import { DraymanModal } from '../dist/types/modal/src/app/models/modal-options';
 import { DraymanCheckbox } from '../dist/types/checkbox/src/app/models/checkbox-options';
 import { DraymanClavizCharts } from '../dist/types/claviz-charts/src/app/models/claviz-charts-options';
 import { DraymanDatepicker } from '../dist/types/datepicker/src/app/models/datepicker-options';
@@ -987,32 +986,6 @@ declare global {
      * ```
      */
     interface DraymanMenuProps extends DraymanMenu { }
-    /**
-     * # <drayman-modal \/>
-     *
-     * Modal powered by [Angular Material](https://material.angular.io/) library.
-     *
-     * ## Example of usage
-     * 
-     * ![](media://drayman-modal.gif)
-     *
-     * ### Simple modal.
-     * ```typescript
-     * export const component: DraymanComponent = async ({ forceUpdate }) => {
-     *
-     *     return () => {
-     *         return <div style={{ height: '500px' }}>
-     *             <drayman-youtube-player
-     *                 videoId="UEzl9JYkH5M"
-     *                 playerVars={{ autoplay: 1 }}
-     *             />
-     *         </div>
-     *     }
-     * }
-     * ```
-     */
-    interface DraymanModalProps extends DraymanModal { }
-    interface DraymanSnackBarProps { }
     namespace JSX {
         export interface IntrinsicElements {
             'drayman-button': DraymanButtonProps;
@@ -1032,8 +1005,6 @@ declare global {
             'drayman-textarea-field': DraymanTextareaFieldProps;
             'drayman-timepicker': DraymanTimepickerProps;
             'drayman-youtube-player': DraymanYoutubePlayerProps;
-            'drayman-modal': DraymanModalProps;
-            'drayman-snack-bar': DraymanSnackBarProps;
         }
     }
 }

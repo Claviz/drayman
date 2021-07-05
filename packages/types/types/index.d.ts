@@ -84,7 +84,7 @@ declare global {
     type EventFunction<T> = (options: IPropertiesToAdd<T>, files?: UploadedFile[]) => Promise<void>;
     type ElementEvent<T> = EventFunction<T> | [EventFunction<T>, EventConfig];
 
-    interface DefaultElementProps {
+    interface DefaultElementProps extends DefaultProps {
         onclick?: ElementEvent<MouseEventOptions>;
         oncontextmenu?: ElementEvent<MouseEventOptions>;
         ondblclick?: ElementEvent<MouseEventOptions>;
@@ -248,7 +248,7 @@ declare global {
             tspan: DefaultElementProps;
             use: DefaultElementProps;
 
-            [key: string]: DefaultProps;
+            [key: string]: any;
         }
         interface Element { }
     }
