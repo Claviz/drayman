@@ -1,6 +1,6 @@
 {
   "name": "@drayman/types",
-  "version": "1.0.0-alpha.53",
+  "version": "1.0.0-alpha.54",
   "description": "",
   "scripts": {
     "test": "dtslint --localTs node_modules/typescript/lib types"

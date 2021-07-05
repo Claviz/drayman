@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework",
-  "version": "1.0.0-alpha.53",
+  "version": "1.0.0-alpha.54",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@drayman/core": "^1.0.0-alpha.53",
+    "@drayman/core": "^1.0.0-alpha.54",
     "chokidar": "^3.5.1",
     "express": "^4.17.1",
     "fs-extra": "^9.1.0",
@@ -30,8 +30,8 @@
     "ws": "^7.4.6"
   },
   "devDependencies": {
-    "@drayman/elements": "^1.0.0-alpha.53",
-    "@drayman/types": "^1.0.0-alpha.53",
+    "@drayman/elements": "^1.0.0-alpha.54",
+    "@drayman/types": "^1.0.0-alpha.54",
     "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.11",
     "@types/multer": "^1.4.5",
