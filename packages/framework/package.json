@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework",
-  "version": "1.0.0-alpha.55",
+  "version": "1.0.0-alpha.56",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "ws": "^7.4.6"
   },
   "devDependencies": {
-    "@drayman/elements": "^1.0.0-alpha.55",
+    "@drayman/elements": "^1.0.0-alpha.56",
     "@drayman/types": "^1.0.0-alpha.54",
     "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.11",
