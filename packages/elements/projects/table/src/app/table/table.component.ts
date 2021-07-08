@@ -181,7 +181,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         debounceTime(500),
         tap(({ actionName, parameters }) => {
           if (this[actionName]) {
-            this[actionName](parameters).finally(() => this.loading = false);
+            this[actionName](parameters).then(() => this.loading = false);
           } else {
             this.loading = false;
             this.renderVisibleData();
@@ -229,15 +229,13 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.options) {
-      if (changes.options.firstChange) {
-        this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
-      }
-      this.renderVisibleData();
-      this.displayedColumns = [...(this.select ? ['__select__'] : []), ...this.columns?.map(x => x.field) || []];
-      this.paginator.pageSizeOptions = this.pageSizeOptions || [5, 10, 25, 100];
-      this.selection.clear();
+    if (changes.initialSearchValue?.firstChange) {
+      this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
     }
+    this.renderVisibleData();
+    this.displayedColumns = [...(this.select ? ['__select__'] : []), ...this.columns?.map(x => x.field) || []];
+    this.paginator.pageSizeOptions = this.pageSizeOptions || [5, 10, 25, 100];
+    this.selection.clear();
   }
 
   onTableRowDragEnd(event: CdkDragDrop<DraymanTableRow[]>) {
@@ -303,7 +301,9 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       }
       if (this.pagination) {
         this.paginator.length = newVisibleData.length;
-        newVisibleData = newVisibleData.slice(this.paginator.pageIndex * this.paginator.pageSize, (this.paginator.pageIndex + 1) * this.paginator.pageSize);
+        const pageIndex = this.paginator.pageIndex || 0;
+        const pageSize = this.paginator.pageSize || 5;
+        newVisibleData = newVisibleData.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
       }
     } else {
       if (this.pagination) {

@@ -10,6 +10,7 @@ import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-f
 export class TextFieldComponent extends AutocompleteFieldBase<string> {
   @ViewChild(MatInput) input: MatInput;
 
+  @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
   @Input() onValueChange?: ElementEvent<{ value: string; }>;
   @Input() onFocus?: () => Promise<void>;
   @Input() value?: string;
