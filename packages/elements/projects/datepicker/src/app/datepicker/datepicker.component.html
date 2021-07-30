@@ -1,6 +1,6 @@
 <mat-form-field aria-label="Datepicker field" [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
   <mat-label *ngIf="label">{{label}}</mat-label>
-  <input matInput [formControl]="formControl" [errorStateMatcher]="errorStateMatcher" autocomplete="off"
+  <input [id]="id" matInput [formControl]="formControl" [errorStateMatcher]="errorStateMatcher" autocomplete="off"
     [dpDayPicker]="config" #dateDirectivePicker="dpDayPicker" (open)="opened = true" (close)="opened = false"
     theme="dp-material" (blur)="onBlur()" attachTo=".mat-form-field-flex" [mask]="mask" [leadZeroDateTime]="true"
     [dropSpecialCharacters]="false">

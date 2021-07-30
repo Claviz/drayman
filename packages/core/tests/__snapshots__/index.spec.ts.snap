@@ -5,6 +5,7 @@ Array [
   Object {
     "componentInstanceId": "instance-1",
     "payload": Object {
+      "updateId": 1,
       "view": Array [
         Object {
           "children": Array [
@@ -35,6 +36,7 @@ Array [
   Object {
     "componentInstanceId": "instance-1",
     "payload": Object {
+      "updateId": 2,
       "view": Array [
         Object {
           "children": Array [
@@ -88,6 +90,7 @@ Array [
   Object {
     "componentInstanceId": "instance-1",
     "payload": Object {
+      "updateId": 1,
       "view": Array [
         Object {
           "children": Array [

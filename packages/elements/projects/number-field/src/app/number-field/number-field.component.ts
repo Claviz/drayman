@@ -2,6 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-field-base';
 import { FieldBase } from 'projects/shared/components/field-base';
+import { generate } from 'shortid';
 
 import { DraymanNumberField } from '../models/number-field-options';
 
@@ -28,5 +29,6 @@ export class NumberFieldComponent extends AutocompleteFieldBase<number> {
     @Input() error?: string;
     @Input() onValueChange?: ElementEvent<{ value: number }>;
     @Input() updateOnBlur?: boolean;
+    id = generate();
 }
 

@@ -1,7 +1,7 @@
 <ng-container *ngIf="!mask">
   <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
     <mat-label *ngIf="label">{{label}}</mat-label>
-    <input matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
+    <input [id]="id" matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="triggerFocus()"
       [panelWidth]="suggestionsPanelWidth">
@@ -19,7 +19,7 @@
 <ng-container *ngIf="mask">
   <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
     <mat-label *ngIf="label">{{label}}</mat-label>
-    <input matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
+    <input [id]="id" matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [mask]="mask?.expression"
       [suffix]="mask?.suffix || ''" [prefix]="mask?.prefix || ''" [dropSpecialCharacters]="!mask?.emitSpecialCharacters"
       [showMaskTyped]="mask?.showMaskTyped" [thousandSeparator]="mask?.thousandSeparator"

@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-field-base';
+import { generate } from 'shortid';
 
 @Component({
   selector: 'drayman-text-field-internal',
@@ -35,5 +36,6 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> {
     leadZeroDateTime?: boolean;
     allowNegativeNumbers?: boolean;
   }
+  id = generate();
 }
 

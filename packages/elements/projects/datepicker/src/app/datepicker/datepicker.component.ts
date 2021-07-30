@@ -5,6 +5,7 @@ import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import * as utc from 'dayjs/plugin/utc';
 import { DatePickerDirective, IDatePickerConfig } from 'ng2-date-picker';
 import { FieldBase } from 'projects/shared/components/field-base';
+import { generate } from 'shortid';
 
 import { DraymanDatepicker } from '../models/datepicker-options';
 
@@ -42,6 +43,7 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     appendTo: '.drayman-elements-container',
     firstDayOfWeek: 'mo',
   };
+  id = generate();
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     // todo: remove when fix will be available

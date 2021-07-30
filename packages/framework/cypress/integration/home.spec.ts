@@ -5,8 +5,8 @@ context('counter', () => {
 
   it(`clicks a button`, () => {
     for (let i = 0; i < 5; i++) {
-      cy.get('button').should('contain.text', `Times clicked: ${i}`);
-      cy.get('button').click();
+      cy.get('#counter-btn').should('contain.text', `Times clicked: ${i}`);
+      cy.get('#counter-btn').click();
     }
   })
 })
@@ -132,12 +132,12 @@ context('communication using EventHub', () => {
   })
 
   it(`two componnents communicate`, () => {
-    cy.get('button').click();
+    cy.get('#ping-btn').click();
     cy.get('p').should('contain.text', 'Pong!');
   })
 })
 
-context.only('modal', () => {
+context('modal', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3033/modal')
   })

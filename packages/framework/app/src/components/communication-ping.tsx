@@ -6,7 +6,7 @@ export const component: DraymanComponent = async ({ EventHub }) => {
 
     return () => {
         return (
-            <button onclick={onBtnClick}>Ping!</button>
+            <button id="ping-btn" onclick={onBtnClick}>Ping!</button>
         )
     }
 }

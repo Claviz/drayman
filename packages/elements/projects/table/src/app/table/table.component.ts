@@ -19,6 +19,7 @@ import { MatTable } from '@angular/material/table';
 import { DraymanButton } from 'projects/shared/models/button-options';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, map, take, tap } from 'rxjs/operators';
+import { generate } from 'shortid';
 
 import {
   DraymanTable,
@@ -148,6 +149,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   noRecordsCellStyle = {};
   cellClickCount = 0;
   cellClickTimer;
+  id = generate();
 
   pageChange = new Subject();
   sortChange = new Subject();
@@ -181,7 +183,11 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         debounceTime(500),
         tap(({ actionName, parameters }) => {
           if (this[actionName]) {
-            this[actionName](parameters).then(() => this.loading = false);
+            console.log(this[actionName]);
+            this[actionName](parameters).then((x) => {
+              console.log(`xxxx`, x);
+              this.loading = false
+            });
           } else {
             this.loading = false;
             this.renderVisibleData();
@@ -229,6 +235,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
     if (changes.initialSearchValue?.firstChange) {
       this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
     }

@@ -6,8 +6,8 @@
       <h3 *ngIf="!selection.selected.length">{{title || 'Table'}}</h3>
       <span fxFlex></span>
       <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px" [fxHide]="!search">
-        <input aria-label="Search field input" matInput [formControl]="searchControl" placeholder="Search" autofocus
-          autocomplete="off">
+        <input [id]="id" aria-label="Search field input" matInput [formControl]="searchControl" placeholder="Search"
+          autofocus autocomplete="off">
         <mat-icon style="vertical-align: bottom" matPrefix>search</mat-icon>
         <button aria-label="Clear search field input" *ngIf="searchControl.value" (click)="searchControl.setValue(null)"
           mat-icon-button matSuffix>
@@ -31,14 +31,14 @@
 
       <ng-container matColumnDef="__select__" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef>
-          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? masterToggle() : null"
-            [checked]="selection.hasValue() && isAllSelected()"
+          <mat-checkbox (input)="$event.stopPropagation()" (click)="$event.stopPropagation()"
+            (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let obj" style="width: 50px">
-          <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(obj) : null"
-            [checked]="selection.isSelected(obj)">
+          <mat-checkbox (input)="$event.stopPropagation()" (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(obj) : null" [checked]="selection.isSelected(obj)">
           </mat-checkbox>
         </td>
       </ng-container>

@@ -5,7 +5,7 @@ const waitForConnection = () => new Promise<WebSocket>((resolve, reject) => {
     socket.addEventListener('open', (ev) => { resolve(socket); })
 });
 
-async function initializeDraymanFramework(options?: { browserCommands: any, eventOptions: any, }) {
+async function initializeDraymanFramework(options?: { browserCommands: any, elementOptions: any, }) {
     const requests = {};
     let sequence = 1;
     const browserCommands = options?.browserCommands;
@@ -36,9 +36,9 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
         socket.send(JSON.stringify(request));
     }
 
-    const config = {
+    window['draymanConfig'] = {
         browserCommands,
-        eventOptions: options?.eventOptions,
+        elementOptions: options?.elementOptions,
         elementUrl: '/elements/',
         connection: {
             onEvent: (componentInstanceId, handler) => {
@@ -73,7 +73,7 @@ async function initializeDraymanFramework(options?: { browserCommands: any, even
             },
         }
     };
-    document.dispatchEvent(new CustomEvent('draymanInit', { detail: { config } }));
+    // document.dispatchEvent(new CustomEvent('draymanInit', { detail: { config } }));
 
     return { emit: (type, data) => send('eventHubEvent', { type, data }) };
 }

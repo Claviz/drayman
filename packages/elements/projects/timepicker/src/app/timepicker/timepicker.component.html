@@ -1,6 +1,6 @@
 <mat-form-field aria-label="Timepicker field" [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
   <mat-label *ngIf="label">{{label}}</mat-label>
-  <input matInput [formControl]="formControl" [errorStateMatcher]="errorStateMatcher" autocomplete="off"
+  <input [id]="id" matInput [formControl]="formControl" [errorStateMatcher]="errorStateMatcher" autocomplete="off"
     (blur)="onBlur()" mask="Hh:m0" [leadZeroDateTime]="true" [dropSpecialCharacters]="false">
   <div fxLayout="row" matSuffix>
     <!-- <button aria-label="Open timepicker" class="mat-datepicker-toggle" mat-icon-button matTooltip="Open timepicker"

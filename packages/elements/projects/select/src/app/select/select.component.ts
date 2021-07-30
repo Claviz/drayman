@@ -27,6 +27,7 @@ export class SelectComponent extends FieldBase<any> {
   @Input() error?: string;
   @Input() onValueChange?: ElementEvent<{ value: any }>;
   @Input() updateOnBlur?: boolean;
+  @Input() appearance: string;
 
   searchControl: FormControl;
   searchChanges$: Subscription;

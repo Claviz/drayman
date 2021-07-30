@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FieldBase } from '../../../../shared/components/field-base';
+import { generate } from 'shortid';
 
 @Component({
   selector: 'drayman-checkbox-internal',
@@ -16,6 +17,7 @@ export class CheckboxComponent extends FieldBase<boolean> implements OnChanges {
   @Input() helpText?: string;
   @Input() error?: string;
   @Input() updateOnBlur?: boolean;
+  id = generate();
 
   //todo: remove when fix will be available
   ngOnChanges(simpleChanges: SimpleChanges) {

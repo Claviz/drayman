@@ -54,27 +54,6 @@ const patch = init([
 //     }
 // }
 
-function debounce(func, wait, options) {
-    let timeout;
-    return function () {
-        let context = this,
-            args = arguments,
-            later,
-            callNow;
-        later = function () {
-            timeout = null;
-            if (options.trailing) {
-                func.apply(context, [{ trailing: true, }, ...args]);
-            }
-        };
-        callNow = options.leading && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) {
-            func.apply(context, [{ leading: true, }, ...args]);
-        }
-    };
-}
 
 // const onInput = (props, event) => {
 // }
@@ -146,7 +125,7 @@ function mapEvent(event): EventOptions {
 const createdElements = {};
 
 customElements.define('drayman-element', class extends HTMLElement {
-    config: any;
+    // // config: any;
     // component: string;
     componentInstanceId: string;
     previouslySerializedTree = [];
@@ -186,8 +165,8 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     attributeChangedCallback(attrName, oldValue, newValue) {
-        if (attrName === 'options' && this.config) {
-            this.config.connection.updateComponentInstanceProps({ componentInstanceId: this.componentInstanceId, options: this.options });
+        if (attrName === 'options' && window['draymanConfig']) {
+            window['draymanConfig'].connection.updateComponentInstanceProps({ componentInstanceId: this.componentInstanceId, options: this.options });
         }
         // if (attrName )
         // this[attrName] = newValue;
@@ -196,28 +175,84 @@ customElements.define('drayman-element', class extends HTMLElement {
         // }
     }
 
-    getFn(eventName, eventOptions) {
+    debounce(eventName, wait, options) {
+        let timeout;
+        let toReject;
+        return (c, d) => {
+            return new Promise(async (resolve, reject) => {
+                // let context = this,
+                //     args = arguments,
+                //     later,
+                //     callNow;
+                let later = async () => {
+                    timeout = null;
+                    if (options.trailing) {
+                        // return func.apply(context, [{ trailing: true, }, ...args]);
+                        // return await func(a, [{ trailing: true }], c, d);
+                        resolve(await this.emit(eventName, { trailing: true }, c, d));
+                        // return await this.emit(eventName, [{ trailing: true }], c, d);
+                    }
+                };
+                let callNow = options.leading && !timeout;
+                clearTimeout(timeout);
+                if (toReject) {
+                    toReject();
+                }
+                timeout = setTimeout(later, wait);
+                toReject = reject;
+                if (callNow) {
+                    resolve(await this.emit(eventName, { leading: true }, c, d));
+                    // return await this.emit(eventName, [{ leading: true }], c, d);
+                    // async (a, b, c, d) => await this.emit(eventName, b, c, d), wait, { trailing, leading }
+                    // return await func(a, [{ leading: true }], c, d);
+                    // return func.apply(context, [{ leading: true, }, ...args]);
+                }
+            }).catch(() => { });
+        };
+    }
+
+    getFn(element, eventName, elementOptions) {
         // const optionMapper = (options) => {
-        //     let get = eventOptions?.get || {};
+        //     let get = elementOptions?.get || {};
         //     const obj = {};
         //     for (let key of Object.keys(get)) {
         //         obj[key] = getProp(options, get[key]);
         //     }
         //     return obj;
         // }
-        if (this.config.eventOptions) {
-            eventOptions = { ...this.config.eventOptions, ...(eventOptions || {}) };
-        }
-        if (typeof eventOptions === 'object') {
-            if (eventOptions.debounce) {
-                let wait = typeof eventOptions.debounce === 'number' ? eventOptions.debounce : eventOptions.debounce.wait;
-                let trailing = typeof eventOptions.debounce === 'number' ? true : !!eventOptions.debounce?.trailing;
-                let leading = !!eventOptions.debounce?.leading;
-                return debounce(this.emit.bind(this, eventName), wait, { trailing, leading });
+        // // if (window['draymanConfig'].elementOptions) {
+        // //     console.log(`all element options`, window['draymanConfig'].elementOptions)
+        // //     for (const [currentElement, currentElementOption] of Object.entries(window['draymanConfig'].elementOptions)) {
+        // //         console.log(`to apply`, currentElement, currentElementOption, element)
+        // //         if (new RegExp(currentElement).test(element)) {
+        // //             if (window['draymanConfig'].elementOptions[currentElement].eventOptions) {
+        // //                 for (const [currentEvent, currentEventOption] of Object.entries(window['draymanConfig'].elementOptions[currentElement].eventOptions)) {
+        // //                     if (new RegExp(currentEvent).test(eventName)) {
+        // //                         elementOptions = { ...(currentEventOption as any), ...(elementOptions || {}), };
+        // //                         console.log(`applied`, elementOptions);
+        // //                     }
+        // //                 }
+        // //             }
+
+        // //         }
+        // //     }
+        // // }
+        if (typeof elementOptions === 'object') {
+            if (elementOptions.debounce) {
+                let wait = typeof elementOptions.debounce === 'number' ? elementOptions.debounce : elementOptions.debounce.wait;
+                let trailing = typeof elementOptions.debounce === 'number' ? true : !!elementOptions.debounce?.trailing;
+                let leading = !!elementOptions.debounce?.leading;
+                const debounced = this.debounce(
+                    eventName, wait, { trailing, leading }
+                    // async (a, b, c, d) => await this.emit(eventName, b, c, d), wait, { trailing, leading }
+                );
+                return debounced;
+                // return debounce(this.emit.bind(this, eventName), wait, { trailing, leading });
             }
         }
-        // return this.emit(eventName, eventOptions);
-        return this.emit.bind(this, eventName, null);
+        return async (c, d) => await this.emit(eventName, null, c, d);
+        // return this.emit(eventName, elementOptions);
+        // return this.emit.bind(this, eventName, null);
     }
 
     emit = async (eventName: string, info = {}, options = {}, files: any[] = []) => {
@@ -228,10 +263,17 @@ customElements.define('drayman-element', class extends HTMLElement {
         for (let file of files) {
             formData.append('file', file.file, file.fileName);
         }
-        return await this.config?.connection.postFormData(formData);
+        return await window['draymanConfig']?.connection.postFormData(formData);
     }
 
     traverseTree(child: { sel: any; data: any; children: any; text: any; key: string; }): any {
+        if (window['draymanConfig'].elementOptions) {
+            for (const [currentElement, currentElementOption] of Object.entries(window['draymanConfig'].elementOptions)) {
+                if (child.sel === currentElement) {
+                    child.data.props = { ...child.data.props, ...(currentElementOption as any) };
+                }
+            }
+        }
         if (child.sel?.includes('-')) {
             // const options = {};
             for (const option of Object.keys(child.data.props || {})) {
@@ -239,7 +281,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                     if (!this.events[`${child.key}/${option}`]) {
                         // const fn = this.emit.bind(this, `${child.data._key}/${option}`);
                         // const fn = (x) => this.emit(`${child.data._key}/${option}`, x);
-                        this.events[`${child.key}/${option}`] = this.getFn(`${child.key}/${option}`, child.data.props[option]);
+                        this.events[`${child.key}/${option}`] = this.getFn(child.sel, `${child.key}/${option}`, child.data.props[option]);
                     }
                     child.data.props[option] = this.events[`${child.key}/${option}`];
                     // delete child.data.props[option];
@@ -248,7 +290,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             if (!customElements.get(child.sel) && !createdElements[child.sel]) {
                 createdElements[child.sel] = true;
                 const my_awesome_script = document.createElement('script');
-                my_awesome_script.setAttribute('src', `${this.config.elementUrl}${child.sel}`);
+                my_awesome_script.setAttribute('src', `${window['draymanConfig'].elementUrl}${child.sel}`);
                 document.head.appendChild(my_awesome_script);
             }
             // child.data.props.options = options;
@@ -286,7 +328,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 // }
                 //     this.emit(`${child.data._key}/${optionName}`, x);
                 // };
-                this.events[`${child.key}/${optionName}`] = this.getFn(`${child.key}/${optionName}`, options);
+                this.events[`${child.key}/${optionName}`] = this.getFn(child.sel, `${child.key}/${optionName}`, options);
                 // }, events[`${child.data._key}/${optionName}start`], 500);
             }
             child.data.on[optionName] = (x) => {
@@ -327,52 +369,58 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     once = false;
+    updateId = 0;
     async connectedCallback() {
-        document.addEventListener('draymanInit', async (e: CustomEvent) => {
-            if (this.config) {
-                return;
-            }
-            this.config = e.detail.config;
-            const browserCommands = this.config.browserCommands?.((callbackId, data) => this.config?.connection.handleBrowserCallback({ callbackId, data, })) || {};
-            let rootNode = document.createElement('drayman-element-container') as any;
-            this.appendChild(rootNode);
-            // while (!this.config) {
-            //     console.log(`waiting for config`);
-            //     await new Promise(resolve => setTimeout(resolve, 100));
-            // }
-            // const script = await fetch(`/elements/drayman-button`);
-            // console.log(script);
-            // console.log('attrib get', this.getAttribute('options'))
-            this.componentInstanceId = await this.config.connection.initializeComponent({
-                componentId: this.component,
-                componentOptions: this.options,
-                browserCommands: Object.keys(browserCommands),
-            });
-            this.config.connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
-                if (type === 'view') {
-                    // applyPatch(this.previouslySerializedTree, (payload.view || []));
-                    // const tree = JSON.parse(JSON.stringify(this.previouslySerializedTree));
-                    // console.log(this.previouslySerializedTree);
-                    const newNode = h('drayman-element-container', {}, payload.view.map(x => this.traverseTree(x)));
-                    // this.viewTree = tree;
-                    patch(rootNode, newNode);
-                    rootNode = newNode;
-                    // this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
-                    // const node = document.getElementsByClassName('.rofl')[0];
-                    // console.log({ node })
-                    // if (!this.once) {
-                    //     this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
-                    //     this.once = true;
-                    // }
-                } else if (type === 'browserCommand') {
-                    const { data, callbackId, command } = payload;
-                    // snackbar.afterDismissed().subscribe((data) => {
-                    const response = await browserCommands[command](data);
-                    this.config?.connection.handleBrowserCallback({ callbackId, data: response });
-                    // })
-                }
-            });
+        // document.addEventListener('draymanInit', async (e: CustomEvent) => {
+        // if (window['draymanConfig']) {
+        //     return;
+        // }
+        // window['draymanConfig'] = e.detail.config;
+        while (!window['draymanConfig']) {
+            console.log(`waiting for config`);
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        const browserCommands = window['draymanConfig'].browserCommands?.((callbackId, data) => window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, })) || {};
+        let rootNode = document.createElement('drayman-element-container') as any;
+        this.appendChild(rootNode);
+        // while (!window['draymanConfig']) {
+        //     console.log(`waiting for config`);
+        //     await new Promise(resolve => setTimeout(resolve, 100));
+        // }
+        // const script = await fetch(`/elements/drayman-button`);
+        // console.log(script);
+        // console.log('attrib get', this.getAttribute('options'))
+        this.componentInstanceId = await window['draymanConfig'].connection.initializeComponent({
+            componentId: this.component,
+            componentOptions: this.options,
+            browserCommands: Object.keys(browserCommands),
         });
+        window['draymanConfig'].connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
+            if (type === 'view' && payload.updateId > this.updateId) {
+                this.updateId = payload.updateId;
+                // applyPatch(this.previouslySerializedTree, (payload.view || []));
+                // const tree = JSON.parse(JSON.stringify(this.previouslySerializedTree));
+                // console.log(this.previouslySerializedTree);
+                const newNode = h('drayman-element-container', {}, payload.view.map(x => this.traverseTree(x)));
+                // this.viewTree = tree;
+                patch(rootNode, newNode);
+                rootNode = newNode;
+                // this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
+                // const node = document.getElementsByClassName('.rofl')[0];
+                // console.log({ node })
+                // if (!this.once) {
+                //     this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
+                //     this.once = true;
+                // }
+            } else if (type === 'browserCommand') {
+                const { data, callbackId, command } = payload;
+                // snackbar.afterDismissed().subscribe((data) => {
+                const response = await browserCommands[command](data);
+                window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
+                // })
+            }
+        });
+        // });
         // let i = 0;
         // setInterval(() => {
         //     console.log(this.getAttribute('component'), this.getAttribute('options'))
@@ -390,7 +438,7 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.config.connection?.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
+        window['draymanConfig'].connection?.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
     }
 });
 

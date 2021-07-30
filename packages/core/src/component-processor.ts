@@ -68,6 +68,7 @@ let prevProps = {};
 let props = {};
 // const $meta = {};
 let extensions: { importable: any } = { importable: null };
+let updateId = 0;
 
 const serializeComponentInstanceOptions = (options: any) => {
     const serialized: { [key: string]: any } = {};
@@ -158,6 +159,7 @@ const initializeComponentInstance = async ({ browserCommands = [], extensionsPat
         };
     }
     forceUpdate = async () => {
+        updateId++;
         const compResult = await componentResult({ prevProps });
         prevProps = { ...props };
         const result = await render(compResult, childRenderer);
@@ -198,7 +200,7 @@ const initializeComponentInstance = async ({ browserCommands = [], extensionsPat
 
         // const delta = jsondiff.diff(previouslySerializedTree, result.tree);
         // const delta = compare(previouslySerializedTree, result.tree);
-        sendMessage({ type: 'view', payload: { view: result.tree } });
+        sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
         // previouslySerializedTree = { ...result.tree };
         // previouslySerializedTree = JSON.parse(JSON.stringify(result.tree));
         // process?.send?.({ type: 'view', payload: { view: serializedView } });
