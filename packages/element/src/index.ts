@@ -376,7 +376,7 @@ customElements.define('drayman-element', class extends HTMLElement {
         //     return;
         // }
         // window['draymanConfig'] = e.detail.config;
-        while (!window['draymanConfig']) {
+        while (!window['draymanConfig'] || !this.component) {
             console.log(`waiting for config`);
             await new Promise(resolve => setTimeout(resolve, 100));
         }
