@@ -1,4 +1,4 @@
-import { svgElementAttributes, htmlElementAttributes } from './elements';
+import { svgElementAttributes, htmlElementAttributes } from 'all-html-attributes';
 
 export const isEvent = (optionName: string) => optionName?.length > 2 && optionName.slice(0, 2) === 'on';
 // export const isEvent = (optionName: string) => optionName?.length > 2 && optionName.slice(0, 2) === 'on' && optionName[2] === optionName[2].toUpperCase();

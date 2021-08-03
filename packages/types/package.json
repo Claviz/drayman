@@ -3,7 +3,10 @@
   "version": "1.0.0-alpha.54",
   "description": "",
   "scripts": {
-    "test": "dtslint --localTs node_modules/typescript/lib types"
+    "tsc": "tsc",
+    "test": "dtslint --localTs node_modules/typescript/lib types",
+    "build:types": "npm run build && node ./dist/type-builder",
+    "build": "tsc"
   },
   "files": [
     "types/index.d.ts"
@@ -13,8 +16,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^14.14.41",
+    "@types/fs-extra": "^9.0.12",
+    "@types/lodash": "^4.14.172",
+    "@types/node": "^16.4.10",
+    "all-html-attributes": "^1.0.4",
     "dtslint": "^4.0.9",
+    "fs-extra": "^10.0.0",
+    "lodash": "^4.17.21",
     "typescript": "^4.2.4"
   },
   "dependencies": {
