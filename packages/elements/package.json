@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.0.0-alpha.57",
+  "version": "1.0.0-alpha.59",
   "description": "Default drayman elements library",
   "license": "MIT",
   "keywords": [
@@ -90,7 +90,7 @@
     }
   },
   "dependencies": {
-    "@drayman/types": "^1.0.0-alpha.54",
+    "@drayman/types": "^1.0.0-alpha.59",
     "claviz-charts": "0.5.0"
   },
   "devDependencies": {

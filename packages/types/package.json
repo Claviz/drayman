@@ -1,6 +1,6 @@
 {
   "name": "@drayman/types",
-  "version": "1.0.0-alpha.54",
+  "version": "1.0.0-alpha.59",
   "description": "",
   "scripts": {
     "tsc": "tsc",
