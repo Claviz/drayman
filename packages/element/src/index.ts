@@ -438,7 +438,7 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     disconnectedCallback() {
-        window['draymanConfig'].connection?.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
+        window['draymanConfig']?.connection?.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
     }
 });
 
