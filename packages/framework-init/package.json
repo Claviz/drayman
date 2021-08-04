@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework-init",
-  "version": "1.0.0-alpha.59",
+  "version": "1.0.0-alpha.61",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
