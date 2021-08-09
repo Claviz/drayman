@@ -7,9 +7,10 @@
   },
   "devDependencies": {
     "@drayman/types": "^1.0.0-alpha.59",
+    "@types/node": "16.4.13",
     "typescript": "~4.1.5"
   },
   "dependencies": {
-    "@drayman/framework": "^1.0.0-alpha.59"
+    "@drayman/framework": "^1.0.0-alpha.62"
   }
 }
