@@ -1,7 +1,7 @@
 import '@drayman/element';
 
 const waitForConnection = () => new Promise<WebSocket>((resolve, reject) => {
-    const socket = new WebSocket(`ws://${window.location.host}/`);
+    const socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/`);
     socket.addEventListener('open', (ev) => { resolve(socket); })
 });
 
