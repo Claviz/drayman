@@ -9,7 +9,7 @@
         "esModuleInterop": true,
         "types": [
             "@drayman/types",
-            "node"
+            "@types/node"
         ]
     },
     "include": [
