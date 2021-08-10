@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework-template",
-  "version": "1.0.0-alpha.63",
+  "version": "1.0.0-alpha.65",
   "private": true,
   "scripts": {
     "start": "drayman-framework start"
@@ -11,6 +11,6 @@
     "typescript": "~4.1.5"
   },
   "dependencies": {
-    "@drayman/framework": "^1.0.0-alpha.62"
+    "@drayman/framework": "^1.0.0-alpha.65"
   }
 }
