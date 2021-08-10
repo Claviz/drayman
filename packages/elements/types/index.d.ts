@@ -47,7 +47,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanButtonProps extends DraymanButton { }
+    interface DraymanButtonProps extends DraymanButton, DefaultElementProps { }
     /**
      * # <drayman-table \/>
      *
@@ -195,7 +195,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTableProps extends DraymanTable { }
+    interface DraymanTableProps extends DraymanTable, DefaultElementProps { }
     /**
      * # <drayman-checkbox \/>
      *
@@ -227,7 +227,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanCheckboxProps extends DraymanCheckbox { }
+    interface DraymanCheckboxProps extends DraymanCheckbox, DefaultElementProps { }
     /**
      * # <drayman-claviz-charts \/>
      *
@@ -290,7 +290,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanClavizChartsProps extends DraymanClavizCharts { }
+    interface DraymanClavizChartsProps extends DraymanClavizCharts, DefaultElementProps { }
     /**
      * # <drayman-datepicker \/>
      *
@@ -331,7 +331,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanDatepickerProps extends DraymanDatepicker { }
+    interface DraymanDatepickerProps extends DraymanDatepicker, DefaultElementProps { }
     /**
      * # <drayman-file-uploader \/>
      *
@@ -360,7 +360,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanFileUploaderProps extends DraymanFileUploader { }
+    interface DraymanFileUploaderProps extends DraymanFileUploader, DefaultElementProps { }
     /**
      * # <drayman-ngx-charts \/>
      *
@@ -389,7 +389,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanNgxChartsProps extends DraymanNgxCharts { }
+    interface DraymanNgxChartsProps extends DraymanNgxCharts, DefaultElementProps { }
     /**
      * # <drayman-ngx-graph \/>
      *
@@ -451,7 +451,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanNgxGraphProps extends DraymanNgxGraph { }
+    interface DraymanNgxGraphProps extends DraymanNgxGraph, DefaultElementProps { }
     /**
      * # <drayman-number-field \/>
      *
@@ -493,7 +493,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanNumberFieldProps extends DraymanNumberField { }
+    interface DraymanNumberFieldProps extends DraymanNumberField, DefaultElementProps { }
     /**
      * # <drayman-pdf-viewer \/>
      *
@@ -566,7 +566,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanPdfViewerProps extends DraymanPdfViewer { }
+    interface DraymanPdfViewerProps extends DraymanPdfViewer, DefaultElementProps { }
     /**
      * # <drayman-radio-group \/>
      *
@@ -636,7 +636,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanRadioGroupProps extends DraymanRadioGroup { }
+    interface DraymanRadioGroupProps extends DraymanRadioGroup, DefaultElementProps { }
     /**
      * # <drayman-select \/>
      *
@@ -732,7 +732,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanSelectProps extends DraymanSelect { }
+    interface DraymanSelectProps extends DraymanSelect, DefaultElementProps { }
     /**
      * # <drayman-text-field \/>
      *
@@ -827,7 +827,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTextFieldProps extends DraymanTextField { }
+    interface DraymanTextFieldProps extends DraymanTextField, DefaultElementProps { }
     /**
      * # <drayman-textarea-field \/>
      *
@@ -861,7 +861,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTextareaFieldProps extends DraymanTextareaField { }
+    interface DraymanTextareaFieldProps extends DraymanTextareaField, DefaultElementProps { }
     /**
      * # <drayman-timepicker \/>
      *
@@ -917,7 +917,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanTimepickerProps extends DraymanTimepicker { }
+    interface DraymanTimepickerProps extends DraymanTimepicker, DefaultElementProps { }
     /**
      * # <drayman-youtube-player \/>
      *
@@ -940,7 +940,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanYoutubePlayerProps extends DraymanYoutubePlayer { }
+    interface DraymanYoutubePlayerProps extends DraymanYoutubePlayer, DefaultElementProps { }
     /**
      * # <drayman-menu \/>
      *
@@ -985,7 +985,7 @@ declare global {
      * }
      * ```
      */
-    interface DraymanMenuProps extends DraymanMenu { }
+    interface DraymanMenuProps extends DraymanMenu, DefaultElementProps { }
     namespace JSX {
         export interface IntrinsicElements {
             'drayman-button': DraymanButtonProps;
