@@ -6,7 +6,7 @@ import _ from 'lodash';
 const codeSandboxConfig = {
     template: 'node',
     infiniteLoopProtection: true,
-    hardReloadOnChange: false,
+    hardReloadOnChange: true,
     view: 'browser',
     container: {
         node: '14',

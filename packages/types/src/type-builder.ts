@@ -14,7 +14,7 @@ const generateIntrinsicElements = ({ fileLines, intrinsicElements, attributes, i
             fileLines.push(`\tinterface ${interfaceName} extends ${defaultInterface} {`);
         }
         for (const attribute of attributes[element]) {
-            fileLines.push(`\t\t"${attribute}"?: ${attribute === 'style' ? 'CSS' : 'string'};`);
+            fileLines.push(`\t\t"${attribute}"?: ${attribute === 'style' ? 'CSS' : 'any'};`);
         }
         fileLines.push(`\t}\n`);
     }

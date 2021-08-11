@@ -113,13 +113,10 @@ const start = () => {
     const wss = new WebSocket.Server({ server });
     wss.on('connection', function connection(ws) {
         const connectionId = shortid();
-        console.log('connect', connectionId);
         ws.on('close', () => {
-            console.log('close', connectionId);
             draymanCore.onDisconnect({ connectionId });
         });
         ws.on('message', function incoming(message: string) {
-            console.log(message);
             const { id, data, type } = JSON.parse(message);
             if (type === 'initializeComponentInstance') {
                 const { componentId, componentOptions, browserCommands } = data;

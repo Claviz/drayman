@@ -183,9 +183,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         debounceTime(500),
         tap(({ actionName, parameters }) => {
           if (this[actionName]) {
-            console.log(this[actionName]);
             this[actionName](parameters).then((x) => {
-              console.log(`xxxx`, x);
               this.loading = false
             });
           } else {
@@ -235,7 +233,6 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
     if (changes.initialSearchValue?.firstChange) {
       this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
     }
