@@ -1,5 +1,5 @@
 ---
-title: Component helpers
+title: forceUpdate()
 sidebar_position: 2
 ---
 

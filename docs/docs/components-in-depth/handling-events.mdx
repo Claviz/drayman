@@ -1,0 +1,134 @@
+---
+title: Handling events
+sidebar_position: 2
+---
+
+Each element attribute which starts with an `on` prefix is considered by Drayman as an event. All events are fired in browser and then executed server-side (if you want to execute something insde browser, you can use [Browser object](./helpers/the-browser-object)).
+
+## Basic event usage
+
+You can use any known [HTML element event](https://html.spec.whatwg.org/multipage/indices.html#attributes-3) when developing Drayman components. Simply add required event as an attribute and assign an `async` function which will be executed when event is fired:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let text: string;
+
+  return () => {
+    return (
+      <>
+        <input
+          //highlight-start
+          oninput={async ({ value }) => {
+            text = value;
+            await forceUpdate();
+          }}
+          //highlight-end
+        />
+        <h3>{text}</h3>
+      </>
+    );
+  };
+};
+```
+
+Some events provide useful data when it is fired. In example above, `oninput` event provides a `value` which is a user-typed text. You can find full list of emitted data below.
+
+### Generic data
+
+All [configured events](#configuring-events) emit this data in addition to event-specific data:
+
+```text
+trailing, leading
+```
+
+### Data for keyboard events
+
+```text
+altKey, shiftKey, ctrlKey, metaKey, code, key, location, repeat
+```
+
+### Data for mouse events
+
+```text
+altKey, shiftKey, ctrlKey, metaKey, x, y, pageX, pageY, screenX, screenY, offsetX, offsetY
+```
+
+### Data for `oninput`, `onchange` events
+
+```text
+value
+```
+
+### Data for Drayman component events
+
+Component events are simple props which name starts with an `on` prefix. Because components and props (events) are created by you, you can pass any data you want. You can read [here](./helpers/props) how to work with component props.
+
+### Data for third-party Drayman component elements
+
+Please refer to specific third-party element documentation to check which data is emitted.
+
+## Configuring events
+
+In addition to function which will be executed on event, you can pass some configuration. Lets modify our previous example a bit:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let text: string;
+
+  return () => {
+    return (
+      <>
+        <input
+          //highlight-start
+          oninput={[
+            async ({ value, trailing }) => {
+              text = value;
+              await forceUpdate();
+            },
+            { debounce: { wait: 500, trailing: true } },
+          ]}
+          //highlight-end
+        />
+        <h3>{text}</h3>
+      </>
+    );
+  };
+};
+```
+
+Now we pass an array to `oninput` event. First element of this array is a function which needs to be executed on event. Second element - event configuration. In our case we tell to debounce our event for 500ms and execute a function on a trailing edge. In addition to `value` data, our event also receives `trailing` indicator, which will be `true` because function was executed on a trailing edge.
+
+You can use a shorthand for this configuration:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let text: string;
+
+  return () => {
+    return (
+      <>
+        <input
+          oninput={[
+            async ({ value, trailing }) => {
+              text = value;
+              await forceUpdate();
+            },
+            //highlight-next-line
+            { debounce: 500 },
+          ]}
+        />
+        <h3>{text}</h3>
+      </>
+    );
+  };
+};
+```
+
+It is also possible to configure element events globally using [elementOptions](../introduction/configuration#elementoptions)
+
+### Event configuration options
+
+- debounce - `number` or `object`:
+  - wait - `number` - number of ms to delay;
+  - trailing - `boolean` - invokes function on the trailing edge;
+  - leading - `boolean` - invokes function on the leading edge.

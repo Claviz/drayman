@@ -5,28 +5,25 @@ sidebar_position: 3
 
 Drayman allows using server-side and client-side code together. This allows you to easily combine server-side libraries, file-system queries, database connections, managing user-sensitive data and creating UI inside single script.
 
-On this page you will find out how to easily build user list manager powered by persistent datastore library [nedb-promises](https://github.com/bajankristof/nedb-promises).
+On this page you will find out how to easily build user list manager using Node.js library [fs-extra](https://github.com/jprichardson/node-fs-extra).
 
 ## Building full stack component
 
-Let's build UI for adding user data to database. First, Drayman needs to be installed using [Getting started guide](./getting-started.md).
-
-Install [nedb-promises](https://github.com/bajankristof/nedb-promises) library using this script:
+Let's build UI for adding user data to JSON file. First, Drayman needs to be installed using [Getting started guide](./getting-started). Then install [fs-extra](https://github.com/jprichardson/node-fs-extra) library using this script:
 
 ```bash
-npm install nedb-promises
+npm install fs-extra @types/fs-extra
 ```
 
-After Drayman is up and running and nedb is installed, replace `home.tsx` script as follows:
+After Drayman is up and running and fs-extra is installed, replace `home.tsx` script as follows:
 
 ```tsx title="src/components/home.tsx"
-import Datastore from "nedb-promises";
+import { readJSON, writeJson, pathExists } from "fs-extra";
 
 export const component: DraymanComponent = async ({ forceUpdate }) => {
+  const filePath = "./data.json";
   let user: string;
-
-  const db = new Datastore({ filename: "./data.db", autoload: true });
-  const userList = (await db.find<{ user: string }>({})).map((x) => x.user);
+  const userList = (await pathExists(filePath)) ? await readJSON(filePath) : [];
 
   return () => {
     return (
@@ -43,7 +40,7 @@ export const component: DraymanComponent = async ({ forceUpdate }) => {
           disabled={!user}
           onclick={async () => {
             userList.push(user);
-            await db.insert({ user });
+            await writeJson(filePath, userList);
             user = null;
             await forceUpdate();
           }}
@@ -66,18 +63,17 @@ After heading up to [http://localhost:3033/](http://localhost:3033/) you will se
 - Input for user name.
 - Button which is disabled until some user name is entered and saves this name to database after it is clicked.
 
-Let's input two names - "Alice", click a button, "Bob", click a button. You will immediately see a list of names below input and button. If you reload this page you will still see this list. That is because it was stored persistently. You can now check contents of this database in your file system:
+Let's input two names - "Alice", click a button, "Bob", click a button. You will immediately see a list of names below input and button. If you reload this page you will still see this list. That is because it was stored in your file system. You can now check contents of this file:
 
 ```bash
 my-app
-└── data.db
+└── data.json
 ```
 
-If you check `data.db` contents you will see something similar to this:
+If you check `data.json` contents you will see something similar to this:
 
-```text title="data.db"
-{"user":"Alice","_id":"65tYOhzAakhwqDSG"}
-{"user":"Bob","_id":"Zuo3hNv5lKOumMPd"}
+```text title="data.json"
+["Alice","Bob"]
 ```
 
-So now you have created a component which combines server-side and client-side code inside single script. In place of [nedb-promises](https://github.com/bajankristof/nedb-promises) you can use any other database library which is available for Node.js, without separating client and server code.
+So now you have created a component which combines server-side and client-side code inside single script. In place of file system you can use any other database library which is available for Node.js, without separating client and server code.

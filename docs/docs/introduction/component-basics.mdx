@@ -17,7 +17,7 @@ export const component: DraymanComponent = async () => {
 
 It displays heading saying "Hello, world!":
 
-<BrowserWindow>
+<BrowserWindow url="http://localhost:3033">
   <h1>Hello, world!</h1>
 </BrowserWindow>
 
@@ -25,7 +25,7 @@ In comparison to classic front-end frameworks, Drayman acts differently. Compone
 
 ## Creating a component
 
-Every component should be placed under `src/components` directory. In fact, if you have already installed Drayman using [Getting started guide](./getting-started.md), a "Hello, world!" component inside `home.tsx` file is already placed there:
+Every component should be placed under `src/components` directory (this behavior can be changed in [configuration](./configuration)). In fact, if you have already installed Drayman using [Getting started guide](./getting-started), a "Hello, world!" component inside `home.tsx` file is already placed there:
 
 ```bash
 my-app
@@ -33,6 +33,10 @@ my-app
    └── components
       └── home.tsx
 ```
+
+:::caution
+You must create separate file for each component.
+:::
 
 Let's create a simple component which increases counter on button click. Add a new file to `src/components` directory called `counter.tsx`. Add this code:
 
@@ -80,11 +84,15 @@ export const component: DraymanComponent = async () => {
 
 We have added `<counter />` and now in addition to "Hello, world!" text, `home.tsx` displays our newly created counter component.
 
+:::tip
+Components can also have properties. You can read about props [here](../components-in-depth/helpers/props).
+:::
+
 ## Using component as web component
 
 With Drayman, you can use created components anywhere on page. Any framework which allows web component usage, also can render Drayman component. This allows you to use server-side components in any environment.
 
-If you have created a project using [Getting started guide](./getting-started.md), starting point of application is located inside `public/index.html`:
+If you have created a project using [Getting started guide](./getting-started), starting point of application is located inside `public/index.html`:
 
 ```html title="public/index.html"
 <!DOCTYPE html>

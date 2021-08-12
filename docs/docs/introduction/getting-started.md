@@ -3,7 +3,19 @@ title: Getting started
 sidebar_position: 1
 ---
 
+Drayman is a server-side component framework. It means that browser only renders **what user should see** - all logic and calculations happen **server-side**. For displaying UI, you can use any available **HTML element, web component or custom Drayman third-party component**. Both worlds - server-side and front-end code is managed inside a **single script**.
+
 Let's discover **Drayman in less than 5 minutes**.
+
+<!-- Drayman is 
+
+## Prerequisites
+These docs assume that you are familiar with such things as:
+* [Node.js](https://nodejs.org/en/)
+* [TypeScript](https://www.typescriptlang.org/)
+* [JSX](https://reactjs.org/docs/jsx-in-depth.html) -->
+
+## Installing locally
 
 Best way to start building with Drayman and use latest version available is to run:
 
@@ -14,6 +26,8 @@ npm start
 ```
 
 Website will be available at [http://localhost:3033](http://localhost:3033).
+
+## CodeSandbox
 
 You can also **try Drayman immediately** inside **[CodeSandbox](https://codesandbox.io/s/github/Claviz/drayman/tree/main/packages/framework-examples/drayman-framework-example?file=/src/components/home.tsx)**.
 

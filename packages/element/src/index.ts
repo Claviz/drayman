@@ -270,7 +270,21 @@ customElements.define('drayman-element', class extends HTMLElement {
         if (window['draymanConfig'].elementOptions) {
             for (const [currentElement, currentElementOption] of Object.entries(window['draymanConfig'].elementOptions)) {
                 if (child.sel === currentElement) {
-                    child.data.props = { ...child.data.props, ...(currentElementOption as any) };
+                    if (child.sel?.includes('-')) {
+                        child.data.props = { ...child.data.props, ...(currentElementOption as any) };
+                    } else {
+                        const props = {};
+                        const events = {};
+                        for (const option of Object.keys(currentElementOption)) {
+                            if (isEvent(option)) {
+                                events[option.substring(2)] = currentElementOption[option];
+                            } else {
+                                props[option] = currentElementOption[option];
+                            }
+                        }
+                        child.data.props = { ...child.data.props, ...(props as any) };
+                        child.data.on = { ...child.data.on, ...(events as any) };
+                    }
                 }
             }
         }

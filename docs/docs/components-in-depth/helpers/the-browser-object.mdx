@@ -1,0 +1,161 @@
+---
+title: The Browser object
+sidebar_position: 4
+---
+
+import BrowserWindow from "@site/src/components/BrowserWindow";
+
+The `Browser` object can be used to control browser. Here are some use-cases:
+
+- Showing modals, alerts, popups.
+- Retrieving browser info, current URL.
+- Accessing local storage, cookies.
+- Navigation, routing.
+
+## Showing alert inside browser
+
+First, you'll need to modify `initializeDraymanFramework` function inside `public/index.html`. Add browser commands function and alert function as shown below:
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    browserCommands: () => ({
+      // highlight-start
+      alert: async ({ text }) => {
+        alert(text);
+      },
+      // highlight-end
+    }),
+  });
+</script>
+
+...
+```
+
+Functions defined inside `browserCommands` will be executed by your browser. In our example we have added `alert` function which shows an alert inside browser when Drayman component asks to do so. And here is how Drayman component can do this:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ Browser }) => {
+  return () => {
+    return (
+      <button
+        onclick={async () => {
+          // highlight-next-line
+          await Browser.alert({ text: "Hello, world!" });
+        }}
+      >
+        Alert!
+      </button>
+    );
+  };
+};
+```
+
+We have exposed `Browser` object and told Drayman to execute `alert` function when user clicks a button.
+
+## Retrieving data from browser
+
+Functions defined inside `browserCommands` also can return some useful data:
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    browserCommands: () => ({
+      // highlight-start
+      getCurrentUrl: async () => {
+        return window.location.href;
+      },
+      // highlight-end
+    }),
+  });
+</script>
+
+...
+```
+
+Now this function can be used inside Drayman component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ Browser }) => {
+  // highlight-next-line
+  const currentUrl = await Browser.getCurrentUrl();
+
+  return () => {
+    return <h3>You are now here: {currentUrl}</h3>;
+  };
+};
+```
+
+In result user will see something like this:
+
+<BrowserWindow url="http://localhost:3033">
+  <h3>You are now here: http://localhost:3033/</h3>
+</BrowserWindow>
+
+## Executing callbacks
+
+You can also execute callbacks inside `browserCommands`. This can be useful if you are creating some interactive views (modals) and you need to wait for some user interaction.
+
+Let's modify our previous alert example:
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    // highlight-next-line
+    browserCommands: (emit) => ({
+      // highlight-next-line
+      alert: async ({ text, onClose }) => {
+        alert(text);
+        // highlight-next-line
+        emit(onClose);
+      },
+    }),
+  });
+</script>
+
+...
+```
+
+Pay attention on how `emit` parameter of `browserCommands` was introduced. It is used to tell Drayman to execute passed callbacks. In our case we are executing `onClose` callback after `alert` is executed. Now modify `home.tsx` component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ Browser, forceUpdate }) => {
+  let closed = false;
+
+  return () => {
+    return (
+      <>
+        <button
+          onclick={async () => {
+            await Browser.alert({
+              text: "Hello, world!",
+              onClose: async () => {
+                closed = true;
+                await forceUpdate();
+              },
+            });
+          }}
+        >
+          Alert!
+        </button>
+        {closed && <h3>You have closed an alert!</h3>}
+      </>
+    );
+  };
+};
+```
+
+Now when user clicks a button, an alert will be shown. After closing an alert, a text "You have closed an alert!" will be shown on page:
+
+<BrowserWindow url="http://localhost:3033">
+  <button>Alert!</button>
+  <h3>You have closed an alert!</h3>
+</BrowserWindow>
+
+And remember, instead of showing a text, you are free to execute any server-side code (for example, saving some data to database).

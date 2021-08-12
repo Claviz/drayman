@@ -1,0 +1,105 @@
+---
+title: Configuration
+sidebar_position: 4
+---
+
+Drayman configuration can be managed inside `drayman.config.js` file.
+
+A default configuration looks like this:
+
+```js title="drayman.config.js"
+module.exports = {
+  componentsDir: "src/components",
+  componentsOutputDir: "dist/components",
+  publicDir: "public",
+};
+```
+
+You can manage where your components are stored, where to put compiled components and where your `index.html` is located.
+
+## Drayman initialization
+
+Drayman initialization can be configured when executing `initializeDraymanFramework()` function which is by default located inside `public/index.html` file:
+
+```html title="public/index.html"
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Drayman Framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/drayman-framework-client.js"></script>
+  </head>
+
+  <body>
+    <drayman-element component="home"></drayman-element>
+
+    <script>
+      // highlight-next-line
+      initializeDraymanFramework();
+    </script>
+  </body>
+</html>
+```
+
+This function accepts an object with some configurable options which are described below.
+
+### browserCommands
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    // highlight-start
+    browserCommands: () => ({
+      alert: async ({ text }) => {
+        alert(text);
+      },
+      getCurrentUrl: async () => {
+        return window.location.href;
+      },
+    }),
+    // highlight-end
+  });
+</script>
+
+...
+```
+
+Can be used to describe commands which are executed inside user browser.
+More detailed description of this functionality can be found here - [The Browser
+object](../components-in-depth/helpers/the-browser-object).
+
+### elementOptions
+
+Can be used to configure default behavior of elements. Contains dictionary which describes each element and it's attributes:
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    // highlight-start
+    elementOptions: {
+      h3: { style: "color: red;" },
+      input: {
+        oninput: { debounce: 500 },
+      },
+    },
+    // highlight-end
+  });
+</script>
+
+...
+```
+
+Using this example will modify default behavior of elements:
+
+- All `<h3>` elements will have red text.
+- All `<input>` elements will be debounced by 500ms before data is sent to server.
+
+:::tip
+Element event configuration is described in detail [here](../components-in-depth/handling-events#configuring-events).
+:::
