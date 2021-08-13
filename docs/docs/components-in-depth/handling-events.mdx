@@ -59,10 +59,6 @@ altKey, shiftKey, ctrlKey, metaKey, x, y, pageX, pageY, screenX, screenY, offset
 value
 ```
 
-### Data for Drayman component events
-
-Component events are simple props which name starts with an `on` prefix. Because components and props (events) are created by you, you can pass any data you want. You can read [here](./helpers/props) how to work with component props.
-
 ### Data for third-party Drayman component elements
 
 Please refer to specific third-party element documentation to check which data is emitted.
@@ -128,7 +124,67 @@ It is also possible to configure element events globally using [elementOptions](
 
 ### Event configuration options
 
-- debounce - `number` or `object`:
-  - wait - `number` - number of ms to delay;
-  - trailing - `boolean` - invokes function on the trailing edge;
-  - leading - `boolean` - invokes function on the leading edge.
+### `debounce`
+
+Delays invoking event until `wait` milliseconds have elapsed since the last time the debounced event was invoked.
+
+`debounce` accepts `number` (ms to delay) or an object with options:
+
+#### `wait`
+
+Number of ms to delay.
+
+#### `trailing`
+
+If `true`, invokes event on the trailing edge.
+
+#### `leading`
+
+If `true`, invokes event on the leading edge.
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let text: string;
+
+  return () => {
+    return (
+      <>
+        <h3>{text}</h3>
+        <p>Debounce with ms</p>
+        <input
+          value={text}
+          oninput={[
+            async ({ value }) => {
+              text = value;
+              await forceUpdate();
+            },
+            { debounce: 500 },
+          ]}
+        />
+        <p>Debounce on trailing edge</p>
+        <input
+          value={text}
+          oninput={[
+            async ({ value }) => {
+              text = value;
+              await forceUpdate();
+            },
+            { debounce: { wait: 500, trailing: true } },
+          ]}
+        />
+        <p>Debounce on leading edge</p>
+        <input
+          value={text}
+          oninput={[
+            async ({ value }) => {
+              text = value;
+              await forceUpdate();
+            },
+            { debounce: { wait: 500, leading: true } },
+          ]}
+        />
+      </>
+    );
+  };
+};
+```

@@ -2,3 +2,96 @@
 title: The EventHub object
 sidebar_position: 5
 ---
+
+The EventHub object can be used to create a real-time communication between components.
+
+## EventHub methods
+
+### `emit(eventName, data, groupId?)`
+
+Emits an event.
+
+#### `eventName`
+
+Name of the event.
+
+#### `data`
+
+Data of the event.
+
+#### `groupId`
+
+Determines to which group an event will be sent.
+
+### `on(eventName, callback, groupId)`
+
+Listens to specific event and when event is received, calls `callback` function.
+
+#### `eventName`
+
+Name of the event.
+
+#### `data`
+
+Callback function which will be executed when specified event is received.
+
+#### `groupId`
+
+Receive event only for specific group.
+
+####
+
+## Building a component with real-time communication
+
+Let's build simplest possible chat implementation. If you open this component in two different windows, input some text and send it, this text also will be shown in second window and vice versa:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({
+  forceUpdate,
+  //highlight-next-line
+  EventHub,
+}) => {
+  let messages = [];
+  let message: string;
+
+  //highlight-start
+  EventHub.on("message", async ({ text }) => {
+    messages.push(text);
+    await forceUpdate();
+  });
+  //highlight-end
+
+  return () => {
+    return (
+      <>
+        <input
+          value={message}
+          oninput={async ({ value }) => {
+            message = value;
+            await forceUpdate();
+          }}
+        />
+        <button
+          onclick={async () => {
+            //highlight-start
+            await EventHub.emit("message", {
+              text: `${new Date().toISOString()}: ${message}`,
+            });
+            //highlight-end
+            message = null;
+            await forceUpdate();
+          }}
+          disabled={!message}
+        >
+          Send message
+        </button>
+        <ul>
+          {messages.map((x) => (
+            <li>{x}</li>
+          ))}
+        </ul>
+      </>
+    );
+  };
+};
+```

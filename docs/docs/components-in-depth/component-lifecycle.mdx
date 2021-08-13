@@ -1,0 +1,42 @@
+---
+title: Component lifecycle
+sidebar_position: 1
+---
+
+To see how component is handled by Drayman, let's take for example, a component which reads data from selected file and shows it to user:
+
+```tsx title="src/components/home.tsx"
+import fs from "fs/promises";
+
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  const files = ["", ...(await fs.readdir("."))];
+  let selectedFileContent: string;
+
+  return async () => {
+    return (
+      <>
+        <select
+          onchange={async ({ value }) => {
+            selectedFileContent = await fs.readFile(value, "utf-8");
+            await forceUpdate();
+          }}
+        >
+          {files.map((fileName) => (
+            <option value={fileName}>{fileName}</option>
+          ))}
+        </select>
+        <br />
+        {selectedFileContent && <pre>{selectedFileContent}</pre>}
+      </>
+    );
+  };
+};
+```
+
+When user visits a page with this component here is what happens:
+
+- A `module.execute` function gets called with [helper objects](./helpers/introduction) and returned function gets stored. Let's call this returned function a **render** function.
+- A data returned by **render** function is what user actually sees on the page. This function, in turn, gets called each time a `forceUpdate` function gets called (you can read about `forceUpdate` in detail [here](./helpers/force-update)). To show initial result to user, `forceUpdate` is executed and user's browser receives instructions of what should be rendered on page.
+- Next steps of component lifecycle are decided by user.
+  - If user selects some option, an `onchange` event gets triggered on `select` element. In our component this event reads file contents and calls `forceUpdate` function. As described before, `forceUpdate` function calls **render** function behind the scenes and user receives a new representation of component.
+  - If user decides to close a page with component or component disappears from DOM, a component instance with **render** function gets destroyed.

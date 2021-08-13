@@ -5,6 +5,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
+import GitHubButton from 'react-github-btn';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -19,6 +20,9 @@ function HomepageHeader() {
             to="/docs/introduction/getting-started">
             Drayman Introduction - 5min ⏱️
           </Link>
+        </div>
+        <div className={styles.github}>
+          <GitHubButton href="https://github.com/claviz/drayman" data-size="large" data-show-count="true" aria-label="Star claviz/drayman on GitHub">Star</GitHubButton>
         </div>
       </div>
     </header>

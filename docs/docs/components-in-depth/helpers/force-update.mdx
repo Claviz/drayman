@@ -1,0 +1,38 @@
+---
+title: forceUpdate
+sidebar_position: 2
+---
+
+A `forceUpdate` is a function which calls a [render function](../component-lifecycle) and sends a result to the user.
+
+This function is called when
+
+- component gets initialized;
+- `forceUpdate` is manually called inside a script.
+
+Consider a component with button which on click increases a counter:
+
+```tsx title="src/components/counter.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let count = 0;
+
+  return () => {
+    return (
+      <>
+        <h3>{count}</h3>
+        <button
+          onclick={async () => {
+            count++;
+            //highlight-next-line
+            await forceUpdate();
+          }}
+        >
+          +1
+        </button>
+      </>
+    );
+  };
+};
+```
+
+User sees current value of counter because every time it increases, a `forceUpdate` function gets called.

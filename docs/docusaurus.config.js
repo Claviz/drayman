@@ -78,7 +78,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Claviz. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Claviz.`,
     },
     prism: {
       theme: lightCodeTheme,

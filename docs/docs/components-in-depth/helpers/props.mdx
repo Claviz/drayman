@@ -1,0 +1,62 @@
+---
+title: props
+sidebar_position: 3
+---
+
+An object containing component properties.
+
+## Passing props from other component
+
+Child component which receives props from parent:
+
+```tsx title="src/components/header.tsx"
+export const component: DraymanComponent<{ text: string }> = async ({
+  //highlight-next-line
+  props,
+}) => {
+  return () => {
+    return <h1>{props.text}</h1>;
+  };
+};
+```
+
+Parent component which passes props to child:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  return () => {
+    //highlight-next-line
+    return <header text="Hello, world!"></header>;
+  };
+};
+```
+
+## Passing props to web component
+
+It is also possible to pass props to [component which is used as a web component](../../introduction/component-basics#using-component-as-web-component). Consider we are using `header.tsx` component from previous example:
+
+```html title="public/index.html"
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Drayman Framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/drayman-framework-client.js"></script>
+  </head>
+
+  <body>
+    <!-- highlight-start -->
+    <drayman-element
+      component="header"
+      options='{"text": "Hello, world!"}'
+    ></drayman-element>
+    <!-- highlight-end -->
+
+    <script>
+      initializeDraymanFramework();
+    </script>
+  </body>
+</html>
+```
