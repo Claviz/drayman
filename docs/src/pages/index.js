@@ -5,7 +5,6 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
-import GitHubButton from 'react-github-btn';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -21,8 +20,14 @@ function HomepageHeader() {
             Drayman Introduction - 5min ⏱️
           </Link>
         </div>
-        <div className={styles.github}>
-          <GitHubButton href="https://github.com/claviz/drayman" data-size="large" data-show-count="true" aria-label="Star claviz/drayman on GitHub">Star</GitHubButton>
+        <div className={styles.sandbox}>
+          <iframe
+            src="https://codesandbox.io/embed/home-sandbox-rnriw?fontsize=12&module=%2Fsrc%2Fcomponents%2Fhome.tsx&theme=dark&eslint=1"
+            style={{ width: "100%", height: 500, border: 0, borderRadius: 4, overflow: "hidden" }}
+            title="home-sandbox-rnriw"
+            allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+            sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts">
+          </iframe>
         </div>
       </div>
     </header>
@@ -34,7 +39,7 @@ export default function Home() {
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      description="Server-side component framework">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
