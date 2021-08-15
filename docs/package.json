@@ -1,6 +1,6 @@
 {
   "name": "@drayman/docs",
-  "version": "1.0.0-alpha.70",
+  "version": "1.0.0-alpha.71",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
