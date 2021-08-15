@@ -1,14 +1,14 @@
 {
   "name": "@drayman/framework-template",
-  "version": "1.0.0-alpha.71",
+  "version": "1.0.0-alpha.73",
   "private": true,
   "scripts": {
     "start": "drayman-framework start"
   },
   "devDependencies": {
+    "@drayman/types": "latest",
     "@types/node": "latest",
-    "typescript": "latest",
-    "@drayman/types": "latest"
+    "typescript": "latest"
   },
   "dependencies": {
     "@drayman/framework": "latest"
