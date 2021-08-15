@@ -63,6 +63,43 @@ value
 
 Please refer to specific third-party element documentation to check which data is emitted.
 
+## Handling file upload events
+
+In addition to data object all events emit files array. This array can be used to check uploaded file info and save it to file system. It is usually used within `<input type="file" />` element.
+
+Let's for example create a component which displays directory contents and saves files to it. Before adding this component, create an `uploaded` directory in the root of your project.
+
+```tsx title="src/components/home.tsx"
+import fs from "fs/promises";
+
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  const uploadedDir = "./uploaded";
+
+  return async () => {
+    return (
+      <>
+        <input
+          multiple
+          type="file"
+          oninput={async ({}, files) => {
+            for (const file of files) {
+              await fs.writeFile(
+                `${uploadedDir}/${file.originalname}`,
+                file.buffer
+              );
+            }
+            await forceUpdate();
+          }}
+        />
+        <pre>{(await fs.readdir(uploadedDir)).join("\n")}</pre>
+      </>
+    );
+  };
+};
+```
+
+Notice how `oninput` event of `input` element accepts `files` as a second parameter of event function. It is an array which is used to save files to file system using `writeFile`.
+
 ## Configuring events
 
 In addition to function which will be executed on event, you can pass some configuration. Lets modify our previous example a bit:

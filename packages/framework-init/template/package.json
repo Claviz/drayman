@@ -7,10 +7,10 @@
   },
   "devDependencies": {
     "@types/node": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "@drayman/types": "latest"
   },
   "dependencies": {
-    "@drayman/framework": "latest",
-    "@drayman/types": "latest"
+    "@drayman/framework": "latest"
   }
 }
