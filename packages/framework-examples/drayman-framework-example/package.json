@@ -6,11 +6,11 @@
     "start": "drayman-framework start"
   },
   "devDependencies": {
+    "@drayman/types": "latest",
     "@types/node": "latest",
     "typescript": "latest"
   },
   "dependencies": {
-    "@drayman/framework": "latest",
-    "@drayman/types": "latest"
+    "@drayman/framework": "latest"
   }
 }
