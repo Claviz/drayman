@@ -14,6 +14,7 @@ module.exports = {
   organizationName: 'claviz', // Usually your GitHub org/user name.
   projectName: 'drayman', // Usually your repo name.
   themeConfig: {
+    image: 'drayman/img/drayman.png',
     navbar: {
       title: 'Drayman',
       // logo: {
@@ -27,7 +28,7 @@ module.exports = {
           position: 'left',
           label: 'Docs',
         },
-        // { to: '/blog', label: 'Blog', position: 'left' },
+        { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/claviz/drayman',
           label: 'GitHub',
@@ -67,10 +68,10 @@ module.exports = {
         {
           title: 'More',
           items: [
-            // {
-            //   label: 'Blog',
-            //   to: '/blog',
-            // },
+            {
+              label: 'Blog',
+              to: '/blog',
+            },
             {
               label: 'GitHub',
               href: 'https://github.com/claviz/drayman',
@@ -100,12 +101,12 @@ module.exports = {
             'https://github.com/Claviz/drayman/blob/main/docs/'
         },
         blog: false,
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   editUrl:
-        //     'https://github.com/facebook/docusaurus/edit/master/website/blog/',
-        // },
+        blog: {
+          showReadingTime: true,
+          // Please change this to your repo.
+          editUrl:
+            'https://github.com/Claviz/drayman/blob/main/blog/',
+        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
