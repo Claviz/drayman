@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://claviz.github.io/blog</id>
+    <title>Drayman Blog</title>
+    <updated>2021-08-17T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://claviz.github.io/blog"/>
+    <subtitle>Drayman Blog</subtitle>
+    <entry>
+        <title type="html"><![CDATA[Getting started with Drayman]]></title>
+        <id>getting-started-with-drayman</id>
+        <link href="https://claviz.github.io/blog/getting-started-with-drayman"/>
+        <updated>2021-08-17T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Drayman is a server-side component framework which allows you to use any available HTML element, web component or custom Drayman third-party component together with server-side code in single script.]]></summary>
+    </entry>
+</feed>

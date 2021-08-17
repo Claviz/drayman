@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Drayman Blog</title>
+        <link>https://claviz.github.io/blog</link>
+        <description>Drayman Blog</description>
+        <lastBuildDate>Tue, 17 Aug 2021 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Getting started with Drayman]]></title>
+            <link>https://claviz.github.io/blog/getting-started-with-drayman</link>
+            <guid>getting-started-with-drayman</guid>
+            <pubDate>Tue, 17 Aug 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Drayman is a server-side component framework which allows you to use any available HTML element, web component or custom Drayman third-party component together with server-side code in single script.]]></description>
+        </item>
+    </channel>
+</rss>

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_drayman_docs=self.webpackChunk_drayman_docs||[]).push([[606],{6090:function(s){s.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"typescript","name":"typescript","count":1,"permalink":"/blog/tags/typescript"}')}}]);
