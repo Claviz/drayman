@@ -6,6 +6,7 @@
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://claviz.github.io/blog"/>
     <subtitle>Drayman Blog</subtitle>
+    <icon>https://claviz.github.io/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Getting started with Drayman]]></title>
         <id>getting-started-with-drayman</id>
