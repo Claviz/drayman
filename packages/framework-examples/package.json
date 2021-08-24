@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework-examples",
-  "version": "1.0.0-alpha.74",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "private": "true",
