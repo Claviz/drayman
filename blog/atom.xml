@@ -12,6 +12,6 @@
         <id>getting-started-with-drayman</id>
         <link href="https://claviz.github.io/blog/getting-started-with-drayman"/>
         <updated>2021-08-17T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Drayman is a server-side component framework which allows you to use any available HTML element, web component or custom Drayman third-party component together with server-side code in single script.]]></summary>
+        <summary type="html"><![CDATA[Drayman is a server-side component framework that allows you to use any available HTML element, web component or custom Drayman third-party component together with server-side code in a single script.]]></summary>
     </entry>
 </feed>
