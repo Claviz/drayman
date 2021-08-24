@@ -4,20 +4,20 @@ title: Getting started with Drayman
 author: Yan Ivan Evdokimov
 author_url: https://github.com/jansivans
 author_image_url: https://avatars.githubusercontent.com/u/5667073?v=4
-tags: [drayman, node, typescript, javascript, jsx]
+tags: [drayman, node, typescript, javascript, jsx, guide]
 ---
 
-Drayman is a server-side component framework which allows you to use any available HTML element, web component or custom Drayman third-party component together with server-side code in single script.
+[Drayman](http://www.drayman.io) is a server-side component framework that allows you to use any available HTML element, web component or custom Drayman third-party component together with server-side code in a single script.
 
-With Drayman, browser only renders what user should see - all logic and calculations happen server-side and UI is written using JSX syntax.
+With Drayman, the browser only renders what the user should see - all logic and calculations happen server-side and UI is written using JSX syntax.
 
-Best way to show Drayman capabilities is to create something with it. So let's get started.
+The best way to show Drayman capabilities is to create something with it. So let's get started.
 
 ## File viewer component
 
-Let's build a component which allows user to select a file from file system and view it's contents.
+Let's build a component that allows the user to select a file from the file system and view it's contents.
 
-First, you need to install a Drayman. It can be done by running these commands:
+First, you need to install Drayman. It can be done by running these commands:
 
 ```bash
 npx @drayman/framework-init@latest my-app
@@ -25,13 +25,13 @@ cd my-app
 npm start
 ```
 
-Website will be available at http://localhost:3033.
+The website will be available at http://localhost:3033.
 
-If you don't want install anything, you can always try Drayman inside a CodeSandbox by visiting [new.drayman.io](http://new.drayman.io).
+If you don't want install anything, you can always try Drayman inside CodeSandbox by visiting [new.drayman.io](http://new.drayman.io).
 
 ### Initial component template
 
-Go to `src/components/home.tsx` and replace it's contents with this code:
+Go to `src/components/home.tsx` and replace its contents with this code:
 
 ```tsx title="src/components/home.tsx"
 export const component: DraymanComponent = async () => {
@@ -52,9 +52,9 @@ You will see an initial skeleton of our component. Further `<select>` will be us
 
 ### Filling select with options
 
-Because Drayman runs a component server-side, we can use any Node.js library. In our case we will use `fs` module.
+Because Drayman runs a component server-side, we can use any Node.js library. In our case we will use the `fs` module.
 
-Let's read file names from project root directory and fill `<select>` options with them:
+Let's read file names from the project root directory and fill `<select>` options with them:
 
 ```tsx title="src/components/home.tsx"
 import { promises as fs } from "fs";
@@ -86,9 +86,9 @@ Right now our component is only showing some elements without any interactivity.
 
 ### Reacting to user actions
 
-We need to remember which file user has selected to show it's contents. It can be done by using `onchange` event attribute and attaching a function which will be [executed server-side](http://www.drayman.io/docs/components-in-depth/handling-events). We also need to add `value` attribute to each `option` so `select` would know which option was selected.
+We need to remember which file the user has selected to show its contents. It can be done by using the `onchange` event attribute and attaching a function that will be [executed server-side](http://www.drayman.io/docs/components-in-depth/handling-events). We also need to add the `value` attribute to each `option` so that `select` would know which option was selected.
 
-Let's also add `fs.readFile` function inside `<pre>` tag so Drayman would read file contents during re-render. We won't show `pre` until file is actually selected:
+Let's also add the `fs.readFile` function inside the `<pre>` tag so that Drayman would read file contents during re-render. We won't show the `pre` until a file is actually selected:
 
 ```tsx title="src/components/home.tsx"
 import { promises as fs } from "fs";
@@ -123,9 +123,9 @@ export const component: DraymanComponent = async () => {
 };
 ```
 
-If you make a selection from dropdown, you will see that nothing happens on page - file contents doesn't appear. That is because with Drayman you must strictly tell when a component needs to be re-rendered. It can be done by using a special [helper function](http://www.drayman.io/docs/components-in-depth/helpers/introduction) `forceUpdate`.
+If you make a selection from the dropdown, you will see that nothing happens on the page - file contents don't appear. That is because with Drayman you must strictly tell when a component needs to be re-rendered. It can be done by using a special [helper function](http://www.drayman.io/docs/components-in-depth/helpers/introduction) `forceUpdate`.
 
-Import it and add to `onchange` event after selected file was saved:
+Import it and add to the `onchange` event after the selected file was saved:
 
 ```tsx title="src/components/home.tsx"
 import { promises as fs } from "fs";
@@ -160,11 +160,11 @@ export const component: DraymanComponent = async ({
 };
 ```
 
-Now our component is complete and file contents is shown on select:
+Now our component is complete and file contents are shown on select:
 ![final-result](../static/img/blog-getting-started-final-result.gif)
 
 ## Conclusion
 
-We have built a component which combines server-side logic and client-side view in a single script.
+We have built a component that combines server-side logic and client-side view in a single script.
 
-If this felt interesting to you, visit [official docs](http://www.drayman.io/) to deep dive into a Drayman framework!
+If this felt interesting to you, visit the [official docs](http://www.drayman.io/) to deep-dive into Drayman framework!

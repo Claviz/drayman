@@ -8,19 +8,22 @@ module.exports = {
   url: 'https://claviz.github.io',
   trailingSlash: false,
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
-  // favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.ico',
   organizationName: 'claviz', // Usually your GitHub org/user name.
   projectName: 'drayman', // Usually your repo name.
   themeConfig: {
     image: 'drayman/img/drayman.png',
     navbar: {
-      title: 'Drayman',
-      // logo: {
-      //   alt: 'Drayman Logo',
-      //   src: 'img/logo.svg',
-      // },
+      // title: 'Drayman',
+      logo: {
+        alt: 'Site Logo',
+        src: 'img/logo.svg',
+        srcDark: 'img/logo_dark.svg',
+        src: 'img/logo_light.svg',
+        target: '_self',
+      },
       items: [
         {
           type: 'doc',
@@ -62,6 +65,10 @@ module.exports = {
             {
               label: 'Twitter',
               href: 'https://twitter.com/draymanio',
+            },
+            {
+              label: 'Telegram',
+              href: 'https://t.me/draymanio',
             },
           ],
         },
