@@ -14,6 +14,11 @@ module.exports = {
   organizationName: 'claviz', // Usually your GitHub org/user name.
   projectName: 'drayman', // Usually your repo name.
   themeConfig: {
+    algolia: {
+      apiKey: 'a099d0d352957a4569617f8b1c0e64ed',
+      indexName: 'drayman',
+      contextualSearch: true,
+    },
     image: 'drayman/img/drayman.png',
     navbar: {
       // title: 'Drayman',

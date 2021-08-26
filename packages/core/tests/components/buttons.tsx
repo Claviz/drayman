@@ -1,4 +1,8 @@
-export const component: DraymanComponent<{ text: string }> = async ({ props, forceUpdate }) => {
+export const component: DraymanComponent<{ text: string }> = async ({ props, forceUpdate, ComponentInstance }) => {
+
+    console.log(`ComponentInstance object has id: ${!!ComponentInstance.id}`)
+
+    ComponentInstance.onDestroy = () => { console.log('destroyed!') };
 
     let header;
 

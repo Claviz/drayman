@@ -149,6 +149,10 @@ declare global {
             Browser: {
                 [command: string]: (options?: any) => Promise<any>
             } & BrowserExtend;
+            ComponentInstance: {
+                id: string;
+                onDestroy: (() => Promise<void>) | (() => void);
+            }
         } & DataExtend): any;
     }
 }

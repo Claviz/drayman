@@ -1,6 +1,5 @@
 {
   "packages": [
-    "docs",
     "packages/*",
     "packages/framework/client",
     "packages/framework-init/template"

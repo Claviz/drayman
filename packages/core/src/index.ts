@@ -3,8 +3,6 @@ import path from 'path';
 import shortid from 'shortid';
 import { find, name, path as nodeFindPath } from 'node-find';
 import ts from 'typescript';
-// import Piscina from 'piscina';
-// import { MessageChannel, MessagePort } from 'worker_threads';
 import { spawn, Thread, Worker } from 'threads';
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
@@ -18,7 +16,6 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
         componentInstances[componentInstanceId].worker.handleComponentEvent({ eventName, requestId, options, files, });
     } else {
         onError({ err: `Component instance was not found.` });
-        // res.status(500).send(`Component instance was not found.`);
     }
 }
 
@@ -68,19 +65,9 @@ export const saveComponent = async ({ script, outputFile }) => {
             'utf-8'
         )
     );
-    // const componentOutputDir = path.join(rootDir, `./src/components`);
-    // for (const componentFile of componentFiles) {
-    // const componentScript = await fs.readFile(path.join(componentInputDir, componentFile), 'utf-8');
     const transpiledComponentScript = ts.transpileModule(script, tsConfig);
     await fs.outputFile(outputFile, transpiledComponentScript.outputText);
-    // }
 }
-
-// const piscina = new Piscina({
-//     filename: path.join(__dirname, `./component-processor.js`),
-//     maxThreads: Infinity,
-//     // minThreads: 100,
-// });
 
 export const onInitializeComponentInstance = async ({
     namespaceId = null,
@@ -99,60 +86,14 @@ export const onInitializeComponentInstance = async ({
     if (componentOptions && typeof componentOptions === 'string') {
         componentOptions = JSON.parse(componentOptions);
     }
-    // const subprocess = execa.node(
-    //     path.join(__dirname, `./component-processor.js`),
-    //     [
-    //         componentInstanceId
-    //     ],
-    //     { nodeOptions: ['--unhandled-rejections=strict'], serialization: 'advanced', }
-    // );
-    // const abortController = new AbortController();
-    // const { port1, port2 } = new MessageChannel();
-    // const { signal } = abortController;
-    // port2.on('message', (message) => console.log('received', message));
-    // port2.postMessage({ foo: 'bar' });
-
-
-
-    // // // subprocess.stdout?.on('data', (data) => {
-    // // //     onComponentInstanceConsole?.({ text: data.toString('utf8') });
-    // // //     // console.log(data.toString('utf8'));
-    // // //     // httpClient.debug({ data: data.toString('utf8') });
-    // // // });
-    // // // subprocess.stderr?.on('data', (data) => {
-    // // //     onComponentInstanceConsole?.({ text: data.toString('utf8') });
-    // // //     // console.log(data.toString('utf8'));
-    // // //     // httpClient.debug({ data: data.toString('utf8') });
-    // // // });
-    /**
-     * When component instance gets destroyed, we must check for existing user event requests
-     * and cancel them.
-     */
-    // subprocess.on('exit', (x) => {
-    //     // const requests = componentInstances[componentInstanceId].eventRequests;
-    //     // for (const requestId of Object.keys(requests)) {
-    //     //     requests[requestId].status(500).send(`Component instance was destroyed.`);
-    //     // }
-    //     delete componentInstances[componentInstanceId];
-    //     emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
-    //     // httpClient.sendView({
-    //     //     view: null,
-    //     // });
-    // });
-    /**
-     * Handles messages sent by component instance process.
-     */
     const worker = await spawn(new Worker(`./component-processor.js`));
     componentInstances[componentInstanceId] = {
-        // abortController,
-        // messagePort: port2,
         worker,
         terminate: async () => {
             await Thread.terminate(worker);
             delete componentInstances[componentInstanceId];
             emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
         },
-        // process: subprocess,
         /**
          * Used to store user event requests (on button click, on input, etc.).
          */
@@ -171,13 +112,9 @@ export const onInitializeComponentInstance = async ({
             if (type === 'response') {
                 const { requestId, result, err } = payload;
                 if (err) {
-                    // emit({ type: 'componentEventError', payload: { err, requestId }, componentInstanceId });
                     componentInstances[componentInstanceId].eventRequests[requestId].onError({ err });
-                    // componentInstances[componentInstanceId].eventRequests[requestId].status(500).send(`${err}`);
                 } else {
-                    // emit({ type: 'componentEventSuccess', payload: { result, requestId }, componentInstanceId });
                     componentInstances[componentInstanceId].eventRequests[requestId].onSuccess({ result });
-                    // componentInstances[componentInstanceId].eventRequests[requestId].json(result || null);
                 }
                 delete componentInstances[componentInstanceId].eventRequests[requestId];
             } else if (type === 'eventHubEvent') {
@@ -202,20 +139,21 @@ export const onDisconnect = ({ connectionId }) => {
 
 const toTerminate = {};
 
-export const onDestroyComponentInstance = ({ componentInstanceId }) => {
+export const onDestroyComponentInstance = async ({ componentInstanceId }) => {
     if (!componentInstances[componentInstanceId]) {
         toTerminate[componentInstanceId] = true;
     } else {
+        try {
+            await componentInstances[componentInstanceId].worker.handleDestroyComponentInstance();
+        } catch (err) {
+            console.warn(err)
+        }
         componentInstances[componentInstanceId].terminate();
     }
-    //     delete componentInstances[componentInstanceId];
-    //     emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
 }
 
 export const componentInstances: {
     [componentInstanceId: string]: {
-        // messagePort: MessagePort;
-        // abortController: AbortController;
         terminate: () => Promise<void>;
         worker: any;
         eventRequests: {

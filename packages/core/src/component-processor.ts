@@ -50,6 +50,7 @@ class EventHubClass {
     }
 }
 const EventHub = new EventHubClass();
+const ComponentInstance: any = {};
 // const componentInstanceId = process.argv[2];
 let browserCallbacks: {
     [callbackId: string]: {
@@ -83,7 +84,8 @@ const serializeComponentInstanceOptions = (options: any) => {
 
 const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
 
-const initializeComponentInstance = async ({ browserCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
+const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
+    ComponentInstance.id = componentInstanceId;
     if (extensionsPath) {
         extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
     }
@@ -148,6 +150,7 @@ const initializeComponentInstance = async ({ browserCommands = [], extensionsPat
             EventHub,
             Components,
             Browser,
+            ComponentInstance,
             ...extensions.importable,
         });
         let prevChildProps = {};
@@ -216,6 +219,7 @@ const initializeComponentInstance = async ({ browserCommands = [], extensionsPat
         EventHub,
         Components,
         Browser,
+        ComponentInstance,
         ...extensions.importable,
     });
 
@@ -272,12 +276,19 @@ const handleEventHubEvent = async ({ type, data, groupId }) => {
     await EventHub._execute(type, data, groupId);
 }
 
+const handleDestroyComponentInstance = async () => {
+    if (ComponentInstance.onDestroy) {
+        await ComponentInstance.onDestroy();
+    }
+}
+
 expose({
     initializeComponentInstance,
     updateComponentInstanceProps,
     handleBrowserCallback,
     handleComponentEvent,
     handleEventHubEvent,
+    handleDestroyComponentInstance,
     events() {
         return Observable.from(subject)
     }

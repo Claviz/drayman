@@ -80,7 +80,11 @@ Array [
 
 exports[`component user interaction 2`] = `
 Array [
+  "ComponentInstance object has id: true
+",
   "You've clicked a button!
+",
+  "destroyed!
 ",
 ]
 `;

@@ -1,0 +1,32 @@
+---
+title: The ComponentInstance object
+sidebar_position: 6
+---
+
+The `ComponentInstance` object can be used to check component instance ID or handle [lifecycle events](../component-lifecycle).
+
+## ComponentInstance properties
+
+### `id`
+
+Unique ID of the current component instance. Can be used to differentiate connected users, for example, in chat.
+
+## ComponentInstance methods
+
+### `onDestroy()`
+
+Override this function with your own and it will be executed when component instance gets destroyed.
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ ComponentInstance }) => {
+
+  //highlight-start
+  ComponentInstance.onDestroy = () => {
+    console.log(`Component instance was destroyed!`);
+  };
+  //highlight-end
+
+  return () => {
+    return <h3>Hello, world!</h3>;
+};
+```
