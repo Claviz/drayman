@@ -5,17 +5,26 @@ sidebar_position: 4
 
 Drayman configuration can be managed inside `drayman.config.js` file.
 
-A default configuration looks like this:
+Here is an example configuration with description and default values:
 
 ```js title="drayman.config.js"
 module.exports = {
-  componentsDir: "src/components",
-  componentsOutputDir: "dist/components",
+  // Folder where Drayman application source files are stored.
+  // It must contain `components` folder where Drayman components are placed.
+  srcDir: "src",
+  // Folder where Drayman will output compiled source files and components.
+  outDir: "dist",
+  // Folder where `index.html` is located.
   publicDir: "public",
+  // Custom configuration for PostCSS.
+  postcss: {
+    // Source CSS file.
+    source: "src/styles.css",
+    // Destination CSS file.
+    destination: "public/styles.css",
+  },
 };
 ```
-
-You can manage where your components are stored, where to put compiled components and where your `index.html` is located.
 
 ## Drayman initialization
 

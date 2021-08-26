@@ -1,5 +1,5 @@
 module.exports = {
-    componentsDir: 'app/src/components',
-    componentsOutputDir: 'app/dist/components',
+    srcDir: 'app/src',
+    outDir: 'app/dist',
     publicDir: 'app/public',
 }

@@ -8,8 +8,29 @@ import * as draymanCore from '@drayman/core';
 import fs from 'fs-extra';
 import chokidar from 'chokidar';
 import WebSocket from 'ws';
+import postcssrc from 'postcss-load-config';
+import postcss from 'postcss';
+
+process.env.NODE_ENV = 'production';
+
+const getPostcssrc = async () => {
+    try {
+        return await postcssrc();
+    } catch (err) { }
+
+    return null;
+}
 
 const build = async () => {
+    const postcssrc = await getPostcssrc();
+    if (postcssrc) {
+        const sourceFile = draymanConfig.postcss?.source || `${srcDir}/styles.css`;
+        const source = await fs.readFile(sourceFile, 'utf-8');
+        const processedCss = (await postcss(postcssrc.plugins).process(source, postcssrc.options));
+        const destination = draymanConfig.postcss?.destination || `${publicDir}/styles.css`
+        await fs.writeFile(destination, processedCss.css);
+    }
+
     await fs.ensureDir(componentsDir);
     const componentFiles = (await fs.readdir(componentsDir)).filter(x => x.endsWith('.tsx'));
     const templateFilePath = path.join(componentsDir, `./index.d.ts`);
@@ -155,9 +176,11 @@ const start = () => {
 
 const command = process.argv[2];
 const draymanConfig = require(path.join(process.cwd(), 'drayman.config.js'));
-const componentsDir = draymanConfig.componentsDir || `./src/components`;
+const srcDir = draymanConfig.srcDir || `./src`;
+const componentsDir = `${srcDir}/components`;
 const publicDir = draymanConfig.publicDir || `./public`;
-const componentsOutputDir = draymanConfig.componentsOutputDir || `./dist/components`;
+const outDir = draymanConfig.outDir || `./dist`;
+const componentsOutputDir = `${outDir}/components`;
 let elementsPaths = {};
 
 (async () => {

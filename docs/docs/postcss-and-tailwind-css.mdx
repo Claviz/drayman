@@ -1,0 +1,80 @@
+---
+title: PostCSS and Tailwind CSS
+sidebar_position: 3
+---
+
+If there is a PostCSS config somewhere (found by [postcss-load-config](https://github.com/postcss/postcss-load-config)), Drayman will automatically set it up.
+
+By default a `src/styles.css` file will be passed to PostCSS as a source and `public/styles.css` file as an output. This behavior can be changed with `postcss` option inside [Drayman configuration file](introduction/configuration).
+
+## Install Tailwind CSS
+
+It is possible to use Tailwind CSS because Drayman supports PostCSS out of the box. You just need to follow few steps to make it work.
+
+### Install `autoprefixer` and `tailwindcss`
+
+```bash
+npm install -D tailwindcss@latest autoprefixer@latest
+```
+
+### Create config files
+
+```bash
+npx tailwindcss init -p
+```
+
+This command will generate `tailwind.config.js` and `postcss.config.js` files.
+
+### Modify `tailwind.config.js` file
+
+```js title="tailwind.config.js"
+module.exports = {
+  purge: [
+    // highlight-next-line
+    "./src/**/*.tsx",
+  ],
+  darkMode: false,
+  theme: {
+    extend: {},
+  },
+  variants: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+### Include Tailwind in your CSS
+
+Open your main CSS file (by default Drayman will check `src/styles.css`) and append this code:
+
+```css title="src/styles.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Modify `public/index.html` file to include generated CSS file (by default Drayman generates it to the `public/styles.css` file):
+
+```html title="public/index.html"
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Drayman Framework</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/drayman-framework-client.js"></script>
+    <!-- highlight-next-line -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <drayman-element component="home"></drayman-element>
+
+    <script>
+      initializeDraymanFramework();
+    </script>
+  </body>
+</html>
+```
