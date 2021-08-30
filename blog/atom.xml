@@ -2,11 +2,18 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://claviz.github.io/blog</id>
     <title>Drayman Blog</title>
-    <updated>2021-08-17T00:00:00.000Z</updated>
+    <updated>2021-08-27T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://claviz.github.io/blog"/>
     <subtitle>Drayman Blog</subtitle>
     <icon>https://claviz.github.io/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Building real-time Todo app with Drayman, MongoDB and Tailwind CSS]]></title>
+        <id>building-real-time-todo-app-with-drayman-mongodb-and-tailwind-css</id>
+        <link href="https://claviz.github.io/blog/building-real-time-todo-app-with-drayman-mongodb-and-tailwind-css"/>
+        <updated>2021-08-27T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[In this guide we will build a real-time Todo app with Drayman, MongoDB and Tailwind CSS.]]></summary>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Getting started with Drayman]]></title>
         <id>getting-started-with-drayman</id>

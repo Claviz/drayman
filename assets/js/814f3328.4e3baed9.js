@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_drayman_docs=self.webpackChunk_drayman_docs||[]).push([[535],{5641:function(t){t.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Getting started with Drayman","permalink":"/blog/getting-started-with-drayman"}]}')}}]);

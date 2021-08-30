@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_drayman_docs=self.webpackChunk_drayman_docs||[]).push([[414],{9880:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"drayman","name":"drayman","count":2,"permalink":"/blog/tags/drayman"}')}}]);
