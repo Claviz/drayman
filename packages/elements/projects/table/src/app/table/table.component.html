@@ -27,7 +27,7 @@
     <table mat-table matSort #table [dataSource]="visibleData" [trackBy]="trackByFn" cdkDropList
       [cdkDropListData]="visibleData" (cdkDropListDropped)="onTableRowDragEnd($event)"
       [cdkDropListAutoScrollDisabled]="false" [cdkDropListDisabled]="!rowDragEnabled"
-      (matSortChange)="sortChange.next()" [matSortDisabled]="!matSort">
+      (matSortChange)="sortChange.next()" [matSortDisabled]="!matSort || !sort">
 
       <ng-container matColumnDef="__select__" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef>
