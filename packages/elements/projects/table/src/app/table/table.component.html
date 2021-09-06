@@ -28,7 +28,6 @@
       [cdkDropListData]="visibleData" (cdkDropListDropped)="onTableRowDragEnd($event)"
       [cdkDropListAutoScrollDisabled]="false" [cdkDropListDisabled]="!rowDragEnabled"
       (matSortChange)="sortChange.next()" [matSortDisabled]="!matSort || !sort">
-
       <ng-container matColumnDef="__select__" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox (input)="$event.stopPropagation()" (click)="$event.stopPropagation()"
