@@ -1,9 +1,0 @@
-<mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
-  <mat-label *ngIf="label">{{label}}</mat-label>
-  <textarea matInput type="text" [placeholder]="placeholder || label" [formControl]="formControl"
-    [errorStateMatcher]="errorStateMatcher" autocomplete="off" [rows]="rows" (blur)="onBlur()"></textarea>
-  <mat-hint>{{helpText}}</mat-hint>
-  <mat-error *ngIf="error">
-    {{error}}
-  </mat-error>
-</mat-form-field>
