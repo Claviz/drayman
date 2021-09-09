@@ -48,12 +48,6 @@ jobs:
           npm run build
           npm run test
 
-      - name: "@drayman/elements"
-        working-directory: ./packages/elements
-        run: |
-          npm install
-          npm run build
-
       - name: "@drayman/framework-init"
         working-directory: ./packages/framework-init
         run: |
