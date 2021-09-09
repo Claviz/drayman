@@ -1,5 +1,6 @@
-import { componentInstances, handleComponentEvent, saveComponent, handleEventHubEvent, onDestroyComponentInstance, onInitializeComponentInstance } from '../dist';
+import { componentInstances, handleComponentEvent, saveComponent, handleEventHubEvent, onDestroyComponentInstance, onInitializeComponentInstance, getElementsScriptPaths } from '../dist';
 import fs from 'fs-extra';
+import path from 'path';
 
 describe('', () => {
 
@@ -13,6 +14,15 @@ describe('', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+    });
+
+    test('elements paths', async () => {
+        const elementPaths = await getElementsScriptPaths({ nodeModulesPath: path.join(__dirname, '../../framework/node_modules') });
+        const pathsWithRelativeRemoved = {};
+        for (const element of Object.keys(elementPaths)) {
+            pathsWithRelativeRemoved[element] = path.relative(__dirname, elementPaths[element]);
+        }
+        expect(pathsWithRelativeRemoved).toMatchSnapshot();
     });
 
     test('component user interaction', async () => {

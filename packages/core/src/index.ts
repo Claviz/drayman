@@ -4,6 +4,15 @@ import shortid from 'shortid';
 import { find, name, path as nodeFindPath } from 'node-find';
 import ts from 'typescript';
 import { spawn, Thread, Worker } from 'threads';
+import { exec } from 'child_process';
+
+const getNpmPackages = (nodeModulesPath) => {
+    return new Promise<string[]>((resolve) => {
+        exec(`npm ls -a -p`, { cwd: nodeModulesPath, }, function (error, stdout, stderr) {
+            resolve(stdout ? stdout.split('\n').filter(x => path.isAbsolute(x)) : [])
+        });
+    });
+}
 
 export const handleComponentEvent = ({ componentInstanceId, eventName, options, files, onSuccess, onError }) => {
     options = options || {};
@@ -21,13 +30,14 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
 
 export async function getElementsScriptPaths({ nodeModulesPath = null }) {
     nodeModulesPath = nodeModulesPath || path.join(process.cwd(), 'node_modules');
-    const packages = find(nodeFindPath('*/package.json'), { start: nodeModulesPath });
+    const packagePaths = await getNpmPackages(nodeModulesPath);
     const paths = {};
-    for await (const packageJsonPath of packages) {
-        const packageJson = await fs.readJSON(packageJsonPath.toString('/'), { throws: false });
+    for (const packagePath of packagePaths) {
+        const packageJsonPath = path.join(packagePath, 'package.json');
+        const packageJson = await fs.readJSON(packageJsonPath, { throws: false });
         const elements = packageJson?.drayman?.elements || {};
         for (const element of Object.keys(elements)) {
-            paths[element] = path.join(packageJsonPath.parent.toString('/'), elements[element].script);
+            paths[element] = path.join(packagePath, elements[element].script);
         }
     }
     return paths;
