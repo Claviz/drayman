@@ -73,7 +73,6 @@ async function initializeDraymanFramework(options?: { browserCommands: any, elem
             },
         }
     };
-    // document.dispatchEvent(new CustomEvent('draymanInit', { detail: { config } }));
 
     return { emit: (type, data) => send('eventHubEvent', { type, data }) };
 }
