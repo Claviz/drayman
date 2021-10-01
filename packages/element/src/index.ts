@@ -430,7 +430,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 const { data, callbackId, command, element } = payload;
                 let domElement: Element;
                 if (element) {
-                    domElement = document.querySelector(`drayman-element-container[componentinstanceid="${this.componentInstanceId}"] > [ref="${element}"]`);
+                    domElement = document.querySelector(`drayman-element-container[componentinstanceid="${this.componentInstanceId}"] [ref="${element}"]`);
                 }
                 // snackbar.afterDismissed().subscribe((data) => {
                 const response = await browserCommands[command](data, domElement);
