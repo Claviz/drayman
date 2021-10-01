@@ -41,6 +41,9 @@
                     MicroModal.show('modal-1', {
                         onClose: (modal) => emit(onClose),
                     });
+                },
+                focus: async (data, element) => {
+                    element.focus();
                 }
             }),
         });

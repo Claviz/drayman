@@ -6,6 +6,7 @@ interface IntrinsicElements {
 'counter': { [propName: string]: any; };
 'css-class': { [propName: string]: any; };
 'file-upload': { [propName: string]: any; };
+'focus': { [propName: string]: any; };
 'home': { [propName: string]: any; };
 'modal': { [propName: string]: any; };
 'text-input': { [propName: string]: any; };

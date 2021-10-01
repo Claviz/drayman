@@ -415,7 +415,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 // applyPatch(this.previouslySerializedTree, (payload.view || []));
                 // const tree = JSON.parse(JSON.stringify(this.previouslySerializedTree));
                 // console.log(this.previouslySerializedTree);
-                const newNode = h('drayman-element-container', {}, payload.view.map(x => this.traverseTree(x)));
+                const newNode = h('drayman-element-container', { attrs: { componentInstanceId: this.componentInstanceId } }, payload.view.map(x => this.traverseTree(x)));
                 // this.viewTree = tree;
                 patch(rootNode, newNode);
                 rootNode = newNode;
@@ -427,9 +427,13 @@ customElements.define('drayman-element', class extends HTMLElement {
                 //     this.once = true;
                 // }
             } else if (type === 'browserCommand') {
-                const { data, callbackId, command } = payload;
+                const { data, callbackId, command, element } = payload;
+                let domElement: Element;
+                if (element) {
+                    domElement = document.querySelector(`drayman-element-container[componentinstanceid="${this.componentInstanceId}"] > [ref="${element}"]`);
+                }
                 // snackbar.afterDismissed().subscribe((data) => {
-                const response = await browserCommands[command](data);
+                const response = await browserCommands[command](data, domElement);
                 window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
                 // })
             }

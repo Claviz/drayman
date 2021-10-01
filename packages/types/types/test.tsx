@@ -15,8 +15,9 @@ const component: DraymanComponent = async ({ EventHub, forceUpdate, props, Brows
             <div style={{ fillOpacity: 1, }} tabindex={'1'} onkeydown={async (event) => { console.log(event.code); }}></div>
             <td></td>
             <input type="text" value="hello" oninput={async ({ value }) => { console.log(value.charAt(1)); }}></input>
-            <input type="number" value={'123'} oninput={async ({ value }) => { console.log(value.toFixed()); }}></input>
+            <input ref="my-input" type="number" value={'123'} oninput={async ({ value }) => { console.log(value.toFixed()); }}></input>
             <button onclick={async () => { await Browser.alert('Hello, world!'); }}>Alert!</button>
+            <button onclick={async () => { await Browser.focus(null, 'my-input'); }}>Focus!</button>
             <pre>const welcome = 'Hello, world!';</pre>
             <p>Paragraph</p>
             <i>italic</i>

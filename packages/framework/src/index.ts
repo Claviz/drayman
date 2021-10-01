@@ -127,8 +127,9 @@ const start = () => {
         console.log(err);
     });
 
-    const server = app.listen(3033);
-    console.log(`Drayman started at http://localhost:3033`);
+    const port = draymanConfig.port || 3033;
+    const server = app.listen(port);
+    console.log(`Drayman started at http://localhost:${port}`);
     server.setTimeout(0);
 
     const wss = new WebSocket.Server({ server });

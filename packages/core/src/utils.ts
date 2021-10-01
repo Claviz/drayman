@@ -55,7 +55,7 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
                                 // delete options[optionKey];
                             }
                             // options[optionKey] = true;
-                        } else if (svgElementAttributes[type] && (svgElementAttributes[type].includes(optionKey) || svgElementAttributes['*'].includes(optionKey))) {
+                        } else if (optionKey === 'ref' || (svgElementAttributes[type] && (svgElementAttributes[type].includes(optionKey) || svgElementAttributes['*'].includes(optionKey)))) {
                             attrs[optionKey] = options[optionKey];
                         } else {
                             if (htmlElementAttributes[type] && (htmlElementAttributes[type].includes(optionKey) || htmlElementAttributes['*'].includes(optionKey))) {

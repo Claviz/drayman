@@ -150,3 +150,15 @@ context('modal', () => {
     cy.get('p').should('contain.text', 'Modal is opened: no');
   })
 })
+
+context('DOM element reference', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/focus')
+  })
+
+  it(`focuses element`, () => {
+    cy.get('input').should('not.have.focus');
+    cy.get('#focus-btn').click();
+    cy.get('input').should('have.focus');
+  })
+})

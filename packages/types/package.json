@@ -5,8 +5,7 @@
   "scripts": {
     "tsc": "tsc",
     "test": "dtslint --localTs node_modules/typescript/lib types",
-    "build:types": "npm run build && node ./dist/type-builder",
-    "build": "tsc"
+    "build": "tsc && node ./dist/type-builder"
   },
   "files": [
     "types/index.d.ts"
