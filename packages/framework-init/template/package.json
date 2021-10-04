@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework-template",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "private": true,
   "scripts": {
     "start": "drayman-framework start"
