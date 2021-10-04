@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import nodemon from 'nodemon';
+import path from 'path';
 
 import { build } from './commands/build';
 import { getDraymanConfig } from './config';
@@ -10,7 +11,7 @@ const command = process.argv[2];
     const { srcDir } = getDraymanConfig();
     if (command === 'start') {
         nodemon({
-            script: 'dist/commands/start.js',
+            script: path.join(__dirname, 'commands/start.js'),
             watch: srcDir,
             ext: 'ts tsx json css',
             ignore: ['*/**.d.ts'],
