@@ -172,3 +172,14 @@ context('file reference', () => {
     cy.get('h3').should('have.text', '2+2=4');
   })
 })
+
+context('lifecycle events', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/lifecycle-init')
+  })
+
+  it(`handles onInit`, () => {
+    cy.get('h3').should('have.text', 'Waiting for init hook....');
+    cy.get('h3').should('have.text', 'Initialized!');
+  })
+})

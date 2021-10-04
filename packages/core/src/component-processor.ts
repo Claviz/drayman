@@ -204,6 +204,9 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         // const delta = jsondiff.diff(previouslySerializedTree, result.tree);
         // const delta = compare(previouslySerializedTree, result.tree);
         sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
+        if (updateId === 1 && ComponentInstance.onInit) {
+            await ComponentInstance.onInit();
+        }
         // previouslySerializedTree = { ...result.tree };
         // previouslySerializedTree = JSON.parse(JSON.stringify(result.tree));
         // process?.send?.({ type: 'view', payload: { view: serializedView } });

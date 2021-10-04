@@ -152,6 +152,7 @@ declare global {
             ComponentInstance: {
                 id: string;
                 onDestroy: (() => Promise<void>) | (() => void);
+                onInit: (() => Promise<void>) | (() => void);
             }
         } & DataExtend): any;
     }
