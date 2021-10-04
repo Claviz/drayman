@@ -2,9 +2,12 @@ import '@drayman/element';
 
 const waitForConnection = () => new Promise<WebSocket>((resolve, reject) => {
     const socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/`);
+    socket.onerror = () => socket.close();
+    socket.onclose = async (ev: any) => {
+        setTimeout(async () => window.location.reload(), 500);
+    };
     socket.addEventListener('open', (ev) => { resolve(socket); })
 });
-
 async function initializeDraymanFramework(options?: { browserCommands: any, elementOptions: any, }) {
     const requests = {};
     let sequence = 1;
@@ -22,8 +25,6 @@ async function initializeDraymanFramework(options?: { browserCommands: any, elem
             for (const handler of (handlers[componentInstanceId] || [])) {
                 handler({ payload, type, componentInstanceId });
             }
-        } else if (type === 'browserReload') {
-            window.location.reload();
         }
     }
     const send = (type, data, callback?) => {

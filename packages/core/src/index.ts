@@ -1,7 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import shortid from 'shortid';
-import { find, name, path as nodeFindPath } from 'node-find';
 import ts from 'typescript';
 import { spawn, Thread, Worker } from 'threads';
 import { exec } from 'child_process';
@@ -65,7 +64,6 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
 }
 
 export const saveComponent = async ({ script, outputFile }) => {
-
     const tsConfig = JSON.parse(
         await fs.readFile(
             path.join(
@@ -111,55 +109,45 @@ export const onInitializeComponentInstance = async ({
         connectionId,
         namespaceId,
     };
-    if (toTerminate[componentInstanceId]) {
-        componentInstances[componentInstanceId].terminate();
-        delete toTerminate[componentInstanceId];
-    } else {
-        worker.events().subscribe(({ type, payload }) => {
-            /**
-             * When there is a response to user event request.
-             */
-            if (type === 'response') {
-                const { requestId, result, err } = payload;
-                if (err) {
-                    componentInstances[componentInstanceId].eventRequests[requestId].onError({ err });
-                } else {
-                    componentInstances[componentInstanceId].eventRequests[requestId].onSuccess({ result });
-                }
-                delete componentInstances[componentInstanceId].eventRequests[requestId];
-            } else if (type === 'eventHubEvent') {
-                const { eventPayload, groupId, type } = payload;
-                handleEventHubEvent({ data: eventPayload, groupId, type, namespaceId });
-            } else if (type === 'console') {
-                const { text } = payload;
-                onComponentInstanceConsole?.({ text });
+    worker.events().subscribe(({ type, payload }) => {
+        /**
+         * When there is a response to user event request.
+         */
+        if (type === 'response') {
+            const { requestId, result, err } = payload;
+            if (err) {
+                componentInstances[componentInstanceId].eventRequests[requestId].onError({ err });
             } else {
-                emit({ type, payload, componentInstanceId });
+                componentInstances[componentInstanceId].eventRequests[requestId].onSuccess({ result });
             }
-        })
-        worker.initializeComponentInstance({ browserCommands, componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, extensionsPath, extensionsOptions });
-    }
+            delete componentInstances[componentInstanceId].eventRequests[requestId];
+        } else if (type === 'eventHubEvent') {
+            const { eventPayload, groupId, type } = payload;
+            handleEventHubEvent({ data: eventPayload, groupId, type, namespaceId });
+        } else if (type === 'console') {
+            const { text } = payload;
+            onComponentInstanceConsole?.({ text });
+        } else {
+            emit({ type, payload, componentInstanceId });
+        }
+    })
+    worker.initializeComponentInstance({ browserCommands, componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, extensionsPath, extensionsOptions });
+    await clearGarbage();
 }
 
-export const onDisconnect = ({ connectionId }) => {
-    for (const componentInstanceId of Object.keys(componentInstances).filter(x => componentInstances[x].connectionId === connectionId)) {
-        onDestroyComponentInstance({ componentInstanceId });
-    }
+export const onDisconnect = async ({ connectionId }) => {
+    garbage.connections.push(connectionId);
+    await clearGarbage();
 }
 
-const toTerminate = {};
+const garbage: { connections: string[], componentInstances: string[] } = {
+    connections: [],
+    componentInstances: [],
+}
 
 export const onDestroyComponentInstance = async ({ componentInstanceId }) => {
-    if (!componentInstances[componentInstanceId]) {
-        toTerminate[componentInstanceId] = true;
-    } else {
-        try {
-            await componentInstances[componentInstanceId].worker.handleDestroyComponentInstance();
-        } catch (err) {
-            console.warn(err)
-        }
-        componentInstances[componentInstanceId].terminate();
-    }
+    garbage.componentInstances.push(componentInstanceId);
+    await clearGarbage();
 }
 
 export const componentInstances: {
@@ -176,3 +164,21 @@ export const componentInstances: {
         namespaceId: string;
     }
 } = {};
+
+const clearGarbage = async () => {
+    const aliveComponentInstances = Object.keys(componentInstances);
+    const garbageComponentInstanceIds = [
+        ...aliveComponentInstances.filter(x => garbage.connections.includes(componentInstances[x].connectionId)),
+        ...garbage.componentInstances,
+    ];
+    for (const componentInstanceId of garbageComponentInstanceIds) {
+        if (componentInstances[componentInstanceId]) {
+            try {
+                await componentInstances[componentInstanceId].worker.handleDestroyComponentInstance();
+            } catch (err) {
+                console.warn(err)
+            }
+            componentInstances[componentInstanceId].terminate();
+        }
+    }
+}

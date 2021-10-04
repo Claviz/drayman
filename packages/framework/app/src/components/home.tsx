@@ -34,6 +34,9 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/focus': {
                 return <focus />
             }
+            case 'http://localhost:3033/dependency': {
+                return <dependency />
+            }
         }
     }
 

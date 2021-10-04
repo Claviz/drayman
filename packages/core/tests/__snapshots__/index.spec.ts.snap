@@ -91,30 +91,31 @@ Array [
 
 exports[`elements paths 1`] = `
 Object {
-  "drayman-button": "../../framework/node_modules/@drayman/elements/dist/button/main-es2015.js",
-  "drayman-checkbox": "../../framework/node_modules/@drayman/elements/dist/checkbox/main-es2015.js",
-  "drayman-claviz-charts": "../../framework/node_modules/@drayman/elements/dist/claviz-charts/main-es2015.js",
-  "drayman-datepicker": "../../framework/node_modules/@drayman/elements/dist/datepicker/main-es2015.js",
-  "drayman-file-uploader": "../../framework/node_modules/@drayman/elements/dist/file-uploader/main-es2015.js",
-  "drayman-menu": "../../framework/node_modules/@drayman/elements/dist/menu/main-es2015.js",
-  "drayman-ngx-charts": "../../framework/node_modules/@drayman/elements/dist/ngx-charts/main-es2015.js",
-  "drayman-ngx-graph": "../../framework/node_modules/@drayman/elements/dist/ngx-graph/main-es2015.js",
-  "drayman-number-field": "../../framework/node_modules/@drayman/elements/dist/number-field/main-es2015.js",
-  "drayman-pdf-viewer": "../../framework/node_modules/@drayman/elements/dist/pdf-viewer/main-es2015.js",
-  "drayman-radio-group": "../../framework/node_modules/@drayman/elements/dist/radio-group/main-es2015.js",
-  "drayman-select": "../../framework/node_modules/@drayman/elements/dist/select/main-es2015.js",
-  "drayman-table": "../../framework/node_modules/@drayman/elements/dist/table/main-es2015.js",
-  "drayman-text-field": "../../framework/node_modules/@drayman/elements/dist/text-field/main-es2015.js",
-  "drayman-textarea-field": "../../framework/node_modules/@drayman/elements/dist/textarea-field/main-es2015.js",
-  "drayman-timepicker": "../../framework/node_modules/@drayman/elements/dist/timepicker/main-es2015.js",
-  "drayman-youtube-player": "../../framework/node_modules/@drayman/elements/dist/youtube-player/main-es2015.js",
+  "drayman-button": "../../framework/node_modules/@drayman/elements/dist/button/main.js",
+  "drayman-checkbox": "../../framework/node_modules/@drayman/elements/dist/checkbox/main.js",
+  "drayman-claviz-charts": "../../framework/node_modules/@drayman/elements/dist/claviz-charts/main.js",
+  "drayman-datepicker": "../../framework/node_modules/@drayman/elements/dist/datepicker/main.js",
+  "drayman-file-uploader": "../../framework/node_modules/@drayman/elements/dist/file-uploader/main.js",
+  "drayman-menu": "../../framework/node_modules/@drayman/elements/dist/menu/main.js",
+  "drayman-nebula": "../../framework/node_modules/@drayman/elements/dist/nebula/main.js",
+  "drayman-ngx-charts": "../../framework/node_modules/@drayman/elements/dist/ngx-charts/main.js",
+  "drayman-ngx-graph": "../../framework/node_modules/@drayman/elements/dist/ngx-graph/main.js",
+  "drayman-number-field": "../../framework/node_modules/@drayman/elements/dist/number-field/main.js",
+  "drayman-pdf-viewer": "../../framework/node_modules/@drayman/elements/dist/pdf-viewer/main.js",
+  "drayman-radio-group": "../../framework/node_modules/@drayman/elements/dist/radio-group/main.js",
+  "drayman-select": "../../framework/node_modules/@drayman/elements/dist/select/main.js",
+  "drayman-table": "../../framework/node_modules/@drayman/elements/dist/table/main.js",
+  "drayman-text-field": "../../framework/node_modules/@drayman/elements/dist/text-field/main.js",
+  "drayman-textarea-field": "../../framework/node_modules/@drayman/elements/dist/textarea-field/main.js",
+  "drayman-timepicker": "../../framework/node_modules/@drayman/elements/dist/timepicker/main.js",
+  "drayman-youtube-player": "../../framework/node_modules/@drayman/elements/dist/youtube-player/main.js",
 }
 `;
 
 exports[`trying to perform event on non-existing component instance result in an error 1`] = `
 Array [
   Object {
-    "componentInstanceId": "instance-1",
+    "componentInstanceId": "instance-2",
     "payload": Object {
       "updateId": 1,
       "view": Array [
@@ -145,7 +146,7 @@ Array [
     "type": "view",
   },
   Object {
-    "componentInstanceId": "instance-1",
+    "componentInstanceId": "instance-2",
     "payload": Object {},
     "type": "componentInstanceDestroyed",
   },

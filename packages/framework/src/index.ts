@@ -10,6 +10,8 @@ import chokidar from 'chokidar';
 import WebSocket from 'ws';
 import postcssrc from 'postcss-load-config';
 import postcss from 'postcss';
+import cupr from 'cup-readdir';
+import { createHttpTerminator } from 'http-terminator';
 
 process.env.NODE_ENV = 'production';
 
@@ -31,13 +33,16 @@ const build = async () => {
         await fs.writeFile(destination, processedCss.css);
     }
 
+    const componentsDir = `${srcDir}/components`;
     await fs.ensureDir(componentsDir);
-    const componentFiles = (await fs.readdir(componentsDir)).filter(x => x.endsWith('.tsx'));
     const templateFilePath = path.join(componentsDir, `./index.d.ts`);
     await fs.ensureFile(templateFilePath);
+    const files = await cupr.getAllFilePaths(srcDir);
     const template = await fs.readFile(templateFilePath, 'utf8');
     const lines = template.split('\n');
-    let newLines = componentFiles.map(x => `'${x.replace('.tsx', '')}': { [propName: string]: any; };`);
+    const componentFilePaths = files.filter(x => x.startsWith(componentsDir) && x.endsWith('.tsx'));
+    const componentNames = componentFilePaths.map(x => path.basename(x).replace('.tsx', ''));
+    let newLines = componentNames.map(x => `'${x}': { [propName: string]: any; };`);
     const startIndex = lines.findIndex(x => x.includes('// ELEMENTS-START')) + 1;
     if (startIndex) {
         const endIndex = lines.findIndex(x => x.includes('// ELEMENTS-END'));
@@ -55,18 +60,19 @@ const build = async () => {
         lines.splice(startIndex, 0, ...newLines);
     }
     await fs.outputFile(templateFilePath, lines.join('\n'));
-    // const tsConfig = JSON.parse(await fs.readFile(path.join(rootDir, `./tsconfig.json`), 'utf-8'));
-    // const componentOutputDir = path.join(rootDir, `./src/components`);
-    for (const componentFile of componentFiles) {
-        const script = await fs.readFile(path.join(componentsDir, componentFile), 'utf-8');
-        await draymanCore.saveComponent({ script, outputFile: path.join(componentsOutputDir, `${componentFile.replace('.tsx', '')}.js`) });
-        // const transpiledComponentScript = ts.transpileModule(componentScript, tsConfig);
-        // await fs.outputFile(path.join(componentOutputDir, `${componentFile.replace('.tsx', '')}.js`), transpiledComponentScript.outputText);
+    for (const componentName of componentNames) {
+        const script = await fs.readFile(path.join(componentsDir, `${componentName}.tsx`), 'utf-8');
+        await draymanCore.saveComponent({ script, outputFile: path.join(componentsOutputDir, `${componentName}.js`) });
     }
-    console.log(`Rebuilt!`);
+    const otherFiles = files.filter(x => x.endsWith('.ts') && !x.endsWith('.d.ts'));
+    for (const otherFile of otherFiles) {
+        const script = await fs.readFile(otherFile, 'utf-8');
+        await draymanCore.saveComponent({ script, outputFile: path.join(outDir, `${otherFile.replace(`${srcDir}/`, '').replace('.ts', '')}.js`) });
+    }
 }
 
-const start = () => {
+const start = async () => {
+    await build();
     const storage = multer.memoryStorage();
     const upload = multer({ storage: storage });
     const app = express();
@@ -129,6 +135,7 @@ const start = () => {
 
     const port = draymanConfig.port || 3033;
     const server = app.listen(port);
+    const httpTerminator = createHttpTerminator({ server });
     console.log(`Drayman started at http://localhost:${port}`);
     server.setTimeout(0);
 
@@ -170,15 +177,19 @@ const start = () => {
         });
     });
 
-    return (data) => wss.clients.forEach((ws) => {
-        ws.send(JSON.stringify(data));
-    })
+    return {
+        broadcast: (data) => wss.clients.forEach((ws) => {
+            ws.send(JSON.stringify(data));
+        }),
+        close: async () => {
+            await httpTerminator.terminate();
+        }
+    }
 }
 
 const command = process.argv[2];
 const draymanConfig = require(path.join(process.cwd(), 'drayman.config.js'));
 const srcDir = draymanConfig.srcDir || `./src`;
-const componentsDir = `${srcDir}/components`;
 const publicDir = draymanConfig.publicDir || `./public`;
 const outDir = draymanConfig.outDir || `./dist`;
 const componentsOutputDir = `${outDir}/components`;
@@ -187,14 +198,13 @@ let elementsPaths = {};
 (async () => {
     elementsPaths = await draymanCore.getElementsScriptPaths({});
     if (command === 'start') {
-        await build();
-        const broadcast = start();
-        chokidar.watch(componentsDir, {
+        let server = await start();
+        chokidar.watch(srcDir, {
             ignored: (path) => path.endsWith('.d.ts'),
             ignoreInitial: true,
         }).on('all', async (a, b) => {
-            await build();
-            broadcast({ type: 'browserReload' })
+            await server.close();
+            server = await start();
         });
     } else if (command === 'build') {
         await build();

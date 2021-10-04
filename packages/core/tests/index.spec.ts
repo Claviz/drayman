@@ -74,7 +74,7 @@ describe('', () => {
 
     test('trying to perform event on non-existing component instance result in an error', async () => {
         const messages = await (() => new Promise<{ type, payload, componentInstanceId }[]>((resolve, reject) => {
-            const componentInstanceId = 'instance-1';
+            const componentInstanceId = 'instance-2';
             const messages = [];
             onInitializeComponentInstance({
                 browserCommands: [],
@@ -82,7 +82,7 @@ describe('', () => {
                 componentInstanceId,
                 componentName: 'buttons',
                 componentRootDir: 'tests/dist/components',
-                connectionId: 'connection-1',
+                connectionId: 'connection-2',
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {
                     messages.push(message);

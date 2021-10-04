@@ -162,3 +162,13 @@ context('DOM element reference', () => {
     cy.get('input').should('have.focus');
   })
 })
+
+context('file reference', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/dependency')
+  })
+
+  it(`executes function from referenced file`, () => {
+    cy.get('h3').should('have.text', '2+2=4');
+  })
+})
