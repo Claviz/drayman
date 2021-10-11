@@ -8,7 +8,7 @@ import { exec } from 'child_process';
 const getNpmPackages = (nodeModulesPath) => {
     return new Promise<string[]>((resolve) => {
         exec(`npm ls -a -p`, { cwd: nodeModulesPath, }, function (error, stdout, stderr) {
-            resolve(stdout ? stdout.split('\n').filter(x => path.isAbsolute(x)) : [])
+            resolve(stdout ? stdout.split(/\r\n|\n|\r/).filter(x => path.isAbsolute(x)) : [])
         });
     });
 }
