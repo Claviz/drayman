@@ -20,7 +20,7 @@ describe('', () => {
         const elementPaths = await getElementsScriptPaths({ nodeModulesPath: path.join(__dirname, '../../framework/node_modules') });
         const pathsWithRelativeRemoved = {};
         for (const element of Object.keys(elementPaths)) {
-            pathsWithRelativeRemoved[element] = path.relative(__dirname, elementPaths[element]).replaceAll('\\', '/');
+            pathsWithRelativeRemoved[element] = path.relative(__dirname, elementPaths[element]).replace(/\\/, '/');
         }
         expect(pathsWithRelativeRemoved).toMatchSnapshot();
     });
