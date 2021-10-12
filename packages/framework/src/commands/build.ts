@@ -26,7 +26,7 @@ export async function build() {
         await fs.writeFile(postcssDestinationFile, processedCss.css);
     }
 
-    const componentsDir = `${srcDir}/components`;
+    const componentsDir = path.join(srcDir, 'components');
     await fs.ensureDir(componentsDir);
     const templateFilePath = path.join(componentsDir, `./index.d.ts`);
     await fs.ensureFile(templateFilePath);
