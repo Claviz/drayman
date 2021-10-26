@@ -9,7 +9,7 @@ export const component: DraymanComponent = async ({ Browser }) => {
             <button
                 id="focus-btn"
                 onclick={async () => {
-                    await Browser.focus(null, 'my-input');
+                    await Browser.focus(null, ['my-input']);
                 }}
             >Focus input</button>
         </>

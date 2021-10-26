@@ -42,7 +42,7 @@
                         onClose: (modal) => emit(onClose),
                     });
                 },
-                focus: async (data, element) => {
+                focus: async (data, [element]) => {
                     element.focus();
                 }
             }),

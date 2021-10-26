@@ -427,13 +427,13 @@ customElements.define('drayman-element', class extends HTMLElement {
                 //     this.once = true;
                 // }
             } else if (type === 'browserCommand') {
-                const { data, callbackId, command, element } = payload;
-                let domElement: Element;
-                if (element) {
-                    domElement = document.querySelector(`drayman-element-container[componentinstanceid="${this.componentInstanceId}"] [ref="${element}"]`);
+                const { data, callbackId, command, elements } = payload;
+                let domElements: Element[] = [];
+                if (elements) {
+                    domElements = elements.map(x => document.querySelector(`drayman-element-container[componentinstanceid="${this.componentInstanceId}"] [ref="${x}"]`));
                 }
                 // snackbar.afterDismissed().subscribe((data) => {
-                const response = await browserCommands[command](data, domElement);
+                const response = await browserCommands[command](data, domElements);
                 window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
                 // })
             }

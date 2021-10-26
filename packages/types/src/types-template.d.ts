@@ -147,7 +147,7 @@ declare global {
                 emit(eventName: string, data: any, groupId?: string): any;
             } & EventHubExtend;
             Browser: {
-                [command: string]: (options?: any, elementRef?: string) => Promise<any>
+                [command: string]: (options?: any, elementRefs?: string[]) => Promise<any>
             } & BrowserExtend;
             ComponentInstance: {
                 id: string;
