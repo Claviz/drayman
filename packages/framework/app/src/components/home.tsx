@@ -40,6 +40,9 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/lifecycle-init': {
                 return <lifecycle-init />
             }
+            case 'http://localhost:3033/server-counter': {
+                return <server-counter />
+            }
         }
     }
 

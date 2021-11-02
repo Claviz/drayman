@@ -84,7 +84,7 @@ const serializeComponentInstanceOptions = (options: any) => {
 
 const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
 
-const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
+const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], serverCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
     ComponentInstance.id = componentInstanceId;
     if (extensionsPath) {
         extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
@@ -111,6 +111,30 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
                 once: true,
             };
             sendMessage({ type: 'browserCommand', payload: { data: newData, callbackId, command, elements } });
+        })
+    }
+    const Server = {};
+    for (const command of serverCommands) {
+        Server[command] = async (data: any = {}) => new Promise<any>((resolve, reject) => {
+            const newData = {};
+            for (const key of Object.keys(data || {})) {
+                if (typeof data[key] === 'function') {
+                    const callbackId = shortid.generate();
+                    newData[key] = callbackId;
+                    browserCallbacks[callbackId] = {
+                        callback: async (response) => await data[key](response),
+                        once: false,
+                    };
+                } else {
+                    newData[key] = data[key];
+                }
+            }
+            const callbackId = shortid.generate();
+            browserCallbacks[callbackId] = {
+                callback: (response) => resolve(response),
+                once: true,
+            };
+            sendMessage({ type: 'serverCommand', payload: { data: newData, callbackId, command, } });
         })
     }
     props = componentOptions || {};
@@ -150,6 +174,7 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
             EventHub,
             Components,
             Browser,
+            Server,
             ComponentInstance,
             ...extensions.importable,
         });
@@ -222,6 +247,7 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         EventHub,
         Components,
         Browser,
+        Server,
         ComponentInstance,
         ...extensions.importable,
     });

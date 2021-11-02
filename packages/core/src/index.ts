@@ -90,6 +90,7 @@ export const onInitializeComponentInstance = async ({
     emit,
     onComponentInstanceConsole,
     browserCommands,
+    serverCommands,
 }) => {
     if (componentOptions && typeof componentOptions === 'string') {
         componentOptions = JSON.parse(componentOptions);
@@ -131,7 +132,7 @@ export const onInitializeComponentInstance = async ({
             emit({ type, payload, componentInstanceId });
         }
     })
-    worker.initializeComponentInstance({ browserCommands, componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, extensionsPath, extensionsOptions });
+    worker.initializeComponentInstance({ browserCommands, serverCommands, componentNamePrefix, componentName, componentRootDir, componentOptions, componentInstanceId, extensionsPath, extensionsOptions });
     await clearGarbage();
 }
 

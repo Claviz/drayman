@@ -183,3 +183,18 @@ context('lifecycle events', () => {
     cy.get('h3').should('have.text', 'Initialized!');
   })
 })
+
+context('server storage', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/server-counter')
+  })
+
+  it(`saves data even after page refresh`, () => {
+    for (let i = 0; i < 5; i++) {
+      cy.get('#counter-btn').should('contain.text', `Times clicked: ${i}`);
+      cy.get('#counter-btn').click();
+    }
+    cy.reload();
+    cy.get('#counter-btn').should('contain.text', `Times clicked: 5`);
+  })
+})

@@ -9,7 +9,7 @@ import { build } from './build';
 import { getDraymanConfig } from '../config';
 
 (async () => {
-    const { publicDir, port, componentsOutputDir } = getDraymanConfig();
+    const { publicDir, port, componentsOutputDir, outDir } = getDraymanConfig();
     const elementsPaths = await draymanCore.getElementsScriptPaths({});
     await build();
     const storage = multer.memoryStorage();
@@ -20,6 +20,10 @@ import { getDraymanConfig } from '../config';
     app.get('/drayman-framework-client.js', function (req, res) {
         res.sendFile(path.join(__dirname, '../../client/dist/index.js'));
     });
+    let Server;
+    try {
+        Server = await (await import(path.join(process.cwd(), outDir, 'index.js'))).Server({ emit: (callbackId, data) => draymanCore.onHandleBrowserCallback({ callbackId, data }) });
+    } catch (err) { }
 
     app.post('/api/componentEvent', upload.any(), async (req, res, next) => {
         try {
@@ -94,9 +98,18 @@ import { getDraymanConfig } from '../config';
                     componentInstanceId,
                     componentOptions,
                     connectionId,
-                    emit: (message) => ws.send(JSON.stringify({ data: message, type: 'event' })),
+                    emit: async (message) => {
+                        if (message.type === 'serverCommand') {
+                            const { data, callbackId, command } = message.payload;
+                            const result = await Server[command](data);
+                            draymanCore.onHandleBrowserCallback({ callbackId, data: result });
+                        } else {
+                            ws.send(JSON.stringify({ data: message, type: 'event' }));
+                        }
+                    },
                     onComponentInstanceConsole: ({ text }) => { console.log(text) },
                     browserCommands,
+                    serverCommands: Object.keys(Server || {}),
                 });
             } else if (type === 'eventHubEvent') {
                 const { type, groupId } = data;

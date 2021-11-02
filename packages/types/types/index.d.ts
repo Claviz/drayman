@@ -5314,7 +5314,7 @@ declare global {
 
     interface CSS extends _CSS.StandardProperties<number | string>, _CSS.SvgProperties<number | string> { }
 
-    interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void> {
+    interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void, ServerExtend = void> {
         (data: {
             props: Props;
             forceUpdate: () => Promise<void>;
@@ -5325,12 +5325,21 @@ declare global {
             Browser: {
                 [command: string]: (options?: any, elementRefs?: string[]) => Promise<any>
             } & BrowserExtend;
+            Server: {
+                [command: string]: (options?: any) => Promise<any>
+            } & ServerExtend;
             ComponentInstance: {
                 id: string;
                 onDestroy: (() => Promise<void>) | (() => void);
                 onInit: (() => Promise<void>) | (() => void);
             }
         } & DataExtend): any;
+    }
+
+    interface DraymanServer {
+        (data: {
+            emit: (callback: any, data?: any) => Promise<void>;
+        }): any;
     }
 }
 
