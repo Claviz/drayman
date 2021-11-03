@@ -1,5 +1,5 @@
-function jsx(type, props) {
-    return { type: type ? type : '$$fragment', props };
+function jsx(type, props, key) {
+    return { type: type ? type : '$$fragment', props, key };
 }
 
 module.exports = {

@@ -159,3 +159,55 @@ Now when user clicks a button, an alert will be shown. After closing an alert, a
 </BrowserWindow>
 
 And remember, instead of showing a text, you are free to execute any server-side code (for example, saving some data to database).
+
+## Referencing elements
+
+Sometimes UI interactivity like focusing elements, opening modals and drag-and-dropping is easier to implement on front-end side. In Drayman this can be done in three steps:
+
+1. Mark elements that need to be referenced with `ref` attribute and any unique name.
+2. Define some browser command which will do something with referenced element. Element references will be passed as the second parameter of the browser command.
+3. Execute browser command function by passing an array of required element references.
+
+Let's, for example, see how this can be done if we want to focus some element:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ Browser }) => {
+  return () => {
+    return (
+      <>
+        <input
+          type="text"
+          // set up reference
+          ref="my-input"
+        />
+        <button
+          id="focus-btn"
+          onclick={async () => {
+            // execute Browser function with referenced element
+            await Browser.focus(null, ["my-input"]);
+          }}
+        >
+          Focus input
+        </button>
+      </>
+    );
+  };
+};
+```
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    browserCommands: () => ({
+      // your elements will appear as the second parameter of Browser function
+      focus: async (data, [element]) => {
+        element.focus();
+      },
+    }),
+  });
+</script>
+
+...
+```

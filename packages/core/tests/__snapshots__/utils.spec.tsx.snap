@@ -253,6 +253,50 @@ Object {
 }
 `;
 
+exports[`renders components with childRenderer and custom key 1`] = `
+Object {
+  "events": Object {},
+  "tree": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/0/h3/0/text",
+          "text": "1",
+        },
+      ],
+      "data": Object {},
+      "key": "/0/h3",
+      "sel": "h3",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/1/h3/0/text",
+          "text": "2",
+        },
+      ],
+      "data": Object {},
+      "key": "/1/h3",
+      "sel": "h3",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "key": "/2/h3/0/text",
+          "text": "3",
+        },
+      ],
+      "data": Object {},
+      "key": "/2/h3",
+      "sel": "h3",
+    },
+  ],
+}
+`;
+
 exports[`renders elements mixed with text 1`] = `
 Object {
   "events": Object {},

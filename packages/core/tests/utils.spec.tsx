@@ -83,7 +83,7 @@ test(`function as children`, async () => {
     expect(result).toMatchSnapshot();
 });
 
-it(`expression as children 2`, async () => {
+test(`expression as children 2`, async () => {
     const items = ['This is item 0 in the list', 'This is item 1 in the list', 'This is item 2 in the list'];
     function SubItem({ message }) {
         return <p>{message}</p>;
@@ -100,7 +100,7 @@ it(`expression as children 2`, async () => {
     expect(result).toMatchSnapshot();
 });
 
-it(`detects events`, async () => {
+test(`detects events`, async () => {
     expect(isEvent('onClick')).toBeTruthy();
     expect(isEvent('onA')).toBeTruthy();
     expect(isEvent('onclick')).toBeTruthy();
@@ -112,7 +112,7 @@ it(`detects events`, async () => {
     expect(isEvent('ONClick')).toBeFalsy();
 });
 
-it(`renders components with childRenderer`, async () => {
+test(`renders components with childRenderer`, async () => {
     const renderedChildKeys = [];
 
     function Child({ message }) {
@@ -161,6 +161,35 @@ it(`renders components with childRenderer`, async () => {
         '/3/other-child'
     ]);
 
+    expect(result).toMatchSnapshot();
+});
+
+test(`renders components with childRenderer and custom key`, async () => {
+    const renderedChildKeys = [];
+    const childRenderer = async (type, key, props) => {
+        if (type === 'child') {
+            renderedChildKeys.push(key);
+
+            return (
+                <h3>
+                    {props.message}
+                </h3>
+            );
+        }
+    }
+    const result = await render(
+        [
+            <child key="custom-1" message="1"></child>,
+            <child key="custom-2" message="2"></child>,
+            <child key="custom-3" message="3"></child>,
+        ],
+        childRenderer,
+    )
+    expect(renderedChildKeys).toEqual([
+        '/custom-1/child',
+        '/custom-2/child',
+        '/custom-3/child'
+    ]);
     expect(result).toMatchSnapshot();
 });
 

@@ -12,7 +12,7 @@ async function parseFnType(item) {
 }
 
 export const render = async (raw, childRenderer = null, renderedArr = [], events = {}, parent = '') => {
-    async function traverse(arr: { type: string | any; props: any; }[], renderedArr = [], parent = null) {
+    async function traverse(arr: { type: string | any; props: any; key: string; }[], renderedArr = [], parent = null) {
         for (let item of (Array.isArray(arr) ? arr : [arr])) {
             // console.log(1, item)
             if (item?.type === '$$fragment') {
@@ -23,7 +23,7 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
                 //     item = { ...rendered };
                 // }
                 item = { ...await parseFnType(item) }
-                const result = await childRenderer?.(item.type, `${parent}/${renderedArr.length}/${item.type}`, item.props);
+                const result = await childRenderer?.(item.type, item.key ? `${parent}/${item.key}/${item.type}` : `${parent}/${renderedArr.length}/${item.type}`, item.props);
                 if (result) {
                     await render(result, childRenderer, renderedArr, events, `${parent}`);
                 } else {
