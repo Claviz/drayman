@@ -163,6 +163,7 @@ declare global {
     interface DraymanServer {
         (data: {
             emit: (callback: any, data?: any) => Promise<void>;
+            app: any;
         }): any;
     }
 }

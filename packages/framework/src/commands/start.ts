@@ -22,7 +22,10 @@ import { getDraymanConfig } from '../config';
     });
     let Server;
     try {
-        Server = await (await import(path.join(process.cwd(), outDir, 'index.js'))).Server({ emit: (callbackId, data) => draymanCore.onHandleBrowserCallback({ callbackId, data }) });
+        Server = await (await import(path.join(process.cwd(), outDir, 'index.js'))).Server({
+            app,
+            emit: (callbackId, data) => draymanCore.onHandleBrowserCallback({ callbackId, data })
+        });
     } catch (err) { }
 
     app.post('/api/componentEvent', upload.any(), async (req, res, next) => {

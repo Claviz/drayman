@@ -1,0 +1,113 @@
+---
+title: The Server object
+sidebar_position: 7
+---
+
+import BrowserWindow from "@site/src/components/BrowserWindow";
+
+Drayman component instances live inside separate processes. They can communicate with each other via [EventHub](./the-event-hub-object) or browser using [Browser](./the-browser-object) object. But in some cases this won't be enough. For example, if you want to connect to the database, a database connection must be established during each component's initialization which will lead to a lot of overhead. Another example would be if some variable needs to be shared between all component instances.
+
+In another words, there must be a mechanism which stores data or executes some code in the main process and all component instances can access it. This mechanism is implemented by the Server object.
+
+When Drayman starts, it searches for a `src/index.ts` file. Inside of this file, it looks for an exported `Server` function. This function is executed immediately and then all components can access it.
+
+## Sharing data between all components centrally
+
+Let's imagine we need to store some data in a central place and all components need to access it. We can do this by creating a `src/index.ts` file with a function named `Server`. This function will be executed when Drayman starts.
+
+An object returned by this function can contain commands which are accessible by all components:
+
+```tsx title="src/index.ts"
+export const Server: DraymanServer = async ({}) => {
+  let count = 0;
+
+  return {
+    increase: async () => {
+      count++;
+    },
+    getCount: async () => {
+      return count;
+    },
+  };
+};
+```
+
+All these commands can be executed inside component script:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate, Server }) => {
+  const onBtnClick = async () => {
+    await Server.increase();
+    await forceUpdate();
+  };
+
+  return async () => {
+    let count = await Server.getCount();
+    return <button onclick={onBtnClick}>Times clicked: {count}</button>;
+  };
+};
+```
+
+Even if browser is reloaded or another user tries to access or manipulate the data, this data won't be lost because it is stored in the main process.
+
+### Executing callbacks
+
+You can also execute callbacks in the main process. This can be useful if something needs to be done in background or after some time. For this, you can use `emit` function inside Server.
+
+Let's create a command which will execute some action after a certain time:
+
+```tsx title="src/index.ts"
+export const Server: DraymanServer = async ({ emit }) => {
+  return {
+    setTimeout: async ({ onAfterSomeTime }) => {
+      setTimeout(() => {
+        emit(onAfterSomeTime);
+      }, 1000);
+    },
+  };
+};
+```
+
+You can then pass a callback from the component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate, Server }) => {
+  const onBtnClick = async () => {
+    await Server.setTimeout({
+      onAfterSomeTime: async () => {
+        count++;
+        await forceUpdate();
+      },
+    });
+    await forceUpdate();
+  };
+
+  let count = 0;
+
+  return async () => {
+    return <button onclick={onBtnClick}>Times clicked: {count}</button>;
+  };
+};
+```
+
+## Using middlewares and request interceptors
+
+Under the hood, Drayman launches simple Express.js server which is responsible for handling all incoming requests (for example, when user clicks a button). This server can be extended by adding middlewares or request interceptors to Express.js `app`.
+
+This can become handy when you want to add some logic to all requests. For example, you can add some logging or authentication logic.
+
+```tsx title="src/index.ts"
+export const Server: DraymanServer = async ({ app }) => {
+  app.use(async (req, res, next) => {
+    // log all requests to the console
+    console.log(`${req.method} ${req.url}`);
+
+    // set cookie for all requests
+    res.cookie("hello", "world");
+
+    next();
+  });
+};
+```
+
+You can read more about Express.js middlewares and request interceptors [here](https://expressjs.com/en/guide/using-middleware.html).
