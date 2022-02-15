@@ -91,6 +91,7 @@ export const onInitializeComponentInstance = async ({
     onComponentInstanceConsole,
     browserCommands,
     serverCommands,
+    onEventHubEvent = null,
 }) => {
     if (componentOptions && typeof componentOptions === 'string') {
         componentOptions = JSON.parse(componentOptions);
@@ -125,6 +126,7 @@ export const onInitializeComponentInstance = async ({
         } else if (type === 'eventHubEvent') {
             const { eventPayload, groupId, type } = payload;
             handleEventHubEvent({ data: eventPayload, groupId, type, namespaceId });
+            onEventHubEvent?.({ data: eventPayload, groupId, type, namespaceId });
         } else if (type === 'console') {
             const { text } = payload;
             onComponentInstanceConsole?.({ text });
