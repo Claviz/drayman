@@ -23,7 +23,7 @@ function HomepageHeader() {
         </div>
         <div className={styles.video}>
           <video width="100%" height="100%" playsInline autoPlay muted loop>
-            <source src="/static/img/welcome.mp4" type="video/mp4" />
+            <source src="/img/welcome.mp4" type="video/mp4" />
           </video>
         </div>
       </div>
