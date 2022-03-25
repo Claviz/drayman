@@ -21,14 +21,10 @@ function HomepageHeader() {
             Drayman Introduction - 5min ⏱️
           </Link>
         </div>
-        <div className={styles.sandbox}>
-          <iframe
-            src="https://codesandbox.io/embed/home-sandbox-rnriw?fontsize=12&module=%2Fsrc%2Fcomponents%2Fhome.tsx&theme=dark&eslint=1"
-            style={{ width: "100%", height: 500, border: 0, borderRadius: 4, overflow: "hidden" }}
-            title="home-sandbox-rnriw"
-            allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-            sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts">
-          </iframe>
+        <div className={styles.video}>
+          <video width="100%" height="100%" playsInline autoPlay muted loop>
+            <source src="/static/img/welcome.mp4" type="video/mp4" />
+          </video>
         </div>
       </div>
     </header>

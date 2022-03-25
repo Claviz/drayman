@@ -57,9 +57,3 @@ jobs:
         run: |
           npm install
           npm run build
-
-      - name: "@drayman/framework-examples"
-        working-directory: ./packages/framework-examples
-        run: |
-          npm install
-          npm run build
