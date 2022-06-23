@@ -9,7 +9,7 @@ describe('', () => {
 
     beforeAll(async () => {
         const script = await fs.readFile('./tests/components/buttons.tsx', 'utf-8');
-        await saveComponent({ script, outputFile: './tests/dist/components/buttons.js' });
+        await saveComponent({ script, scriptPath: './tests/components/buttons.tsx', outputFile: './tests/dist/components/buttons.js' });
     });
 
     beforeEach(() => {
@@ -31,6 +31,7 @@ describe('', () => {
             const componentInstanceId = 'instance-1';
             const messages = [];
             onInitializeComponentInstance({
+                serverCommands: [],
                 browserCommands: [],
                 onComponentInstanceConsole: ({ text }) => { consoleMessages.push(text) },
                 componentInstanceId,
@@ -83,6 +84,7 @@ describe('', () => {
                 componentName: 'buttons',
                 componentRootDir: 'tests/dist/components',
                 connectionId: 'connection-2',
+                serverCommands: [],
                 componentOptions: { text: 'Hello, world!' },
                 emit: async (message) => {
                     messages.push(message);

@@ -2,7 +2,6 @@
 import nodemon from 'nodemon';
 import path from 'path';
 
-import { build } from './commands/build';
 import { getDraymanConfig } from './config';
 
 const command = process.argv[2];
@@ -20,6 +19,7 @@ const command = process.argv[2];
             console.log('Restarting Drayman...');
         });
     } else if (command === 'build') {
+        const { build } = await import('./commands/build');
         await build();
     } else {
         throw new Error(`Unknown command.`);

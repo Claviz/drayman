@@ -63,7 +63,7 @@ export const handleEventHubEvent = async ({ data, groupId = null, type, namespac
     }
 }
 
-export const saveComponent = async ({ script, outputFile }) => {
+export const saveComponent = async ({ script, outputFile, scriptPath }) => {
     const tsConfig = JSON.parse(
         await fs.readFile(
             path.join(
@@ -73,7 +73,14 @@ export const saveComponent = async ({ script, outputFile }) => {
             'utf-8'
         )
     );
-    const transpiledComponentScript = ts.transpileModule(script, tsConfig);
+    let transpiledComponentScript = ts.transpileModule(script, {
+        ...tsConfig,
+        compilerOptions: {
+            ...tsConfig.compilerOptions,
+            sourceRoot: path.parse(scriptPath).dir
+        },
+        fileName: `${path.parse(outputFile).name}.tsx`
+    });
     await fs.outputFile(outputFile, transpiledComponentScript.outputText);
 }
 

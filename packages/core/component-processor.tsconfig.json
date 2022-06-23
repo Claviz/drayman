@@ -5,6 +5,7 @@
         "esModuleInterop": true,
         "target": "esnext",
         "module": "CommonJS",
-        "moduleResolution": "Node"
+        "moduleResolution": "Node",
+        "inlineSourceMap": true
     }
 }

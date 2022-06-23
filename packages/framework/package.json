@@ -41,7 +41,7 @@
     "@types/nodemon": "^1.19.1",
     "@types/shortid": "0.0.29",
     "@types/ws": "^7.4.4",
-    "cypress": "^7.2.0",
+    "cypress": "^8.7.0",
     "cypress-file-upload": "^5.0.7",
     "dayjs": "^1.10.4",
     "npm": "^7.10.0",

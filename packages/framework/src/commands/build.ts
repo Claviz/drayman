@@ -55,11 +55,11 @@ export async function build() {
     await fs.outputFile(templateFilePath, lines.join('\n'));
     for (const componentName of componentNames) {
         const script = await fs.readFile(path.join(componentsDir, `${componentName}.tsx`), 'utf-8');
-        await draymanCore.saveComponent({ script, outputFile: path.join(componentsOutputDir, `${componentName}.js`) });
+        await draymanCore.saveComponent({ scriptPath: path.join(process.cwd(), componentsDir, `${componentName}.tsx`), script, outputFile: path.join(componentsOutputDir, `${componentName}.js`) });
     }
     const otherFiles = files.filter(x => x.endsWith('.ts') && !x.endsWith('.d.ts'));
     for (const otherFile of otherFiles) {
         const script = await fs.readFile(otherFile, 'utf-8');
-        await draymanCore.saveComponent({ script, outputFile: path.join(outDir, `${otherFile.replace(`${srcDir}/`, '').replace('.ts', '')}.js`) });
+        await draymanCore.saveComponent({ script, scriptPath: otherFile, outputFile: path.join(outDir, `${otherFile.replace(`${srcDir}/`, '').replace('.ts', '')}.js`) });
     }
 }

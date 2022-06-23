@@ -4,7 +4,7 @@ export const isEvent = (optionName: string) => optionName?.length > 2 && optionN
 // export const isEvent = (optionName: string) => optionName?.length > 2 && optionName.slice(0, 2) === 'on' && optionName[2] === optionName[2].toUpperCase();
 
 async function parseFnType(item) {
-    if (typeof item.type === 'function') {
+    if (typeof item?.type === 'function') {
         const rendered = await item.type(item.props);
         return parseFnType(rendered);
     }

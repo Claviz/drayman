@@ -1,5 +1,7 @@
-const pe = require('pretty-error').start();
-pe.withoutColors();
+require('source-map-support').install();
+const consola = require('consola');
+consola.setReporters(new consola.FancyReporter());
+
 import { render, isEvent } from './utils';
 import fs from 'fs';
 import path from 'path';
@@ -24,6 +26,8 @@ const portWritable = new Writable({
     },
 });
 process.stdout.write = process.stderr.write = portWritable.write.bind(portWritable);
+consola.wrapAll();
+
 class EventHubClass {
     #handlers: {
         [eventName: string]: {
@@ -159,38 +163,54 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         return null;
     }
     const createComponent = async (componentKey: string, initialProps: any) => {
-        pe.alias(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`), `${componentKey}.js`);
-        // pe.skip(function (traceLine, lineNumber) {
-        //     if (traceLine.file !== `${componentNamePrefix}${componentKey}.tsx`) {
-        //         return true;
-        //     }
-        // });
         const props = { ...initialProps } || {};
-        // const child_fnResult = require(path.join(process.cwd(), `./out/components/${componentKey}.tsx`));
-        const child_fnResult = require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
-        const child_componentResult = await (Object.values(child_fnResult)[0] as any)({
-            forceUpdate,
-            props,
-            EventHub,
-            Components,
-            Browser,
-            Server,
-            ComponentInstance,
-            ...extensions.importable,
-        });
+        let child_componentResult;
+        try {
+            child_componentResult = await (Object.values(
+                require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`))
+            )[0] as any)({
+                forceUpdate,
+                props,
+                EventHub,
+                Components,
+                Browser,
+                Server,
+                ComponentInstance,
+                ...extensions.importable,
+            });
+        } catch (err) {
+            console.error(err);
+            child_componentResult = async () => {
+                return errorComp(`Child component "${componentKey}" failed to initialize!`, err.message);
+            }
+        }
         let prevChildProps = {};
         return async (newProps: any) => {
             updatePreservingRef(props, newProps);
-            const res = await child_componentResult({ prevProps: prevChildProps });
+            let res;
+            try {
+                res = await child_componentResult({ prevProps: prevChildProps });
+            } catch (err) {
+                console.error(err);
+                res = errorComp(`Child component "${componentKey}" failed to render!`, err.message);
+            }
             prevChildProps = { ...props };
             return res;
         };
     }
     forceUpdate = async () => {
         updateId++;
-        const compResult = await componentResult({ prevProps });
+        let compResult;
+        let result;
+        try {
+            compResult = await componentResult({ prevProps });
+            result = await render(compResult, childRenderer);
+        } catch (err) {
+            console.error(err)
+            compResult = errorComp(`Component "${componentName}" failed to render!`, err.message);
+            result = await render(compResult, childRenderer);
+        }
         prevProps = { ...props };
-        const result = await render(compResult, childRenderer);
         for (const key of Object.keys(renderedComps)) {
             if (!renderedComps[key].called) {
                 delete renderedComps[key];
@@ -240,17 +260,26 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         // });
         // }
     }
-    const fnResult = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
-    const componentResult = await (Object.values(fnResult)[0] as any)({
-        props,
-        forceUpdate,
-        EventHub,
-        Components,
-        Browser,
-        Server,
-        ComponentInstance,
-        ...extensions.importable,
-    });
+    let componentResult;
+    try {
+        componentResult = await (Object.values(
+            await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`))
+        )[0] as any)({
+            props,
+            forceUpdate,
+            EventHub,
+            Components,
+            Browser,
+            Server,
+            ComponentInstance,
+            ...extensions.importable,
+        })
+    } catch (err) {
+        console.error(err);
+        componentResult = async () => {
+            return errorComp(`Component "${componentName}" failed to initialize!`, err.message);
+        }
+    }
 
     await forceUpdate();
 }
@@ -322,3 +351,7 @@ expose({
         return Observable.from(subject)
     }
 })
+
+const errorComp = (errorHeader, error) => {
+    return { "type": "div", "props": { "style": { "width": "100%", "height": "100%", "color": "rgba(0, 0, 0, 0.85)", "backgroundColor": "rgb(255, 242, 240)", "borderRadius": "2px", "border": "1px solid", "borderColor": "rgb(255, 204, 199)" }, "children": { "type": "div", "props": { "style": { "margin": "25px", "display": "flex", "gap": "10px" }, "children": [{ "type": "div", "props": { "style": { "fontSize": "16px" }, "children": { "type": "svg", "props": { "style": { "color": "rgb(255, 77, 79)", "height": "25px", "width": "25px" }, "viewBox": "64 64 896 896", "focusable": "false", "data-icon": "close-circle", "width": "1em", "height": "1em", "fill": "currentColor", "aria-hidden": "true", "children": [{ "type": "path", "props": { "d": "M685.4 354.8c0-4.4-3.6-8-8-8l-66 .3L512 465.6l-99.3-118.4-66.1-.3c-4.4 0-8 3.5-8 8 0 1.9.7 3.7 1.9 5.2l130.1 155L340.5 670a8.32 8.32 0 00-1.9 5.2c0 4.4 3.6 8 8 8l66.1-.3L512 564.4l99.3 118.4 66 .3c4.4 0 8-3.5 8-8 0-1.9-.7-3.7-1.9-5.2L553.5 515l130.1-155c1.2-1.4 1.8-3.3 1.8-5.2z" } }, { "type": "path", "props": { "d": "M512 65C264.6 65 64 265.6 64 513s200.6 448 448 448 448-200.6 448-448S759.4 65 512 65zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" } }] } } } }, { "type": "div", "props": { "style": { "display": "flex", "flexDirection": "column" }, "children": [{ "type": "div", "props": { "style": { "fontSize": "18px" }, "children": errorHeader } }, { "type": "div", "props": { "style": { "fontSize": "14px" }, "children": error } }] } }] } } } };
+}

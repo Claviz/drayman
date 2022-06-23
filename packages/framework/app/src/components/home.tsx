@@ -43,6 +43,12 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/server-counter': {
                 return <server-counter />
             }
+            case 'http://localhost:3033/error-init': {
+                return <error-init />
+            }
+            case 'http://localhost:3033/error-render': {
+                return <error-render />
+            }
         }
     }
 

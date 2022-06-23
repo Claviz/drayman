@@ -198,3 +198,19 @@ context('server storage', () => {
     cy.get('#counter-btn').should('contain.text', `Times clicked: 5`);
   })
 })
+
+context.only('shows errors', () => {
+  it(`if it happend on init`, () => {
+    cy.visit('http://localhost:3033/error-init');
+    cy.document().should('contain.text', 'Child component "error-init" failed to initialize!');
+    cy.document().should('contain.text', 'error-init');
+    cy.document().should('not.contain.text', 'Hello, world!');
+  })
+
+  it(`if it happend on render`, () => {
+    cy.visit('http://localhost:3033/error-render');
+    cy.document().should('contain.text', 'Child component "error-render" failed to render!');
+    cy.document().should('contain.text', 'error-render');
+    cy.document().should('not.contain.text', 'Hello, world!');
+  })
+})
