@@ -107,8 +107,8 @@ export const onInitializeComponentInstance = async ({
     componentInstances[componentInstanceId] = {
         worker,
         terminate: async () => {
-            await Thread.terminate(worker);
             delete componentInstances[componentInstanceId];
+            await Thread.terminate(worker);
             emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });
         },
         /**
