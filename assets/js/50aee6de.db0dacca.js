@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_drayman_docs=self.webpackChunk_drayman_docs||[]).push([[4272],{8433:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"guide","name":"guide","count":2,"permalink":"/blog/tags/guide"}')}}]);

@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_drayman_docs=self.webpackChunk_drayman_docs||[]).push([[891],{5752:function(s){s.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"tailwindcss","name":"tailwindcss","count":1,"permalink":"/blog/tags/tailwindcss"}')}}]);
