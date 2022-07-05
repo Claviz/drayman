@@ -1,0 +1,73 @@
+---
+title: "@drayman/elements"
+sidebar_position: 2
+---
+
+[@drayman/elements](https://drayman-elements.netlify.app/) is an official collection of [Web Components](./using-web-components) compatible with Drayman.
+
+- [Docs](https://drayman-elements.netlify.app)
+- [GitHub repo](https://github.com/Claviz/drayman-elements)
+
+## Available Web Components
+
+- [drayman-button](https://drayman-elements.netlify.app/interfaces/__global.draymanbuttonprops.html)
+- [drayman-menu](https://drayman-elements.netlify.app/interfaces/__global.draymanmenuprops.html)
+- [drayman-checkbox](https://drayman-elements.netlify.app/interfaces/__global.draymancheckboxprops.html)
+- [drayman-claviz-charts](https://drayman-elements.netlify.app/interfaces/__global.draymanclavizchartsprops.html)
+- [drayman-datepicker](https://drayman-elements.netlify.app/interfaces/__global.draymandatepickerprops.html)
+- [drayman-file-uploader](https://drayman-elements.netlify.app/interfaces/__global.draymanfileuploaderprops.html)
+- [drayman-ngx-charts](https://drayman-elements.netlify.app/interfaces/__global.draymanngxchartsprops.html)
+- [drayman-ngx-graph](https://drayman-elements.netlify.app/interfaces/__global.draymanngxgraphprops.html)
+- [drayman-number-field](https://drayman-elements.netlify.app/interfaces/__global.draymannumberfieldprops.html)
+- [drayman-pdf-viewer](https://drayman-elements.netlify.app/interfaces/__global.draymanpdfviewerprops.html)
+- [drayman-radio-group](https://drayman-elements.netlify.app/interfaces/__global.draymanradiogroupprops.html)
+- [drayman-select](https://drayman-elements.netlify.app/interfaces/__global.draymanselectprops.html)
+- [drayman-table](https://drayman-elements.netlify.app/interfaces/__global.draymantableprops.html)
+- [drayman-text-field](https://drayman-elements.netlify.app/interfaces/__global.draymantextfieldprops.html)
+- [drayman-textarea-field](https://drayman-elements.netlify.app/interfaces/__global.draymantextareafieldprops.html)
+- [drayman-timepicker](https://drayman-elements.netlify.app/interfaces/__global.draymantimepickerprops.html)
+- [drayman-youtube-player](https://drayman-elements.netlify.app/interfaces/__global.draymanyoutubeplayerprops.html)
+- [drayman-grid](https://drayman-elements.netlify.app/interfaces/__global.draymangridprops.html)
+- [drayman-nebula](https://drayman-elements.netlify.app/interfaces/__global.draymannebulaprops.html)
+- [drayman-code-editor](https://drayman-elements.netlify.app/interfaces/__global.draymancodeeditorprops.html)
+
+## Installing
+
+Add Drayman Elements to your Drayman project:
+
+```bash
+npm install @drayman/elements@latest
+```
+
+Add required scripts to `public/index.html` header:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@angular/material@12.2.4/prebuilt-themes/indigo-pink.css"
+/>
+<script src="https://unpkg.com/zone.js@0.11.4/dist/zone.min.js"></script>
+```
+
+Use Drayman Elements inside component script:
+
+```tsx
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let counter = 0;
+
+  return () => {
+    return (
+      <div>
+        <drayman-button
+          label="Click me"
+          onClick={async () => {
+            counter++;
+            await forceUpdate();
+          }}
+        />
+        <p>Button was clicked {counter} times</p>
+      </div>
+    );
+  };
+};
+```

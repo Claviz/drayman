@@ -1,0 +1,62 @@
+---
+title: Handling errors
+sidebar_position: 3
+---
+
+Drayman captures and pretty-prints with the stack trace all errors in your application from different sources: [events](./handling-events), [ComponentInstance methods](./helpers/the-component-instance-object) and even during [initialization and rendering](./component-lifecycle).
+
+## Component rendering/UI errors
+
+In some situations a component fails to render or initialize. Usually it would break the whole layout of the application, but Drayman catches such errors and displays problematic parts of the component.
+
+Imagine having a component which always fails to initialize:
+
+```tsx title="src/components/failure.tsx"
+export const component: DraymanComponent = async () => {
+  throw new Error("Oh, snap!");
+
+  return async () => {
+    return <h1>I have failed!</h1>;
+  };
+};
+```
+
+And other component which is always rendered successfully:
+
+```tsx title="src/components/success.tsx"
+export const component: DraymanComponent = async () => {
+  return async () => {
+    return <h1>I have succeeded!</h1>;
+  };
+};
+```
+
+These components are combined together inside a parent component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  return () => {
+    return (
+      <div style={{ display: "flex", width: "100%", gap: "10px" }}>
+        <div>
+          <success />
+        </div>
+        <div>
+          <failure />
+        </div>
+        <div>
+          <success />
+        </div>
+      </div>
+    );
+  };
+};
+```
+
+In result, whole application won't be broken and problematic component will be rendered with the descriptive error message.
+
+Browser:
+![UI errors](/img/ui-errors.png)
+
+Console:
+![UI errors console message](/img/ui-errors-console.png)

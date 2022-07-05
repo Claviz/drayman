@@ -1,0 +1,210 @@
+---
+title: Using Web Components
+sidebar_position: 1
+---
+
+All Drayman components (usually defined at `src/components/` folder) are rendered server-side.
+They are built by combining HTML elements and other Drayman components, but sometimes it is difficult to build or reuse UI layout or interactivity which is usually done in the browser.
+In this case [Web Components](https://en.wikipedia.org/wiki/Web_Components) can be used inside a Drayman components.
+
+Web components can be built using vanilla JS or any other Web Component framework/library.
+For example, official collection of Web Components for Drayman called [@drayman/elements](./drayman-elements) was built using [Angular Elements](https://angular.io/guide/elements).
+
+## Creating a Web Component
+
+Let's start with creating a file called `amazing-button.js` and putting it inside a `public` folder:
+
+```js title="public/amazing-button.js"
+class AmazingButton extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.style.backgroundColor = "#daad86";
+    this.style.height = "50px";
+    this.style.cursor = "pointer";
+    this.style.padding = "5px 10px";
+    this.style.borderRadius = "5px";
+    this.innerHTML = "Button";
+  }
+}
+customElements.define("amazing-button", AmazingButton);
+```
+
+This is a regular Web Component which displays a static button with some styles. The only difference is that Drayman requires to define component's logic inside a `connectedCallback` method.
+
+Don't forget to reference it inside a `index.html` file:
+
+```html title="index.html"
+<head>
+  <script src="amazing-button.js"></script>
+</head>
+```
+
+Finally, use it inside a Drayman component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  return () => {
+    return <amazing-button />;
+  };
+};
+```
+
+In result, you will see something like this:
+
+![Web Component button](/img/web-component-button.png)
+
+### Passing options to Web Component
+
+Options can be passed to Web Components like any other options/attributes in Drayman Framework:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  return () => {
+    // highlight-next-line
+    return <amazing-button label="Click me!" color="#5cdb95" />;
+  };
+};
+```
+
+To make it work inside a Web Component, reference `this` object with required option:
+
+```js title="public/amazing-button.js"
+class AmazingButton extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    // highlight-next-line
+    this.style.backgroundColor = this.color || "#daad86";
+    this.style.height = "50px";
+    this.style.cursor = "pointer";
+    this.style.padding = "5px 10px";
+    this.style.borderRadius = "5px";
+    // highlight-next-line
+    this.innerHTML = this.label || "Button";
+  }
+}
+customElements.define("amazing-button", AmazingButton);
+```
+
+In result, button now has a label and custom color:
+
+![Web Component button](/img/web-component-button-options.png)
+
+### Handling Web Component events
+
+Web Components events can be handled like any other [events in Drayman](./handling-events).
+The only difference is that events must be named with `on` prefix and be in camel case. For example, let's add an `onClick` event to our button:
+
+```js title="public/amazing-button.js"
+class AmazingButton extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.style.backgroundColor = this.color || "#daad86";
+    this.style.height = "50px";
+    this.style.cursor = "pointer";
+    this.style.padding = "5px 10px";
+    this.style.borderRadius = "5px";
+    this.innerHTML = this.label || "Button";
+    // highlight-next-line
+    this.onclick = this.onClick;
+  }
+}
+customElements.define("amazing-button", AmazingButton);
+```
+
+In the example above, we tell our button to handle Drayman `onClick` event when HTML element `onclick` event is triggered by overriding it.
+
+Finally, we can handle this event inside a Drayman component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  return () => {
+    return (
+      <amazing-button
+        label="Click me!"
+        color="#5cdb95"
+        // highlight-next-line
+        onClick={async () => {
+          // highlight-next-line
+          console.log("Button was clicked!");
+          // highlight-next-line
+        }}
+      />
+    );
+  };
+};
+```
+
+In result, every time our button is clicked, we will see a message in the server-side console:
+
+![Web Component button](/img/web-component-button-events.gif)
+
+## Publishing a Web Component
+
+Any Web Component can be published to NPM so it can be used in other projects or by other developers.
+
+To do so, create a new folder with two files - `amazing-button.js` and `packages.json`:
+
+```js title="amazing-button.js"
+class AmazingButton extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.style.backgroundColor = this.color || "#daad86";
+    this.style.height = "50px";
+    this.style.cursor = "pointer";
+    this.style.padding = "5px 10px";
+    this.style.borderRadius = "5px";
+    this.innerHTML = this.label || "Button";
+    this.onclick = this.onClick;
+  }
+}
+customElements.define("amazing-button", AmazingButton);
+```
+
+```json title="package.json"
+{
+  "name": "drayman-amazing-button",
+  "version": "1.0.0",
+  "description": "Demo Web Component for Drayman Framework",
+  "license": "MIT",
+  "keywords": ["drayman"],
+  "drayman": {
+    "elements": {
+      "amazing-button": {
+        "script": "./amazing-button.js"
+      }
+    }
+  }
+}
+```
+
+Pay attention on how element is defined inside a `project.json` file.
+It is important to define `drayman.elements` object where all paths of Web Components are defined.
+This way when a package is installed inside a Drayman project, you don't need to reference it in any way - Drayman will automatically do it for you.
+
+Finally, publish your Web Component package to NPM:
+
+```sh
+npm publish
+```
+
+## Installing third-party Web Component package
+
+If all requirements from previous steps are met, installing third-party Web Component package into your project is as simple as:
+
+```sh
+npm install drayman-amazing-button
+```
+
+Drayman will automatically find installed Web Components and add them to your project.
