@@ -1,5 +1,5 @@
 ---
-title: Using Web Components
+title: Web Components in Drayman
 sidebar_position: 1
 ---
 
@@ -9,6 +9,8 @@ In this case [Web Components](https://en.wikipedia.org/wiki/Web_Components) can 
 
 Web components can be built using vanilla JS or any other Web Component framework/library.
 For example, official collection of Web Components for Drayman called [@drayman/elements](./drayman-elements) was built using [Angular Elements](https://angular.io/guide/elements).
+
+In theory, any existing JavaScript UI library can be used inside a Drayman component if it is wrapped inside a Web Component following some Drayman conventions described below.
 
 ## Creating a Web Component
 
@@ -32,14 +34,26 @@ class AmazingButton extends HTMLElement {
 customElements.define("amazing-button", AmazingButton);
 ```
 
-This is a regular Web Component which displays a static button with some styles. The only difference is that Drayman requires to define component's logic inside a `connectedCallback` method.
+:::info
+A `connectedCallback` method used here makes sure that the element is added to the DOM and is ready to be used.
+:::
 
-Don't forget to reference it inside a `index.html` file:
+This is a regular Web Component which displays a static element with some styles.
 
-```html title="index.html"
-<head>
-  <script src="amazing-button.js"></script>
-</head>
+To use this component, you'll need to tell Drayman where to find it. To do so, modify your `package.json` file by adding `drayman` section:
+
+```json title="package.json"
+// ...
+  "drayman": {
+    "elements": {
+      // Web Component name
+      "amazing-button": {
+        // Path to the script
+        "script": "./public/amazing-button.js"
+      }
+    }
+  }
+// ...
 ```
 
 Finally, use it inside a Drayman component:
@@ -98,7 +112,6 @@ In result, button now has a label and custom color:
 ### Handling Web Component events
 
 Web Components events can be handled like any other [events in Drayman](./handling-events).
-The only difference is that events must be named with `on` prefix and be in camel case. For example, let's add an `onClick` event to our button:
 
 ```js title="public/amazing-button.js"
 class AmazingButton extends HTMLElement {
@@ -119,6 +132,10 @@ class AmazingButton extends HTMLElement {
 }
 customElements.define("amazing-button", AmazingButton);
 ```
+
+:::caution
+Drayman requires special naming convention for events in Web Components. It must start with the `on` prefix and be in camel case.
+:::
 
 In the example above, we tell our button to handle Drayman `onClick` event when HTML element `onclick` event is triggered by overriding it.
 
@@ -181,7 +198,9 @@ customElements.define("amazing-button", AmazingButton);
   "keywords": ["drayman"],
   "drayman": {
     "elements": {
+      // Web Component name
       "amazing-button": {
+        // Path to the script
         "script": "./amazing-button.js"
       }
     }
