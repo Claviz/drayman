@@ -199,7 +199,7 @@ context('server storage', () => {
   })
 })
 
-context.only('shows errors', () => {
+context('shows errors', () => {
   it(`if it happend on init`, () => {
     cy.visit('http://localhost:3033/error-init');
     cy.document().should('contain.text', 'Child component "error-init" failed to initialize!');
