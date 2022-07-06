@@ -33,13 +33,6 @@ jobs:
           npm run build
           npm run test
 
-      - name: "@drayman/element"
-        working-directory: ./packages/element
-        run: |
-          npm install
-          npm run build
-          npm run test
-
       - name: "@drayman/framework/client"
         working-directory: ./packages/framework/client
         run: |
