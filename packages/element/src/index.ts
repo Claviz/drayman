@@ -130,6 +130,8 @@ customElements.define('drayman-element', class extends HTMLElement {
     componentInstanceId: string;
     previouslySerializedTree = [];
     events = {};
+    onInit;
+    onDestroy;
     // _options: any;
 
     get options() {
@@ -419,6 +421,9 @@ customElements.define('drayman-element', class extends HTMLElement {
                 // this.viewTree = tree;
                 patch(rootNode, newNode);
                 rootNode = newNode;
+                if (this.updateId === 1) {
+                    this.onInit?.();
+                }
                 // this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
                 // const node = document.getElementsByClassName('.rofl')[0];
                 // console.log({ node })
@@ -456,6 +461,9 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     disconnectedCallback() {
+        if (this.updateId) {
+            this.onDestroy?.();
+        }
         window['draymanConfig']?.connection?.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
     }
 });
