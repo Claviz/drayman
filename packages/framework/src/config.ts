@@ -9,6 +9,8 @@ export function getDraymanConfig() {
     const postcssSourceFile = draymanConfig.postcss?.source || `${srcDir}/styles.css`;
     const postcssDestinationFile = draymanConfig.postcss?.destination || `${publicDir}/styles.css`
     const port = draymanConfig.port || 3033;
+    const sslCert = draymanConfig.sslCert;
+    const sslKey = draymanConfig.sslKey;
 
     return {
         srcDir,
@@ -17,6 +19,8 @@ export function getDraymanConfig() {
         componentsOutputDir,
         postcssSourceFile,
         postcssDestinationFile,
-        port
+        port,
+        sslCert,
+        sslKey,
     }
 }

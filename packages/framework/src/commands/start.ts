@@ -4,12 +4,14 @@ import multer from 'multer';
 import path from 'path';
 import shortid from 'shortid';
 import WebSocket from 'ws';
+import https from 'https';
+import fs from 'fs';
 
 import { build } from './build';
 import { getDraymanConfig } from '../config';
 
 (async () => {
-    const { publicDir, port, componentsOutputDir, outDir } = getDraymanConfig();
+    const { publicDir, port, componentsOutputDir, outDir, sslKey, sslCert } = getDraymanConfig();
     const elementsPaths = await draymanCore.getElementsScriptPaths({});
     await build();
     const storage = multer.memoryStorage();
@@ -79,7 +81,10 @@ import { getDraymanConfig } from '../config';
         console.log(err);
     });
 
-    const server = app.listen(port);
+    const server = (sslKey && sslCert) ? https.createServer({
+        key: fs.readFileSync(sslKey),
+        cert: fs.readFileSync(sslCert),
+    }, app).listen(port) : app.listen(port);
     console.log(`Drayman started at http://localhost:${port}`);
     server.setTimeout(0);
 
