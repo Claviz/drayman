@@ -71,6 +71,7 @@ let forceUpdate: any;
 // let httpClient;
 let prevProps = {};
 let props = {};
+let defaultProps = {};
 // const $meta = {};
 let extensions: { importable: any } = { importable: null };
 let updateId = 0;
@@ -164,11 +165,12 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
     }
     const createComponent = async (componentKey: string, initialProps: any) => {
         const props = { ...initialProps } || {};
+        let defaultProps = {};
         let child_componentResult;
         try {
-            child_componentResult = await (Object.values(
-                require(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`))
-            )[0] as any)({
+            const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
+            defaultProps = imported.defaultProps || {};
+            child_componentResult = await imported.component({
                 forceUpdate,
                 props,
                 EventHub,
@@ -184,11 +186,16 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
                 return errorComp(`Child component "${componentKey}" failed to initialize!`, err.message);
             }
         }
-        let prevChildProps = {};
+        let prevChildProps = { ...defaultProps };
         return async (newProps: any) => {
             updatePreservingRef(props, newProps);
             let res;
             try {
+                for (const key of Object.keys(defaultProps)) {
+                    if (!props[key]) {
+                        props[key] = defaultProps[key];
+                    }
+                }
                 res = await child_componentResult({ prevProps: prevChildProps });
             } catch (err) {
                 console.error(err);
@@ -203,6 +210,11 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         let compResult;
         let result;
         try {
+            for (const key of Object.keys(defaultProps)) {
+                if (!props[key]) {
+                    props[key] = defaultProps[key];
+                }
+            }
             compResult = await componentResult({ prevProps });
             result = await render(compResult, childRenderer);
         } catch (err) {
@@ -262,9 +274,10 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
     }
     let componentResult;
     try {
-        componentResult = await (Object.values(
-            await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`))
-        )[0] as any)({
+        const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
+        defaultProps = imported.defaultProps || {};
+        prevProps = { ...defaultProps };
+        componentResult = await (imported.component as any)({
             props,
             forceUpdate,
             EventHub,

@@ -1,0 +1,32 @@
+---
+title: Default props
+sidebar_position: 2
+---
+
+`defaultProps` can be used to set default values for props. To set default values for props, export a `defaultProps` object from your component. This object will be merged with the props object passed to the component.
+
+```tsx title="src/components/default-props.tsx"
+interface DefaultProps {
+  text: string;
+}
+
+// highlight-next-line
+export const defaultProps: DefaultProps = {
+  // highlight-next-line
+  text: "Hello, world!",
+  // highlight-next-line
+};
+
+export const component: DraymanComponent<DefaultProps> = async ({ props }) => {
+  return () => {
+    return (
+      <div>
+        // highlight-next-line
+        <div>{props.text}</div>
+      </div>
+    );
+  };
+};
+```
+
+In the example above, the `text` prop is set to `"Hello, world!"` by default. If you don't pass a `text` prop to the component, it will use the default value.

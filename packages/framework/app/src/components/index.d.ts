@@ -5,6 +5,7 @@ interface IntrinsicElements {
 'communication-pong': { [propName: string]: any; };
 'counter': { [propName: string]: any; };
 'css-class': { [propName: string]: any; };
+'default-props': { [propName: string]: any; };
 'dependency': { [propName: string]: any; };
 'error-init': { [propName: string]: any; };
 'error-render': { [propName: string]: any; };

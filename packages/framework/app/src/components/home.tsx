@@ -49,6 +49,12 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/error-render': {
                 return <error-render />
             }
+            case 'http://localhost:3033/default-props': {
+                return <default-props />
+            }
+            case 'http://localhost:3033/default-props-2': {
+                return <default-props text1="Not default text" />
+            }
         }
     }
 
