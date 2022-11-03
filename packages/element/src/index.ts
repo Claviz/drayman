@@ -130,6 +130,7 @@ customElements.define('drayman-element', class extends HTMLElement {
     componentInstanceId: string;
     previouslySerializedTree = [];
     events = {};
+    rootEvents = {};
     onInit;
     onDestroy;
     // _options: any;
@@ -139,6 +140,14 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     set options(value) {
+        if (typeof value !== 'string') {
+            for (const key of Object.keys(value)) {
+                if (isEvent(key)) {
+                    this.rootEvents[key] = value[key];
+                    (value as any)[key] = true;
+                }
+            }
+        }
         this.setAttribute('options', JSON.stringify(value));
     }
 
@@ -441,6 +450,8 @@ customElements.define('drayman-element', class extends HTMLElement {
                 const response = await browserCommands[command](data, domElements);
                 window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
                 // })
+            } else if (type === 'rootEvent') {
+                await this.rootEvents[payload.event](payload.data);
             }
         });
         // });

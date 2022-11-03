@@ -226,3 +226,12 @@ context('default props', () => {
     cy.document().should('contain.text', 'Not default text');
   })
 })
+
+context.only('root events', () => {
+  it(`handles event set from client HTML`, () => {
+    cy.visit('http://localhost:3033/root-events');
+    cy.document().should('not.contain.text', 'Nice!');
+    cy.contains('Click!').click();
+    cy.document().should('contain.text', 'Nice!');
+  })
+})

@@ -61,6 +61,15 @@
                 let pongElement = document.createElement('drayman-element');
                 pongElement.setAttribute('component', 'communication-pong');
                 document.body.appendChild(pongElement);
+            } else if (location.pathname === '/root-events') {
+                const draymanElement = document.getElementsByTagName('drayman-element')[0];
+                draymanElement.options = {
+                    onRootEvent: async ({ text }) => {
+                        let el = document.createElement('div');
+                        el.innerText = text;
+                        document.body.appendChild(el);
+                    }
+                };
             }
         })();
     </script>

@@ -143,6 +143,13 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         })
     }
     props = componentOptions || {};
+    for (const key of Object.keys(props)) {
+        if (isEvent(key)) {
+            props[key] = async (data) => {
+                sendMessage({ type: 'rootEvent', payload: { event: key, data } })
+            }
+        }
+    }
     const componentNames = fs
         .readdirSync(componentRootDir)
         .filter(x => x.startsWith(componentNamePrefix) && x.endsWith('.js'))
@@ -325,6 +332,13 @@ const updatePreservingRef = (obj: any, newObj: any) => {
 
 const updateComponentInstanceProps = async ({ options }) => {
     updatePreservingRef(props, options);
+    for (const key of Object.keys(props)) {
+        if (isEvent(key)) {
+            props[key] = async (data) => {
+                sendMessage({ type: 'rootEvent', payload: { event: key, data } })
+            }
+        }
+    }
     await forceUpdate();
 
 }

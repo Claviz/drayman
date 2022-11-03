@@ -55,6 +55,9 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/default-props-2': {
                 return <default-props text1="Not default text" />
             }
+            case 'http://localhost:3033/root-events': {
+                return <root-events onRootEvent={props.onRootEvent} />
+            }
         }
     }
 
