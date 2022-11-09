@@ -141,14 +141,19 @@ customElements.define('drayman-element', class extends HTMLElement {
 
     set options(value) {
         if (typeof value !== 'string') {
+            const options = {};
             for (const key of Object.keys(value)) {
                 if (isEvent(key)) {
                     this.rootEvents[key] = value[key];
-                    (value as any)[key] = true;
+                    options[key] = true;
+                } else {
+                    options[key] = value[key];
                 }
             }
+            this.setAttribute('options', JSON.stringify(options));
+        } else {
+            this.setAttribute('options', value);
         }
-        this.setAttribute('options', JSON.stringify(value));
     }
 
     get component() {
