@@ -1,6 +1,6 @@
 {
   "name": "@drayman/framework",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@drayman/core": "^2.4.0",
+    "@drayman/core": "^2.4.1",
     "cup-readdir": "^1.0.3",
     "express": "^4.17.1",
     "fs-extra": "^9.1.0",
