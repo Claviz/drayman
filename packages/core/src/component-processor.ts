@@ -177,6 +177,11 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         try {
             const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
             defaultProps = imported.defaultProps || {};
+            for (const key of Object.keys(defaultProps)) {
+                if (!props[key]) {
+                    props[key] = defaultProps[key];
+                }
+            }
             child_componentResult = await imported.component({
                 forceUpdate,
                 props,
@@ -284,6 +289,11 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
         defaultProps = imported.defaultProps || {};
         prevProps = { ...defaultProps };
+        for (const key of Object.keys(defaultProps)) {
+            if (!props[key]) {
+                props[key] = defaultProps[key];
+            }
+        }
         componentResult = await (imported.component as any)({
             props,
             forceUpdate,

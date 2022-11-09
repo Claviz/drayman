@@ -215,19 +215,21 @@ context('shows errors', () => {
   })
 })
 
-context('default props', () => {
+context.only('default props', () => {
   it(`shows default prop if prop is not set`, () => {
     cy.visit('http://localhost:3033/default-props');
     cy.document().should('contain.text', 'Default text');
+    cy.document().should('contain.text', 'Before render: Default text');
   })
 
   it(`shows passed prop instead of default one if prop is set`, () => {
     cy.visit('http://localhost:3033/default-props-2');
     cy.document().should('contain.text', 'Not default text');
+    cy.document().should('contain.text', 'Before render: Not default text');
   })
 })
 
-context.only('root events', () => {
+context('root events', () => {
   it(`handles event set from client HTML`, () => {
     cy.visit('http://localhost:3033/root-events');
     cy.document().should('not.contain.text', 'Nice!');
