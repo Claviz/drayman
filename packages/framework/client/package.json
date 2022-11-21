@@ -1,13 +1,13 @@
 {
     "name": "@drayman/framework-client",
-    "version": "2.4.2",
+    "version": "2.4.3",
     "scripts": {
         "build": "webpack",
         "start": "webpack serve"
     },
     "private": true,
     "dependencies": {
-        "@drayman/element": "^2.4.2"
+        "@drayman/element": "^2.4.3"
     },
     "devDependencies": {
         "@babel/cli": "^7.14.3",
