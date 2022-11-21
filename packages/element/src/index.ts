@@ -140,7 +140,7 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     set options(value) {
-        if (typeof value !== 'string') {
+        if (value && typeof value !== 'string') {
             const options = {};
             for (const key of Object.keys(value)) {
                 if (isEvent(key)) {
@@ -400,6 +400,7 @@ customElements.define('drayman-element', class extends HTMLElement {
 
     once = false;
     updateId = 0;
+    initSent = false;
     async connectedCallback() {
         // document.addEventListener('draymanInit', async (e: CustomEvent) => {
         // if (window['draymanConfig']) {
@@ -435,8 +436,9 @@ customElements.define('drayman-element', class extends HTMLElement {
                 // this.viewTree = tree;
                 patch(rootNode, newNode);
                 rootNode = newNode;
-                if (this.updateId === 1) {
+                if (!this.initSent) {
                     this.onInit?.();
+                    this.initSent = true;
                 }
                 // this.childNodes[0].replaceWith(...this.childNodes[0].childNodes);
                 // const node = document.getElementsByClassName('.rofl')[0];
