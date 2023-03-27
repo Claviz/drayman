@@ -58,6 +58,15 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/root-events': {
                 return <root-events onRootEvent={props.onRootEvent} />
             }
+            case 'http://localhost:3033/event-guards-text-input': {
+                return <event-guards-text-input />
+            }
+            case 'http://localhost:3033/event-guards-third-party-element': {
+                return <event-guards-third-party-element />
+            }
+            case 'http://localhost:3033/event-guards-third-party-event': {
+                return <event-guards-third-party-event />
+            }
         }
     }
 

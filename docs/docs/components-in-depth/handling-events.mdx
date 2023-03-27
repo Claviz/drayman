@@ -5,6 +5,8 @@ sidebar_position: 3
 
 Each element attribute which starts with an `on` prefix is considered by Drayman as an event. All events are fired in browser and then executed server-side (if you want to execute something insde browser, you can use [Browser object](./helpers/the-browser-object)).
 
+There are, however, situations where executing all events on the server can be a performance issue. For example, if you are listening for keyboard shortcuts, it would be wasteful to send every single key press to the server. In this case, you can use [eventGuards](#eventguards) to prevent event from being executed on the server.
+
 ## Basic event usage
 
 You can use any known [HTML element event](https://html.spec.whatwg.org/multipage/indices.html#attributes-3) when developing Drayman components. Simply add required event as an attribute and assign an `async` function which will be executed when event is fired:
@@ -225,3 +227,49 @@ export const component: DraymanComponent = async ({ forceUpdate }) => {
   };
 };
 ```
+
+### `eventGuards`
+
+Drayman executes event code in server side, and if your component is listening for events such as keyboard shortcuts, it would be bad for performance if every event is sent to the server. This is where event guards come in handy. If a guard condition is not met, Drayman will not send anything to the server, saving you unnecessary requests.
+
+For example, let's say you have a component that listens for a keyboard shortcut to trigger a certain action. You can use an event guard to ensure that the action is only triggered when the specific key combination is pressed. If the guard condition is not met, nothing happens and no request is sent to the server. Here's an example of how to define an event guard for a keyboard event:
+
+```tsx title="src/components/eventGuards.tsx"
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let text = "Hello";
+
+  return () => {
+    return (
+      <>
+        <input
+          type="text"
+          value={text}
+          onkeydown={[
+            async () => {
+              text = "Saved!";
+              await forceUpdate();
+            },
+            {
+              //highlight-start
+              eventGuards: [
+                {
+                  mask: { altKey: true, code: "KeyS" },
+                  preventDefault: true,
+                },
+              ],
+              //highlight-end
+            },
+          ]}
+          oninput={async ({ value }) => {
+            text = value;
+            await forceUpdate();
+          }}
+        />
+        <p>{text}</p>
+      </>
+    );
+  };
+};
+```
+
+In this example, we have an input element that listens for the `keydown` event. We also have an event guard that checks if the `altKey` and `code` properties of the event object are equal to `true` and `"KeyS"`, respectively. If the guard condition is met, the event is sent to the server and the `preventDefault` property of the event object is set to `true`. If the guard condition is not met, the event is not sent to the server and the `preventDefault` property of the event object is not set.

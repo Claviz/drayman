@@ -58,7 +58,7 @@ context('css-class', () => {
   })
 })
 
-context('third-party-upload', () => {
+context('file upload (third-party)', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3033/third-party-upload');
   })
@@ -94,7 +94,7 @@ context('third-party-upload', () => {
   })
 })
 
-context('third-party-upload', () => {
+context('file upload', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3033/file-upload');
   })
@@ -109,7 +109,7 @@ context('third-party-upload', () => {
         fileContent: blob,
         fileName: 'BB.png',
         mimeType: 'image/png'
-      });
+      }).trigger('change');
 
       const fileInfo = JSON.stringify({
         fieldname: 'file',
@@ -215,7 +215,7 @@ context('shows errors', () => {
   })
 })
 
-context.only('default props', () => {
+context('default props', () => {
   it(`shows default prop if prop is not set`, () => {
     cy.visit('http://localhost:3033/default-props');
     cy.document().should('contain.text', 'Default text');
@@ -235,5 +235,46 @@ context('root events', () => {
     cy.document().should('not.contain.text', 'Nice!');
     cy.contains('Click!').click();
     cy.document().should('contain.text', 'Nice!');
+  })
+})
+
+context('event guards', () => {
+  it(`handles keyboard shortcut`, () => {
+    cy.visit('http://localhost:3033/event-guards-text-input');
+    cy.get('p').should('contain.text', 'Hello');
+    cy.get('input[type="text"]').type('{ctrl}s', { release: false });
+    cy.get('p').should('contain.text', 'Saved!');
+  })
+
+  it(`doesn't handle other keyboard shortcut`, () => {
+    cy.visit('http://localhost:3033/event-guards-text-input');
+    cy.get('p').should('contain.text', 'Hello');
+    cy.get('input[type="text"]').type('{ctrl}a', { release: false });
+    cy.get('p').should('contain.text', 'Helloa');
+  })
+
+  it(`handles keyboard shortcut in third-party element`, () => {
+    cy.visit('http://localhost:3033/event-guards-third-party-element');
+    cy.get('p').should('contain.text', 'Hello');
+    cy.get('input[type="text"]').type('{ctrl}s', { release: false });
+    cy.get('p').should('contain.text', 'Saved!');
+  })
+
+  it(`doesn't handle other keyboard shortcut in third-party element`, () => {
+    cy.visit('http://localhost:3033/event-guards-third-party-element');
+    cy.get('p').should('contain.text', 'Hello');
+    cy.get('input[type="text"]').type('{ctrl}a', { release: false });
+    cy.get('p').should('contain.text', 'Helloa');
+  })
+
+  it(`handles third-party event`, () => {
+    cy.visit('http://localhost:3033/event-guards-third-party-event');
+    cy.get('p').should('contain.text', 'Hello');
+    cy.get('input[type="text"]').type('{selectall}{backspace}', { release: false });
+    cy.get('input[type="text"]').type('World', { release: false });
+    cy.get('p').should('contain.text', 'Hello');
+    cy.get('input[type="text"]').type('{selectall}{backspace}', { release: false });
+    cy.get('input[type="text"]').type('A', { release: false });
+    cy.get('p').should('contain.text', 'A');
   })
 })

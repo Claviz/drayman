@@ -9,6 +9,9 @@ interface IntrinsicElements {
 'dependency': { [propName: string]: any; };
 'error-init': { [propName: string]: any; };
 'error-render': { [propName: string]: any; };
+'event-guards-text-input': { [propName: string]: any; };
+'event-guards-third-party-element': { [propName: string]: any; };
+'event-guards-third-party-event': { [propName: string]: any; };
 'file-upload': { [propName: string]: any; };
 'focus': { [propName: string]: any; };
 'home': { [propName: string]: any; };

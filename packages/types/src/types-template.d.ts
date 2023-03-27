@@ -1,6 +1,12 @@
 import * as _CSS from 'csstype';
 
 declare global {
+
+    interface EventGuard {
+        mask?: EventOptions;
+        preventDefault?: boolean;
+    }
+
     interface EventConfig {
         /**
          * Delays invoking event until specified time has elapsed since the last time the debounced function was invoked.
@@ -20,6 +26,7 @@ declare global {
              */
             leading?: boolean;
         };
+        eventGuards?: EventGuard[];
     }
 
     interface MouseEventOptions {
