@@ -1,139 +1,138 @@
 import * as _CSS from 'csstype';
 
 declare global {
+	interface EventGuard {
+		mask?: EventOptions;
+		preventDefault?: boolean;
+	}
 
-    interface EventGuard {
-        mask?: EventOptions;
-        preventDefault?: boolean;
-    }
+	interface EventConfig {
+		/**
+		 * Delays invoking event until specified time has elapsed since the last time the debounced function was invoked.
+		 * You can provide `number` of milliseconds to delay or some advanced options.
+		 */
+		debounce?: number | {
+			/**
+			 * Number of milliseconds to delay.
+			 */
+			wait: number;
+			/**
+			 * Specify invoking on the trailing edge of the timeout.
+			 */
+			trailing?: boolean;
+			/**
+			 * Specify invoking on the leading edge of the timeout.
+			 */
+			leading?: boolean;
+		};
+		eventGuards?: EventGuard[];
+	}
 
-    interface EventConfig {
-        /**
-         * Delays invoking event until specified time has elapsed since the last time the debounced function was invoked.
-         * You can provide `number` of milliseconds to delay or some advanced options.
-         */
-        debounce?: number | {
-            /**
-             * Number of milliseconds to delay.
-             */
-            wait: number;
-            /**
-             * Specify invoking on the trailing edge of the timeout.
-             */
-            trailing?: boolean;
-            /**
-             * Specify invoking on the leading edge of the timeout.
-             */
-            leading?: boolean;
-        };
-        eventGuards?: EventGuard[];
-    }
+	interface MouseEventOptions {
+		altKey: boolean;
+		shiftKey: boolean;
+		ctrlKey: boolean;
+		metaKey: boolean;
+		x: number;
+		y: number;
+		pageX: number;
+		pageY: number;
+		screenX: number;
+		screenY: number;
+		offsetX: number;
+		offsetY: number;
+	}
 
-    interface MouseEventOptions {
-        altKey: boolean;
-        shiftKey: boolean;
-        ctrlKey: boolean;
-        metaKey: boolean;
-        x: number;
-        y: number;
-        pageX: number;
-        pageY: number;
-        screenX: number;
-        screenY: number;
-        offsetX: number;
-        offsetY: number;
-    }
+	interface KeyboardEventOptions {
+		altKey: boolean;
+		shiftKey: boolean;
+		ctrlKey: boolean;
+		metaKey: boolean;
+		code: string;
+		key: string;
+		location: number;
+		repeat: boolean;
+	}
 
-    interface KeyboardEventOptions {
-        altKey: boolean;
-        shiftKey: boolean;
-        ctrlKey: boolean;
-        metaKey: boolean;
-        code: string;
-        key: string;
-        location: number;
-        repeat: boolean;
-    }
+	interface InputEventOptions {
+		value: any;
+	}
 
-    interface InputEventOptions {
-        value: any;
-    }
+	interface FocusEventOptions { }
 
-    interface FocusEventOptions { }
+	interface UploadedFile {
+		fieldname: string;
+		originalname: string;
+		encoding: string;
+		mimetype: string;
+		buffer: Uint8Array;
+		size: number;
+	}
 
-    interface UploadedFile {
-        fieldname: string;
-        originalname: string;
-        encoding: string;
-        mimetype: string;
-        buffer: Uint8Array;
-        size: number;
-    }
+	type EventOptions = MouseEventOptions | KeyboardEventOptions | InputEventOptions | FocusEventOptions;
 
-    type EventOptions = MouseEventOptions | KeyboardEventOptions | InputEventOptions | FocusEventOptions;
+	type IPropertiesToAdd<T> = T & {
+		trailing: boolean;
+		leading: boolean;
+	};
+	type EventFunction<T> = (options: IPropertiesToAdd<T>, files?: UploadedFile[]) => Promise<void>;
+	type ElementEvent<T> = EventFunction<T> | [EventFunction<T>, EventConfig];
 
-    type IPropertiesToAdd<T> = T & {
-        trailing: boolean;
-        leading: boolean;
-    };
-    type EventFunction<T> = (options: IPropertiesToAdd<T>, files?: UploadedFile[]) => Promise<void>;
-    type ElementEvent<T> = EventFunction<T> | [EventFunction<T>, EventConfig];
+	interface DefaultElementEventProps extends DefaultElementProps {
+		onclick?: ElementEvent<MouseEventOptions>;
+		oncontextmenu?: ElementEvent<MouseEventOptions>;
+		ondblclick?: ElementEvent<MouseEventOptions>;
+		onmousedown?: ElementEvent<MouseEventOptions>;
+		onmouseenter?: ElementEvent<MouseEventOptions>;
+		onmouseleave?: ElementEvent<MouseEventOptions>;
+		onmousemove?: ElementEvent<MouseEventOptions>;
+		onmouseout?: ElementEvent<MouseEventOptions>;
+		onmouseover?: ElementEvent<MouseEventOptions>;
+		onmouseup?: ElementEvent<MouseEventOptions>;
 
-    interface DefaultElementEventProps extends DefaultElementProps {
-        onclick?: ElementEvent<MouseEventOptions>;
-        oncontextmenu?: ElementEvent<MouseEventOptions>;
-        ondblclick?: ElementEvent<MouseEventOptions>;
-        onmousedown?: ElementEvent<MouseEventOptions>;
-        onmouseenter?: ElementEvent<MouseEventOptions>;
-        onmouseleave?: ElementEvent<MouseEventOptions>;
-        onmousemove?: ElementEvent<MouseEventOptions>;
-        onmouseout?: ElementEvent<MouseEventOptions>;
-        onmouseover?: ElementEvent<MouseEventOptions>;
-        onmouseup?: ElementEvent<MouseEventOptions>;
+		onkeydown?: ElementEvent<KeyboardEventOptions>;
+		onkeypress?: ElementEvent<KeyboardEventOptions>;
+		onkeyup?: ElementEvent<KeyboardEventOptions>;
 
-        onkeydown?: ElementEvent<KeyboardEventOptions>;
-        onkeypress?: ElementEvent<KeyboardEventOptions>;
-        onkeyup?: ElementEvent<KeyboardEventOptions>;
+		oninput?: ElementEvent<InputEventOptions>;
+		onchange?: ElementEvent<InputEventOptions>;
 
-        oninput?: ElementEvent<InputEventOptions>;
-        onchange?: ElementEvent<InputEventOptions>;
+		onblur?: ElementEvent<FocusEventOptions>;
+		onfocus?: ElementEvent<FocusEventOptions>;
+		onfocusin?: ElementEvent<FocusEventOptions>;
+		onfocusout?: ElementEvent<FocusEventOptions>;
 
-        onblur?: ElementEvent<FocusEventOptions>;
-        onfocus?: ElementEvent<FocusEventOptions>;
-        onfocusin?: ElementEvent<FocusEventOptions>;
-        onfocusout?: ElementEvent<FocusEventOptions>;
+		[key: string]: any;
+	}
 
-        [key: string]: any;
-    }
+	interface DefaultSvgElementEventProps extends DefaultSvgElementProps {
+		onclick?: ElementEvent<MouseEventOptions>;
+		oncontextmenu?: ElementEvent<MouseEventOptions>;
+		ondblclick?: ElementEvent<MouseEventOptions>;
+		onmousedown?: ElementEvent<MouseEventOptions>;
+		onmouseenter?: ElementEvent<MouseEventOptions>;
+		onmouseleave?: ElementEvent<MouseEventOptions>;
+		onmousemove?: ElementEvent<MouseEventOptions>;
+		onmouseout?: ElementEvent<MouseEventOptions>;
+		onmouseover?: ElementEvent<MouseEventOptions>;
+		onmouseup?: ElementEvent<MouseEventOptions>;
 
-    interface DefaultSvgElementEventProps extends DefaultSvgElementProps {
-        onclick?: ElementEvent<MouseEventOptions>;
-        oncontextmenu?: ElementEvent<MouseEventOptions>;
-        ondblclick?: ElementEvent<MouseEventOptions>;
-        onmousedown?: ElementEvent<MouseEventOptions>;
-        onmouseenter?: ElementEvent<MouseEventOptions>;
-        onmouseleave?: ElementEvent<MouseEventOptions>;
-        onmousemove?: ElementEvent<MouseEventOptions>;
-        onmouseout?: ElementEvent<MouseEventOptions>;
-        onmouseover?: ElementEvent<MouseEventOptions>;
-        onmouseup?: ElementEvent<MouseEventOptions>;
+		onkeydown?: ElementEvent<KeyboardEventOptions>;
+		onkeypress?: ElementEvent<KeyboardEventOptions>;
+		onkeyup?: ElementEvent<KeyboardEventOptions>;
 
-        onkeydown?: ElementEvent<KeyboardEventOptions>;
-        onkeypress?: ElementEvent<KeyboardEventOptions>;
-        onkeyup?: ElementEvent<KeyboardEventOptions>;
+		oninput?: ElementEvent<InputEventOptions>;
+		onchange?: ElementEvent<InputEventOptions>;
 
-        oninput?: ElementEvent<InputEventOptions>;
-        onchange?: ElementEvent<InputEventOptions>;
+		onblur?: ElementEvent<FocusEventOptions>;
+		onfocus?: ElementEvent<FocusEventOptions>;
+		onfocusin?: ElementEvent<FocusEventOptions>;
+		onfocusout?: ElementEvent<FocusEventOptions>;
 
-        onblur?: ElementEvent<FocusEventOptions>;
-        onfocus?: ElementEvent<FocusEventOptions>;
-        onfocusin?: ElementEvent<FocusEventOptions>;
-        onfocusout?: ElementEvent<FocusEventOptions>;
+		[key: string]: any;
+	}
 
-        [key: string]: any;
-    }
-
-    /*** INTRINSIC_ELEMENT_INTERFACES */
+	/*** INTRINSIC_ELEMENT_INTERFACES */
 	interface DefaultElementProps {
 		"accesskey"?: any;
 		"autocapitalize"?: any;
@@ -5152,203 +5151,203 @@ declare global {
 		"u2"?: any;
 	}
 
-    namespace JSX {
-        interface IntrinsicElements {
-            /*** INTRINSIC_ELEMENTS */
-		"a"?: AElementProps;
-		"applet"?: AppletElementProps;
-		"area"?: AreaElementProps;
-		"audio"?: AudioElementProps;
-		"base"?: BaseElementProps;
-		"basefont"?: BasefontElementProps;
-		"blockquote"?: BlockquoteElementProps;
-		"body"?: BodyElementProps;
-		"br"?: BrElementProps;
-		"button"?: ButtonElementProps;
-		"canvas"?: CanvasElementProps;
-		"caption"?: CaptionElementProps;
-		"col"?: ColElementProps;
-		"colgroup"?: ColgroupElementProps;
-		"data"?: DataElementProps;
-		"del"?: DelElementProps;
-		"details"?: DetailsElementProps;
-		"dialog"?: DialogElementProps;
-		"dir"?: DirElementProps;
-		"div"?: DivElementProps;
-		"dl"?: DlElementProps;
-		"embed"?: EmbedElementProps;
-		"fieldset"?: FieldsetElementProps;
-		"font"?: FontElementProps;
-		"form"?: FormElementProps;
-		"frame"?: FrameElementProps;
-		"frameset"?: FramesetElementProps;
-		"h1"?: H1ElementProps;
-		"h2"?: H2ElementProps;
-		"h3"?: H3ElementProps;
-		"h4"?: H4ElementProps;
-		"h5"?: H5ElementProps;
-		"h6"?: H6ElementProps;
-		"head"?: HeadElementProps;
-		"hr"?: HrElementProps;
-		"html"?: HtmlElementProps;
-		"iframe"?: IframeElementProps;
-		"img"?: ImgElementProps;
-		"input"?: InputElementProps;
-		"ins"?: InsElementProps;
-		"isindex"?: IsindexElementProps;
-		"label"?: LabelElementProps;
-		"legend"?: LegendElementProps;
-		"li"?: LiElementProps;
-		"link"?: LinkElementProps;
-		"map"?: MapElementProps;
-		"menu"?: MenuElementProps;
-		"meta"?: MetaElementProps;
-		"meter"?: MeterElementProps;
-		"object"?: ObjectElementProps;
-		"ol"?: OlElementProps;
-		"optgroup"?: OptgroupElementProps;
-		"option"?: OptionElementProps;
-		"output"?: OutputElementProps;
-		"p"?: PElementProps;
-		"param"?: ParamElementProps;
-		"pre"?: PreElementProps;
-		"progress"?: ProgressElementProps;
-		"q"?: QElementProps;
-		"script"?: ScriptElementProps;
-		"select"?: SelectElementProps;
-		"slot"?: SlotElementProps;
-		"source"?: SourceElementProps;
-		"style"?: StyleElementProps;
-		"table"?: TableElementProps;
-		"tbody"?: TbodyElementProps;
-		"td"?: TdElementProps;
-		"textarea"?: TextareaElementProps;
-		"tfoot"?: TfootElementProps;
-		"th"?: ThElementProps;
-		"thead"?: TheadElementProps;
-		"time"?: TimeElementProps;
-		"tr"?: TrElementProps;
-		"track"?: TrackElementProps;
-		"ul"?: UlElementProps;
-		"video"?: VideoElementProps;
-		"altGlyph"?: AltglyphSvgElementProps;
-		"animate"?: AnimateSvgElementProps;
-		"animateColor"?: AnimatecolorSvgElementProps;
-		"animateMotion"?: AnimatemotionSvgElementProps;
-		"animateTransform"?: AnimatetransformSvgElementProps;
-		"animation"?: AnimationSvgElementProps;
-		"circle"?: CircleSvgElementProps;
-		"clipPath"?: ClippathSvgElementProps;
-		"color-profile"?: ColorprofileSvgElementProps;
-		"cursor"?: CursorSvgElementProps;
-		"defs"?: DefsSvgElementProps;
-		"desc"?: DescSvgElementProps;
-		"discard"?: DiscardSvgElementProps;
-		"ellipse"?: EllipseSvgElementProps;
-		"feBlend"?: FeblendSvgElementProps;
-		"feColorMatrix"?: FecolormatrixSvgElementProps;
-		"feComponentTransfer"?: FecomponenttransferSvgElementProps;
-		"feComposite"?: FecompositeSvgElementProps;
-		"feConvolveMatrix"?: FeconvolvematrixSvgElementProps;
-		"feDiffuseLighting"?: FediffuselightingSvgElementProps;
-		"feDisplacementMap"?: FedisplacementmapSvgElementProps;
-		"feDistantLight"?: FedistantlightSvgElementProps;
-		"feDropShadow"?: FedropshadowSvgElementProps;
-		"feFlood"?: FefloodSvgElementProps;
-		"feFuncA"?: FefuncaSvgElementProps;
-		"feFuncB"?: FefuncbSvgElementProps;
-		"feFuncG"?: FefuncgSvgElementProps;
-		"feFuncR"?: FefuncrSvgElementProps;
-		"feGaussianBlur"?: FegaussianblurSvgElementProps;
-		"feImage"?: FeimageSvgElementProps;
-		"feMerge"?: FemergeSvgElementProps;
-		"feMergeNode"?: FemergenodeSvgElementProps;
-		"feMorphology"?: FemorphologySvgElementProps;
-		"feOffset"?: FeoffsetSvgElementProps;
-		"fePointLight"?: FepointlightSvgElementProps;
-		"feSpecularLighting"?: FespecularlightingSvgElementProps;
-		"feSpotLight"?: FespotlightSvgElementProps;
-		"feTile"?: FetileSvgElementProps;
-		"feTurbulence"?: FeturbulenceSvgElementProps;
-		"filter"?: FilterSvgElementProps;
-		"font-face"?: FontfaceSvgElementProps;
-		"font-face-format"?: FontfaceformatSvgElementProps;
-		"font-face-name"?: FontfacenameSvgElementProps;
-		"font-face-uri"?: FontfaceuriSvgElementProps;
-		"foreignObject"?: ForeignobjectSvgElementProps;
-		"g"?: GSvgElementProps;
-		"glyph"?: GlyphSvgElementProps;
-		"glyphRef"?: GlyphrefSvgElementProps;
-		"handler"?: HandlerSvgElementProps;
-		"hkern"?: HkernSvgElementProps;
-		"image"?: ImageSvgElementProps;
-		"line"?: LineSvgElementProps;
-		"linearGradient"?: LineargradientSvgElementProps;
-		"listener"?: ListenerSvgElementProps;
-		"marker"?: MarkerSvgElementProps;
-		"mask"?: MaskSvgElementProps;
-		"metadata"?: MetadataSvgElementProps;
-		"missing-glyph"?: MissingglyphSvgElementProps;
-		"mpath"?: MpathSvgElementProps;
-		"path"?: PathSvgElementProps;
-		"pattern"?: PatternSvgElementProps;
-		"polygon"?: PolygonSvgElementProps;
-		"polyline"?: PolylineSvgElementProps;
-		"prefetch"?: PrefetchSvgElementProps;
-		"radialGradient"?: RadialgradientSvgElementProps;
-		"rect"?: RectSvgElementProps;
-		"set"?: SetSvgElementProps;
-		"stop"?: StopSvgElementProps;
-		"svg"?: SvgSvgElementProps;
-		"switch"?: SwitchSvgElementProps;
-		"symbol"?: SymbolSvgElementProps;
-		"tbreak"?: TbreakSvgElementProps;
-		"text"?: TextSvgElementProps;
-		"textArea"?: TextareaSvgElementProps;
-		"textPath"?: TextpathSvgElementProps;
-		"title"?: TitleSvgElementProps;
-		"tref"?: TrefSvgElementProps;
-		"tspan"?: TspanSvgElementProps;
-		"unknown"?: UnknownSvgElementProps;
-		"use"?: UseSvgElementProps;
-		"view"?: ViewSvgElementProps;
-		"vkern"?: VkernSvgElementProps;
+	namespace JSX {
+		interface IntrinsicElements {
+			/*** INTRINSIC_ELEMENTS */
+			"a"?: AElementProps;
+			"applet"?: AppletElementProps;
+			"area"?: AreaElementProps;
+			"audio"?: AudioElementProps;
+			"base"?: BaseElementProps;
+			"basefont"?: BasefontElementProps;
+			"blockquote"?: BlockquoteElementProps;
+			"body"?: BodyElementProps;
+			"br"?: BrElementProps;
+			"button"?: ButtonElementProps;
+			"canvas"?: CanvasElementProps;
+			"caption"?: CaptionElementProps;
+			"col"?: ColElementProps;
+			"colgroup"?: ColgroupElementProps;
+			"data"?: DataElementProps;
+			"del"?: DelElementProps;
+			"details"?: DetailsElementProps;
+			"dialog"?: DialogElementProps;
+			"dir"?: DirElementProps;
+			"div"?: DivElementProps;
+			"dl"?: DlElementProps;
+			"embed"?: EmbedElementProps;
+			"fieldset"?: FieldsetElementProps;
+			"font"?: FontElementProps;
+			"form"?: FormElementProps;
+			"frame"?: FrameElementProps;
+			"frameset"?: FramesetElementProps;
+			"h1"?: H1ElementProps;
+			"h2"?: H2ElementProps;
+			"h3"?: H3ElementProps;
+			"h4"?: H4ElementProps;
+			"h5"?: H5ElementProps;
+			"h6"?: H6ElementProps;
+			"head"?: HeadElementProps;
+			"hr"?: HrElementProps;
+			"html"?: HtmlElementProps;
+			"iframe"?: IframeElementProps;
+			"img"?: ImgElementProps;
+			"input"?: InputElementProps;
+			"ins"?: InsElementProps;
+			"isindex"?: IsindexElementProps;
+			"label"?: LabelElementProps;
+			"legend"?: LegendElementProps;
+			"li"?: LiElementProps;
+			"link"?: LinkElementProps;
+			"map"?: MapElementProps;
+			"menu"?: MenuElementProps;
+			"meta"?: MetaElementProps;
+			"meter"?: MeterElementProps;
+			"object"?: ObjectElementProps;
+			"ol"?: OlElementProps;
+			"optgroup"?: OptgroupElementProps;
+			"option"?: OptionElementProps;
+			"output"?: OutputElementProps;
+			"p"?: PElementProps;
+			"param"?: ParamElementProps;
+			"pre"?: PreElementProps;
+			"progress"?: ProgressElementProps;
+			"q"?: QElementProps;
+			"script"?: ScriptElementProps;
+			"select"?: SelectElementProps;
+			"slot"?: SlotElementProps;
+			"source"?: SourceElementProps;
+			"style"?: StyleElementProps;
+			"table"?: TableElementProps;
+			"tbody"?: TbodyElementProps;
+			"td"?: TdElementProps;
+			"textarea"?: TextareaElementProps;
+			"tfoot"?: TfootElementProps;
+			"th"?: ThElementProps;
+			"thead"?: TheadElementProps;
+			"time"?: TimeElementProps;
+			"tr"?: TrElementProps;
+			"track"?: TrackElementProps;
+			"ul"?: UlElementProps;
+			"video"?: VideoElementProps;
+			"altGlyph"?: AltglyphSvgElementProps;
+			"animate"?: AnimateSvgElementProps;
+			"animateColor"?: AnimatecolorSvgElementProps;
+			"animateMotion"?: AnimatemotionSvgElementProps;
+			"animateTransform"?: AnimatetransformSvgElementProps;
+			"animation"?: AnimationSvgElementProps;
+			"circle"?: CircleSvgElementProps;
+			"clipPath"?: ClippathSvgElementProps;
+			"color-profile"?: ColorprofileSvgElementProps;
+			"cursor"?: CursorSvgElementProps;
+			"defs"?: DefsSvgElementProps;
+			"desc"?: DescSvgElementProps;
+			"discard"?: DiscardSvgElementProps;
+			"ellipse"?: EllipseSvgElementProps;
+			"feBlend"?: FeblendSvgElementProps;
+			"feColorMatrix"?: FecolormatrixSvgElementProps;
+			"feComponentTransfer"?: FecomponenttransferSvgElementProps;
+			"feComposite"?: FecompositeSvgElementProps;
+			"feConvolveMatrix"?: FeconvolvematrixSvgElementProps;
+			"feDiffuseLighting"?: FediffuselightingSvgElementProps;
+			"feDisplacementMap"?: FedisplacementmapSvgElementProps;
+			"feDistantLight"?: FedistantlightSvgElementProps;
+			"feDropShadow"?: FedropshadowSvgElementProps;
+			"feFlood"?: FefloodSvgElementProps;
+			"feFuncA"?: FefuncaSvgElementProps;
+			"feFuncB"?: FefuncbSvgElementProps;
+			"feFuncG"?: FefuncgSvgElementProps;
+			"feFuncR"?: FefuncrSvgElementProps;
+			"feGaussianBlur"?: FegaussianblurSvgElementProps;
+			"feImage"?: FeimageSvgElementProps;
+			"feMerge"?: FemergeSvgElementProps;
+			"feMergeNode"?: FemergenodeSvgElementProps;
+			"feMorphology"?: FemorphologySvgElementProps;
+			"feOffset"?: FeoffsetSvgElementProps;
+			"fePointLight"?: FepointlightSvgElementProps;
+			"feSpecularLighting"?: FespecularlightingSvgElementProps;
+			"feSpotLight"?: FespotlightSvgElementProps;
+			"feTile"?: FetileSvgElementProps;
+			"feTurbulence"?: FeturbulenceSvgElementProps;
+			"filter"?: FilterSvgElementProps;
+			"font-face"?: FontfaceSvgElementProps;
+			"font-face-format"?: FontfaceformatSvgElementProps;
+			"font-face-name"?: FontfacenameSvgElementProps;
+			"font-face-uri"?: FontfaceuriSvgElementProps;
+			"foreignObject"?: ForeignobjectSvgElementProps;
+			"g"?: GSvgElementProps;
+			"glyph"?: GlyphSvgElementProps;
+			"glyphRef"?: GlyphrefSvgElementProps;
+			"handler"?: HandlerSvgElementProps;
+			"hkern"?: HkernSvgElementProps;
+			"image"?: ImageSvgElementProps;
+			"line"?: LineSvgElementProps;
+			"linearGradient"?: LineargradientSvgElementProps;
+			"listener"?: ListenerSvgElementProps;
+			"marker"?: MarkerSvgElementProps;
+			"mask"?: MaskSvgElementProps;
+			"metadata"?: MetadataSvgElementProps;
+			"missing-glyph"?: MissingglyphSvgElementProps;
+			"mpath"?: MpathSvgElementProps;
+			"path"?: PathSvgElementProps;
+			"pattern"?: PatternSvgElementProps;
+			"polygon"?: PolygonSvgElementProps;
+			"polyline"?: PolylineSvgElementProps;
+			"prefetch"?: PrefetchSvgElementProps;
+			"radialGradient"?: RadialgradientSvgElementProps;
+			"rect"?: RectSvgElementProps;
+			"set"?: SetSvgElementProps;
+			"stop"?: StopSvgElementProps;
+			"svg"?: SvgSvgElementProps;
+			"switch"?: SwitchSvgElementProps;
+			"symbol"?: SymbolSvgElementProps;
+			"tbreak"?: TbreakSvgElementProps;
+			"text"?: TextSvgElementProps;
+			"textArea"?: TextareaSvgElementProps;
+			"textPath"?: TextpathSvgElementProps;
+			"title"?: TitleSvgElementProps;
+			"tref"?: TrefSvgElementProps;
+			"tspan"?: TspanSvgElementProps;
+			"unknown"?: UnknownSvgElementProps;
+			"use"?: UseSvgElementProps;
+			"view"?: ViewSvgElementProps;
+			"vkern"?: VkernSvgElementProps;
 
-            [key: string]: any;
-        }
-        interface Element { }
-    }
+			[key: string]: any;
+		}
+		interface Element { }
+	}
 
-    interface CSS extends _CSS.StandardProperties<number | string>, _CSS.SvgProperties<number | string> { }
+	interface CSS extends _CSS.StandardProperties<number | string>, _CSS.SvgProperties<number | string> { }
 
-    interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void, ServerExtend = void> {
-        (data: {
-            props: Props;
-            forceUpdate: () => Promise<void>;
-            EventHub: {
-                on(eventName: string, event: ((payload: any) => any), groupId?: string): any;
-                emit(eventName: string, data: any, groupId?: string): any;
-            } & EventHubExtend;
-            Browser: {
-                [command: string]: (options?: any, elementRefs?: string[]) => Promise<any>
-            } & BrowserExtend;
-            Server: {
-                [command: string]: (options?: any) => Promise<any>
-            } & ServerExtend;
-            ComponentInstance: {
-                id: string;
-                onDestroy: (() => Promise<void>) | (() => void);
-                onInit: (() => Promise<void>) | (() => void);
-            }
-        } & DataExtend): any;
-    }
+	interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void, ServerExtend = void> {
+		(data: {
+			props: Props;
+			forceUpdate: () => Promise<void>;
+			EventHub: {
+				on(eventName: string, event: ((payload: any) => any), groupId?: string): any;
+				emit(eventName: string, data: any, groupId?: string): any;
+			} & EventHubExtend;
+			Browser: {
+				[command: string]: (options?: any, elementRefs?: string[]) => Promise<any>
+			} & BrowserExtend;
+			Server: {
+				[command: string]: (options?: any) => Promise<any>
+			} & ServerExtend;
+			ComponentInstance: {
+				id: string;
+				onDestroy: (() => Promise<void>) | (() => void);
+				onInit: (() => Promise<void>) | (() => void);
+			}
+		} & DataExtend): any;
+	}
 
-    interface DraymanServer {
-        (data: {
-            emit: (callback: any, data?: any) => Promise<void>;
-            app: any;
-        }): any;
-    }
+	interface DraymanServer {
+		(data: {
+			emit: (callback: any, data?: any) => Promise<void>;
+			app: any;
+		}): any;
+	}
 }
 
 export { };
