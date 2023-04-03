@@ -1,7 +1,6 @@
 import * as _CSS from 'csstype';
 
 declare global {
-
     interface EventGuard {
         mask?: EventOptions;
         preventDefault?: boolean;
