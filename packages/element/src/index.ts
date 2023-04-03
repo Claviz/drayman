@@ -141,7 +141,11 @@ customElements.define('drayman-element', class extends HTMLElement {
                 let later = async () => {
                     timeout = null;
                     if (options.trailing) {
-                        resolve(await this.emit(event, eventName, { trailing: true }, c, d, elementOptions));
+                        if (event instanceof Event) {
+                            resolve(await this.emit(event, eventName, { trailing: true }, { ...mapEvent(event), ...(c || {}) }, d, elementOptions));
+                        } else {
+                            resolve(await this.emit(null, eventName, { trailing: true }, event, c, elementOptions));
+                        }
                     }
                 };
                 let callNow = options.leading && !timeout;
@@ -152,7 +156,11 @@ customElements.define('drayman-element', class extends HTMLElement {
                 timeout = setTimeout(later, wait);
                 toReject = reject;
                 if (callNow) {
-                    resolve(await this.emit(event, eventName, { leading: true }, c, d, elementOptions));
+                    if (event instanceof Event) {
+                        resolve(await this.emit(event, eventName, { trailing: true }, { ...mapEvent(event), ...(c || {}) }, d, elementOptions));
+                    } else {
+                        resolve(await this.emit(null, eventName, { trailing: true }, event, c, elementOptions));
+                    }
                 }
             }).catch(() => { });
         };
