@@ -39,7 +39,7 @@ export const component: DraymanComponent = async ({ forceUpdate }) => {
 
 ## Links
 
-[Official website/docs](http://drayman.io)
+[Official website/docs](https://drayman.io)
 
 [Join Discord](https://discord.gg/5GYZTvUSxV)
 

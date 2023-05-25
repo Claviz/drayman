@@ -7,17 +7,17 @@ author_image_url: https://avatars.githubusercontent.com/u/5667073?v=4
 tags: [drayman, mongodb, tailwindcss, guide]
 ---
 
-In this guide we will build a real-time Todo app with [Drayman](http://www.drayman.io/), [MongoDB](https://www.mongodb.com/) and [Tailwind CSS](https://tailwindcss.com/).
+In this guide we will build a real-time Todo app with [Drayman](https://www.drayman.io/), [MongoDB](https://www.mongodb.com/) and [Tailwind CSS](https://tailwindcss.com/).
 
 If you are using regular tools, you would need to create a server with endpoints, a client app using some modern framework or just vanilla JavaScript. With Drayman, however, it will be just a single script with 100 lines of code.
 
-If you are new to Drayman, you can go to our [official docs](http://www.drayman.io/) to check out how it works or to read other guides.
+If you are new to Drayman, you can go to our [official docs](https://www.drayman.io/) to check out how it works or to read other guides.
 
 ## Prerequisites
 
 This guide assumes that you:
 
-- have [installed Drayman project locally](http://www.drayman.io/docs/introduction/getting-started) or you are using it through [new.drayman.io](http://new.drayman.io);
+- have [installed Drayman project locally](https://www.drayman.io/docs/introduction/getting-started) or you are using it through [new.drayman.io](http://new.drayman.io);
 - have MongoDB installed with [Change Stream](https://docs.mongodb.com/manual/changeStreams/) functionality enabled. For this guide you can create a free cloud MongoDB database [here](https://www.mongodb.com/try). This way you get Change Stream functionality enabled by default.
 
 When Drayman project is ready and you have MongoDB up and running, we can start developing our Todo app by adding Tailwind CSS.
@@ -223,9 +223,9 @@ Then we added real-time functionality by watching for changes to database `todoL
 - on `update` a specific Todo from `todos` array will be updated;
 - on `delete` a specific Todo from `todos` array will be deleted.
 
-The component will reflect all these changes because we also call the [forceUpdate](http://www.drayman.io/docs/components-in-depth/helpers/force-update) function - if any change gets caught, the component will re-render itself.
+The component will reflect all these changes because we also call the [forceUpdate](https://www.drayman.io/docs/components-in-depth/helpers/force-update) function - if any change gets caught, the component will re-render itself.
 
-Finally, we are using the [onDestroy](http://www.drayman.io/docs/components-in-depth/helpers/the-component-instance-object) lifecycle method to close the connection to the database when a component instance gets destroyed.
+Finally, we are using the [onDestroy](https://www.drayman.io/docs/components-in-depth/helpers/the-component-instance-object) lifecycle method to close the connection to the database when a component instance gets destroyed.
 
 We also have made changes to our UI by mapping through `todos` array and rendering each Todo and changing CSS classes dynamically when a Todo is done.
 
@@ -432,4 +432,4 @@ export const component: DraymanComponent = async ({
 
 We have created a real-time Todo app with Drayman, MongoDB and Tailwind CSS in just 100 lines of code, inside a single script.
 
-If this felt interesting to you, visit the [official docs](http://www.drayman.io/) to deep-dive into Drayman framework!
+If this felt interesting to you, visit the [official docs](https://www.drayman.io/) to deep-dive into Drayman framework!
