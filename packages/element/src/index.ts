@@ -157,9 +157,9 @@ customElements.define('drayman-element', class extends HTMLElement {
                 toReject = reject;
                 if (callNow) {
                     if (event instanceof Event) {
-                        resolve(await this.emit(event, eventName, { trailing: true }, { ...mapEvent(event), ...(c || {}) }, d, elementOptions));
+                        resolve(await this.emit(event, eventName, { leading: true }, { ...mapEvent(event), ...(c || {}) }, d, elementOptions));
                     } else {
-                        resolve(await this.emit(null, eventName, { trailing: true }, event, c, elementOptions));
+                        resolve(await this.emit(null, eventName, { leading: true }, event, c, elementOptions));
                     }
                 }
             }).catch(() => { });
