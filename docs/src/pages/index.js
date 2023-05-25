@@ -21,10 +21,18 @@ function HomepageHeader() {
             Drayman Introduction - 5min ⏱️
           </Link>
         </div>
-        <div className={styles.video}>
-          <video width="100%" height="100%" playsInline autoPlay muted loop>
-            <source src="/img/welcome.mp4" type="video/mp4" />
-          </video>
+        <div className={styles.sandbox}>
+          <iframe style={{
+            width: "100%",
+            height: 900,
+            outline: "1px solid #252525",
+            border: 0,
+            borderRadius: 8,
+            marginBottom: 16,
+            zIndex: 100,
+            width: '100%',
+            height: '500px'
+          }} src="https://codesandbox.io/p/sandbox/drayman-framework-v943ig?file=/src/components/home.tsx&embed=1" allowfullscreen></iframe>
         </div>
       </div>
     </header>

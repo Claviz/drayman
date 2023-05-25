@@ -14,6 +14,10 @@ module.exports = {
   organizationName: 'claviz', // Usually your GitHub org/user name.
   projectName: 'drayman', // Usually your repo name.
   themeConfig: {
+    colorMode: {
+      defaultMode: 'dark',
+      respectPrefersColorScheme: false,
+    },
     algolia: {
       apiKey: 'a099d0d352957a4569617f8b1c0e64ed',
       indexName: 'drayman',
