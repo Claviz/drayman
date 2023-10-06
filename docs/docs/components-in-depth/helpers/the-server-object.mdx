@@ -90,6 +90,24 @@ export const component: DraymanComponent = async ({ forceUpdate, Server }) => {
 };
 ```
 
+## Using EventHub
+
+Server object can also be used to listen to events from EventHub or emit events to EventHub. This can be used when you want to communicate from server to all or specific components at once. You can read more about EventHub object [here](https://www.drayman.io/docs/components-in-depth/helpers/the-event-hub-object).
+
+```tsx title="src/index.ts"
+export const Server: DraymanServer = async ({ EventHub }) => {
+  EventHub.on("my-event", (data) => {
+    console.log(data);
+  });
+
+  return {
+    sendEvent: async () => {
+      EventHub.emit("my-event", { hello: "world" });
+    },
+  };
+};
+```
+
 ## Using middlewares and request interceptors
 
 Under the hood, Drayman launches simple Express.js server which is responsible for handling all incoming requests (for example, when user clicks a button). This server can be extended by adding middlewares or request interceptors to Express.js `app`.
