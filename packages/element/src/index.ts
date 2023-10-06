@@ -166,12 +166,12 @@ customElements.define('drayman-element', class extends HTMLElement {
         };
     }
 
-    eventDebounce(fn, wait, callbackId) {
+    eventDebounce(fn, wait) {
         let timeout;
-        return () => {
+        return (callbackId, data) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-                const result = fn();
+                const result = fn(callbackId, data);
                 if (this.browserCommandDebouncedCallbacks[callbackId]) {
                     delete this.browserCommandDebouncedCallbacks[callbackId];
                 }
@@ -305,10 +305,10 @@ customElements.define('drayman-element', class extends HTMLElement {
                     return window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, });
                 }
                 if (!this.browserCommandDebouncedCallbacks[callbackId]) {
-                    this.browserCommandDebouncedCallbacks[callbackId] = this.eventDebounce(() => window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, }), options.debounce, callbackId);
+                    this.browserCommandDebouncedCallbacks[callbackId] = this.eventDebounce((callbackId, data) => window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, }), options.debounce);
                 }
 
-                return this.browserCommandDebouncedCallbacks[callbackId]();
+                return this.browserCommandDebouncedCallbacks[callbackId](callbackId, data);
             }
         ) || {};
         let rootNode = document.createElement('drayman-element-container') as any;
