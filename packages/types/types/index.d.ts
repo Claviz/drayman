@@ -5318,7 +5318,9 @@ declare global {
         interface Element { }
     }
 
-    interface CSS extends _CSS.StandardProperties<number | string>, _CSS.SvgProperties<number | string> { }
+    interface CSS extends _CSS.StandardProperties<number | string>, _CSS.SvgProperties<number | string> {
+        [key: string]: any;
+    }
 
     interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void, ServerExtend = void> {
         (data: {
@@ -5346,6 +5348,10 @@ declare global {
         (data: {
             emit: (callback: any, data?: any) => Promise<void>;
             app: any;
+            EventHub: {
+                on(eventName: string, event: ((payload: any) => any), groupId?: string): any;
+                emit(eventName: string, data: any, groupId?: string): any;
+            }
         }): any;
     }
 }

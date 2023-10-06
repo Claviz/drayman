@@ -10,6 +10,33 @@ import fs from 'fs';
 import { build } from './build';
 import { getDraymanConfig } from '../config';
 
+class EventHubClass {
+    #handlers: {
+        [eventName: string]: {
+            func: any;
+            groupId: any;
+        }[];
+    } = {};
+    emit = async (type, eventPayload, groupId = null) => {
+        draymanCore.handleEventHubEvent({ type, data: eventPayload, groupId });
+    }
+    on = (eventName, func, groupId = null) => {
+        if (this.#handlers[eventName]) {
+            this.#handlers[eventName].push({ func, groupId });
+        } else {
+            this.#handlers[eventName] = [{ func, groupId }];
+        }
+    }
+    _execute = async (eventName, options, groupId = null) => {
+        if (this.#handlers[eventName]) {
+            for (const handler of this.#handlers[eventName].filter(x => x.groupId === groupId)) {
+                await handler.func(options);
+            }
+        }
+    }
+}
+const EventHub = new EventHubClass();
+
 (async () => {
     const { publicDir, port, componentsOutputDir, outDir, sslKey, sslCert } = getDraymanConfig();
     const elementsPaths = await draymanCore.getElementsScriptPaths({});
@@ -26,7 +53,8 @@ import { getDraymanConfig } from '../config';
     try {
         Server = await (await import(path.join(process.cwd(), outDir, 'index.js'))).Server({
             app,
-            emit: (callbackId, data) => draymanCore.onHandleBrowserCallback({ callbackId, data })
+            emit: (callbackId, data) => draymanCore.onHandleBrowserCallback({ callbackId, data }),
+            EventHub
         });
     } catch (err) { }
 
@@ -122,6 +150,7 @@ import { getDraymanConfig } from '../config';
             } else if (type === 'eventHubEvent') {
                 const { type, groupId } = data;
                 draymanCore.handleEventHubEvent({ type, data: data.data, groupId });
+                EventHub._execute(type, data.data, groupId);
             } else if (type === 'updateComponentInstanceProps') {
                 const { componentInstanceId, options } = data;
                 draymanCore.onUpdateComponentInstanceProps({ componentInstanceId, options });

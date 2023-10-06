@@ -166,6 +166,20 @@ customElements.define('drayman-element', class extends HTMLElement {
         };
     }
 
+    eventDebounce(fn, wait, callbackId) {
+        let timeout;
+        return () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const result = fn();
+                if (this.browserCommandDebouncedCallbacks[callbackId]) {
+                    delete this.browserCommandDebouncedCallbacks[callbackId];
+                }
+                return result;
+            }, wait);
+        };
+    }
+
     getFn(element, eventName, elementOptions) {
         if (typeof elementOptions === 'object') {
             if (elementOptions.debounce) {
@@ -278,12 +292,25 @@ customElements.define('drayman-element', class extends HTMLElement {
     once = false;
     updateId = 0;
     initSent = false;
+    browserCommandDebouncedCallbacks = {};
+
     async connectedCallback() {
         while (!window['draymanConfig'] || !this.component) {
             console.log(`waiting for config`);
             await new Promise(resolve => setTimeout(resolve, 100));
         }
-        const browserCommands = window['draymanConfig'].browserCommands?.((callbackId, data) => window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, })) || {};
+        const browserCommands = window['draymanConfig'].browserCommands?.(
+            (callbackId, data, options) => {
+                if (!options?.debounce) {
+                    return window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, });
+                }
+                if (!this.browserCommandDebouncedCallbacks[callbackId]) {
+                    this.browserCommandDebouncedCallbacks[callbackId] = this.eventDebounce(() => window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, }), options.debounce, callbackId);
+                }
+
+                return this.browserCommandDebouncedCallbacks[callbackId]();
+            }
+        ) || {};
         let rootNode = document.createElement('drayman-element-container') as any;
         this.appendChild(rootNode);
         this.componentInstanceId = await window['draymanConfig'].connection.initializeComponent({

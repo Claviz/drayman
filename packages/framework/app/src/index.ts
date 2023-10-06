@@ -1,4 +1,4 @@
-export const Server: DraymanServer = async ({ emit }) => {
+export const Server: DraymanServer = async ({ emit, EventHub }) => {
     let count = 0;
 
     return {
@@ -7,6 +7,9 @@ export const Server: DraymanServer = async ({ emit }) => {
         },
         getCount: async () => {
             return count;
+        },
+        useEventHub: async () => {
+            EventHub.emit('message-from-server', { text: 'Hello, world!' });
         }
     };
 }

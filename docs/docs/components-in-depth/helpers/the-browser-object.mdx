@@ -113,7 +113,7 @@ Let's modify our previous alert example:
       alert: async ({ text, onClose }) => {
         alert(text);
         // highlight-next-line
-        emit(onClose);
+        emit(onClose, { text: "You have closed an alert!" });
       },
     }),
   });
@@ -122,11 +122,12 @@ Let's modify our previous alert example:
 ...
 ```
 
-Pay attention on how `emit` parameter of `browserCommands` was introduced. It is used to tell Drayman to execute passed callbacks. In our case we are executing `onClose` callback after `alert` is executed. Now modify `home.tsx` component:
+Pay attention on how `emit` parameter of `browserCommands` was introduced. It is used to tell Drayman to execute passed callbacks. In our case we are executing `onClose` callback after `alert` is executed. It also passes `text` parameter. Now modify `home.tsx` component:
 
 ```tsx title="src/components/home.tsx"
 export const component: DraymanComponent = async ({ Browser, forceUpdate }) => {
   let closed = false;
+  let textFromBrowser = "";
 
   return () => {
     return (
@@ -135,8 +136,9 @@ export const component: DraymanComponent = async ({ Browser, forceUpdate }) => {
           onclick={async () => {
             await Browser.alert({
               text: "Hello, world!",
-              onClose: async () => {
+              onClose: async ({ text }) => {
                 closed = true;
+                textFromBrowser = text;
                 await forceUpdate();
               },
             });
@@ -144,21 +146,85 @@ export const component: DraymanComponent = async ({ Browser, forceUpdate }) => {
         >
           Alert!
         </button>
-        {closed && <h3>You have closed an alert!</h3>}
+        {closed && <h3>{textFromBrowser}</h3>}
       </>
     );
   };
 };
 ```
 
-Now when user clicks a button, an alert will be shown. After closing an alert, a text "You have closed an alert!" will be shown on page:
+Now when user clicks a button, an alert will be shown. After closing an alert, a text from passed `text` parameter "You have closed an alert!" will be shown on page:
 
 <BrowserWindow url="http://localhost:3033">
   <button>Alert!</button>
   <h3>You have closed an alert!</h3>
 </BrowserWindow>
 
-And remember, instead of showing a text, you are free to execute any server-side code (for example, saving some data to database).
+<br />
+
+:::tip
+You can pass any JSON-serializable data to callbacks, for example, `document.cookie` or some items from `localStorage`.
+:::
+
+### Callback configuration options
+
+### `debounce`
+
+Delays invoking callback until `debounce` milliseconds have elapsed since the last time the debounced callback was invoked.
+
+`debounce` accepts `number` (ms to delay).
+
+This option is useful, for example, when viewport of the browser was resized and you need to execute callback only after user has stopped resizing it:
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    browserCommands: (emit) => ({
+      events: async ({ onViewportChanged }) => {
+        window.onresize = () => {
+          emit(
+            onViewportChanged,
+            {
+              width: window.innerWidth,
+              height: window.innerHeight,
+            },
+            {
+              // highlight-next-line
+              debounce: 500,
+            }
+          );
+        };
+      },
+    }),
+  });
+</script>
+
+...
+```
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent<any> = async ({
+  Browser,
+  forceUpdate,
+}) => {
+  let dimensions = ``;
+
+  Browser.events({
+    onViewportChanged: async (data) => {
+      dimensions = `${data.width}x${data.height}`;
+      await forceUpdate();
+    },
+  });
+
+  return () => {
+    return <div>{dimensions}</div>;
+  };
+};
+```
+
+In the example above, `onViewportChanged` callback will be executed and text of window dimensions will be updated only after user has stopped resizing browser window for 500ms.
 
 ## Referencing elements
 

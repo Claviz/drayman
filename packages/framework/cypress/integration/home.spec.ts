@@ -278,3 +278,30 @@ context('event guards', () => {
     cy.get('p').should('contain.text', 'A');
   })
 })
+
+context('server EventHub', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/server-event-hub')
+  })
+
+  it(`uses server EventHub`, () => {
+    cy.get('#message-from-server').click();
+    cy.get('#message-from-server').should('contain.text', `Hello, world!`);
+  })
+})
+
+context('browser commands emit', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3033/browser-command-emit-debounce')
+  })
+
+  it(`debounces`, () => {
+    cy.get('#btn-debounce').click()
+    cy.get('#event-count').should('have.text', `Events: A`);
+  })
+
+  it(`doesn't debounce`, () => {
+    cy.get('#btn').click()
+    cy.get('#event-count').should('have.text', `Events: AAAAAAAAAA`);
+  })
+})

@@ -67,6 +67,12 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/event-guards-third-party-event': {
                 return <event-guards-third-party-event />
             }
+            case 'http://localhost:3033/server-event-hub': {
+                return <server-event-hub />
+            }
+            case 'http://localhost:3033/browser-command-emit-debounce': {
+                return <browser-command-emit-debounce />
+            }
         }
     }
 

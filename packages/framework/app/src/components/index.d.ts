@@ -1,6 +1,7 @@
 declare namespace JSX {
 interface IntrinsicElements {
 // ELEMENTS-START
+'browser-command-emit-debounce': { [propName: string]: any; };
 'communication-ping': { [propName: string]: any; };
 'communication-pong': { [propName: string]: any; };
 'counter': { [propName: string]: any; };
@@ -19,6 +20,7 @@ interface IntrinsicElements {
 'modal': { [propName: string]: any; };
 'root-events': { [propName: string]: any; };
 'server-counter': { [propName: string]: any; };
+'server-event-hub': { [propName: string]: any; };
 'text-input': { [propName: string]: any; };
 'third-party-element': { [propName: string]: any; };
 'third-party-upload': { [propName: string]: any; };

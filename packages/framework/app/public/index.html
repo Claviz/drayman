@@ -44,7 +44,12 @@
                 },
                 focus: async (data, [element]) => {
                     element.focus();
-                }
+                },
+                emit10Events: ({ debounce, onEvent }) => {
+                    for (let i = 0; i < 10; i++) {
+                        emit(onEvent, { i }, { debounce });
+                    }
+                },
             }),
         });
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
