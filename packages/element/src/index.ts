@@ -340,6 +340,25 @@ customElements.define('drayman-element', class extends HTMLElement {
                 await this.rootEvents[payload.event](payload.data);
             }
         });
+        window['draymanConfig'].connection.onConnectionClose(() => {
+            let overlay = document.createElement('div');
+            overlay.style.position = 'absolute';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '1000';
+            let message = document.createElement('div');
+            message.textContent = 'Component connection lost';
+            overlay.appendChild(message);
+            this.style.position = 'relative';
+            this.appendChild(overlay);
+            overlay.style.pointerEvents = 'none';
+        });
     }
 
     disconnectedCallback() {

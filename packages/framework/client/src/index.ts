@@ -42,6 +42,9 @@ async function initializeDraymanFramework(options?: { browserCommands: any, elem
         elementOptions: options?.elementOptions,
         elementUrl: '/elements/',
         connection: {
+            onConnectionClose: (handler) => {
+                socket.onclose = handler;
+            },
             onEvent: (componentInstanceId, handler) => {
                 if (handlers[componentInstanceId]) {
                     handlers[componentInstanceId].push(handler);
