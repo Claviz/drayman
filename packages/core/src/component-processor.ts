@@ -7,7 +7,6 @@ import fs from 'fs';
 import path from 'path';
 import shortid from 'shortid';
 
-// import { compare } from 'fast-json-patch';
 import { expose } from 'threads/worker'
 import { Observable, Subject } from 'threads/observable'
 
@@ -15,13 +14,10 @@ let subject = new Subject();
 import { Writable } from 'stream';
 const sendMessage = ({ type, payload }) => {
     subject.next({ type, payload });
-    // port.postMessage({ type, payload, componentInstanceId: initData.componentInstanceId })
-    // process?.send?.({ type, payload, componentInstanceId });
 }
 const portWritable = new Writable({
     write(chunk, encoding, callback) {
         sendMessage({ type: 'console', payload: { text: chunk.toString() } })
-        // port.postMessage(chunk.toString());
         callback();
     },
 });
@@ -55,39 +51,23 @@ class EventHubClass {
 }
 const EventHub = new EventHubClass();
 const ComponentInstance: any = {};
-// const componentInstanceId = process.argv[2];
+const activeRequests = new Map<string, AbortController>();
+const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
+
 let browserCallbacks: {
     [callbackId: string]: {
         callback: any;
         once: boolean;
     }
 } = {};
-// let tree = [];
 let treeEvents: { [key: string]: any } = {};
-let previouslySerializedTree = [];
-// let view: { [key: string]: any } = {};
-// let previouslySerializedView: { [key: string]: any } = {};
 let forceUpdate: any;
-// let httpClient;
 let prevProps = {};
 let props = {};
 let defaultProps = {};
-// const $meta = {};
 let extensions: { importable: any } = { importable: null };
 let updateId = 0;
 
-const serializeComponentInstanceOptions = (options: any) => {
-    const serialized: { [key: string]: any } = {};
-    if (!options) {
-        return serialized;
-    }
-    for (const optionKey of Object.keys(options)) {
-        serialized[optionKey] = isEvent(optionKey) ? null : options[optionKey];
-    }
-    return serialized;
-}
-
-const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
 
 const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], serverCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
     ComponentInstance.id = componentInstanceId;
@@ -243,46 +223,10 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
             }
         }
         treeEvents = result.events;
-        // if (result?.tree?.length) {
-        // tree = result.tree;
-        // const serializedTree = [];
-        // // const serializedView: { [key: string]: any } = {};
-        // const recurSerialize = (tree) => {
-        //     for (const element of tree) {
-        //         element.options = serializeComponentInstanceOptions(element.options);
-        //         recurSerialize(element.children);
-        //     }
-        // }
-        // recurSerialize(tree);
-        // for (const key of Object.keys(view)) {
-        //     serializedView[key] = {
-        //         ...view[key],
-        //         options: serializeComponentInstanceOptions(view[key].options),
-        //     };
-        // }
-        // const viewKeys = Object.keys(view);
-        // for (const key of Object.keys(renderedComps)) {
-        //     if (!viewKeys.some(x => x.startsWith(`${key}.`))) {
-        //         delete renderedComps[key];
-        //     }
-        // }
-
-        // const viewArr = Object.keys(serializedView || {}).map(x => ({ ...serializedView[x], key: x }));
-        // const viewTree = arrayToTree(viewArr, { id: 'key', parentId: 'parent', dataField: null, });
-
-        // const delta = jsondiff.diff(previouslySerializedTree, result.tree);
-        // const delta = compare(previouslySerializedTree, result.tree);
         sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
         if (updateId === 1 && ComponentInstance.onInit) {
             await ComponentInstance.onInit();
         }
-        // previouslySerializedTree = { ...result.tree };
-        // previouslySerializedTree = JSON.parse(JSON.stringify(result.tree));
-        // process?.send?.({ type: 'view', payload: { view: serializedView } });
-        // await httpClient.sendView({
-        //     view: serializedView,
-        // });
-        // }
     }
     let componentResult;
     try {
@@ -313,10 +257,6 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
 
     await forceUpdate();
 }
-
-// const handleEventHubEvent = async ({ type, data }) => {
-//     await EventHub._execute(type, data);
-// }
 
 const handleBrowserCallback = async ({ callbackId, data }) => {
     if (browserCallbacks[callbackId]) {
@@ -356,16 +296,19 @@ const updateComponentInstanceProps = async ({ options }) => {
 const handleComponentEvent = async ({ requestId, options, files, eventName }: { requestId: any; options: any; files: any; eventName: any; }) => {
     try {
         if (treeEvents[eventName]) {
-            const result = await treeEvents[eventName](options || {}, files || []);
+            const abortContoller = new AbortController();
+            const { signal } = abortContoller;
+            activeRequests.set(requestId, abortContoller);
+            const result = await treeEvents[eventName](options || {}, files || [], signal);
             sendMessage({ type: 'response', payload: { requestId, result } });
-            // process?.send?.({ type: 'response', payload: { requestId, result } });
         }
     } catch (err) {
         console.error(err);
         sendMessage({ type: 'response', payload: { requestId, err } });
-        // process?.send?.({ type: 'response', payload: { requestId, err } });
+    } finally {
+        activeRequests.delete(requestId);
     }
-}
+};
 
 const handleEventHubEvent = async ({ type, data, groupId }) => {
     await EventHub._execute(type, data, groupId);
@@ -375,7 +318,14 @@ const handleDestroyComponentInstance = async () => {
     if (ComponentInstance.onDestroy) {
         await ComponentInstance.onDestroy();
     }
-}
+};
+
+const cancelComponentEvent = async ({ requestId }) => {
+    if (activeRequests.has(requestId)) {
+        activeRequests.get(requestId).abort();
+        activeRequests.delete(requestId);
+    }
+};
 
 expose({
     initializeComponentInstance,
@@ -384,6 +334,7 @@ expose({
     handleComponentEvent,
     handleEventHubEvent,
     handleDestroyComponentInstance,
+    cancelComponentEvent,
     events() {
         return Observable.from(subject)
     }

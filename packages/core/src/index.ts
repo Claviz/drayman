@@ -25,6 +25,15 @@ export const handleComponentEvent = ({ componentInstanceId, eventName, options, 
     } else {
         onError({ err: `Component instance was not found.` });
     }
+
+    return {
+        requestId,
+        cancel: () => {
+            if (Object.keys(componentInstances).includes(componentInstanceId)) {
+                componentInstances[componentInstanceId].worker.cancelComponentEvent({ requestId, });
+            }
+        }
+    };
 }
 
 export async function getElementsScriptPaths({ nodeModulesPath = null }) {
@@ -107,6 +116,9 @@ export const onInitializeComponentInstance = async ({
     componentInstances[componentInstanceId] = {
         worker,
         terminate: async () => {
+            for (const requestId of Object.keys(componentInstances[componentInstanceId].eventRequests)) {
+                componentInstances[componentInstanceId].eventRequests[requestId].onError({ err: `Component instance was destroyed.` });
+            }
             delete componentInstances[componentInstanceId];
             await Thread.terminate(worker);
             emit({ type: 'componentInstanceDestroyed', payload: {}, componentInstanceId });

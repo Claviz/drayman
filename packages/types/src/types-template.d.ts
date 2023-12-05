@@ -75,7 +75,7 @@ declare global {
         trailing: boolean;
         leading: boolean;
     };
-    type EventFunction<T> = (options: IPropertiesToAdd<T>, files?: UploadedFile[]) => Promise<void>;
+    type EventFunction<T> = (options: IPropertiesToAdd<T>, files?: UploadedFile[], signal?: AbortSignal) => Promise<void>;
     type ElementEvent<T> = EventFunction<T> | [EventFunction<T>, EventConfig];
 
     interface DefaultElementEventProps extends DefaultElementProps {

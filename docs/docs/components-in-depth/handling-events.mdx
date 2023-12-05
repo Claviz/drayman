@@ -102,6 +102,40 @@ export const component: DraymanComponent = async ({ forceUpdate }) => {
 
 Notice how `oninput` event of `input` element accepts `files` as a second parameter of event function. It is an array which is used to save files to file system using `writeFile`.
 
+## Handling event cancellation
+
+In Drayman, an event can be cancelled if the request is interrupted, either by the user's browser action or when a request timeout is reached.
+
+To handle such cancellations, each event in Drayman emits an `AbortSignal` object as part of the event's parameters. This object can be used to monitor and respond to a cancellation request. Here is an example of how you can implement cancellation handling in a Drayman component:
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ ComponentInstance }) => {
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  return () => {
+    return (
+      <button
+        onClick={async ({}, files, signal) => {
+          for (let i = 0; i < 1000; i++) {
+            console.log(i);
+            await delay(1000);
+            if (signal.aborted) {
+              break;
+            }
+          }
+        }}
+      >
+        Start timer
+      </button>
+    );
+  };
+};
+```
+
+In this example, we have a button that starts a timer when clicked. The timer runs a loop that increments a counter every second. However, if the `signal.aborted` flag is set to `true` (which happens when the event is cancelled), the loop breaks, effectively stopping the timer. This could be due to a user action, like closing the browser tab, or a timeout set on the server side. The use of `AbortSignal` provides a clean and efficient way to handle such scenarios in your Drayman applications.
+
 ## Configuring events
 
 In addition to function which will be executed on event, you can pass some configuration. Lets modify our previous example a bit:
