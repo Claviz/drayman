@@ -61,7 +61,7 @@ const EventHub = new EventHubClass();
     app.post('/api/componentEvent', upload.any(), async (req, res, next) => {
         try {
             const { componentInstanceId, eventName } = req.body;
-            draymanCore.handleComponentEvent({
+            const { requestId, cancel } = draymanCore.handleComponentEvent({
                 componentInstanceId,
                 eventName,
                 options: req.body.options,
@@ -72,8 +72,8 @@ const EventHub = new EventHubClass();
                 onSuccess: ({ result }) => {
                     res.json(result || null);
                 },
-                // res
-            })
+            });
+            res.on('close', () => cancel());
         } catch (err) {
             console.log(err);
             next(err);
