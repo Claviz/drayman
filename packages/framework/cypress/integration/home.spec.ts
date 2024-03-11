@@ -305,3 +305,29 @@ context('browser commands emit', () => {
     cy.get('#event-count').should('have.text', `Events: AAAAAAAAAA`);
   })
 })
+
+context('browser commands with elemenets', () => {
+  beforeEach(() => {
+  })
+
+  it(`should respect wait in browser command`, () => {
+    cy.visit('http://localhost:3033/browser-command-element-wait')
+    cy.get('#btn').click()
+    cy.get('#text').should('have.text', `Hello World!`);
+    cy.get('#error').should('not.have.text', `Cannot set properties of null (setting 'innerText')`);
+  })
+
+  it(`should fail if no element is found and wait is not set`, () => {
+    cy.visit('http://localhost:3033/browser-command-element-no-wait')
+    cy.get('#btn').click()
+    cy.get('#text').should('not.have.text', `Hello World!`);
+    cy.get('#error').should('have.text', `Cannot set properties of null (setting 'innerText')`);
+  })
+
+  it(`should select element using custom selector`, () => {
+    cy.visit('http://localhost:3033/browser-command-element-custom-selector')
+    cy.get('#btn').click()
+    cy.get('#text-id').should('have.text', `Hello World!`);
+  })
+
+})

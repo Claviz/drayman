@@ -277,3 +277,107 @@ export const component: DraymanComponent = async ({ Browser }) => {
 
 ...
 ```
+
+## Element referencing options
+
+When interacting with elements in a browser environment, especially within dynamic content, you can enhance control and flexibility by passing an object with specific options (`wait`, `ref`, `customSelector`) instead of a simple string reference. This method allows for detailed configuration of how and when elements are targeted.
+
+### `wait` option
+
+Use the `wait` option to delay actions until the targeted element is available. This is crucial for content that loads dynamically, ensuring actions are performed only when the element exists.
+
+**Example:** Waiting for an element before setting its text
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({
+  Browser,
+  forceUpdate,
+  props,
+}) => {
+  let renderTextElement = false;
+
+  setTimeout(async () => {
+    renderTextElement = true;
+    await forceUpdate();
+  }, 2000);
+
+  return () => {
+    return (
+      <>
+        <div id="error" ref="error"></div>
+        {!!renderTextElement && <div id="text" ref="text"></div>}
+        <button
+          id="btn"
+          onclick={async () => {
+            await Browser.setText(
+              {
+                text: "Hello World!",
+              },
+              // highlight-next-line
+              [{ ref: "text", wait: true }, "error"]
+            );
+          }}
+        >
+          Set text
+        </button>
+      </>
+    );
+  };
+};
+```
+
+```html title="public/index.html"
+...
+
+<script>
+  initializeDraymanFramework({
+    browserCommands: () => ({
+      setText: async ({ text }, [element, errorElement]) => {
+        try {
+          element.innerText = text;
+        } catch (err) {
+          errorElement.innerText = err.message;
+        }
+      },
+    }),
+  });
+</script>
+
+...
+```
+
+### `ref` option
+
+The `ref` option targets elements by their reference name within the component. It functions similarly to when you pass a reference name as a string.
+
+### `customSelector` option
+
+The `customSelector` option enables targeting using CSS selectors, offering flexibility for complex scenarios or when dealing with dynamically generated identifiers.
+
+**Example:** Targeting an element with a custom CSS selector
+
+```tsx title="src/components/home.tsx"
+export const component: DraymanComponent = async ({ Browser }) => {
+  return () => {
+    return (
+      <>
+        <div id="text-id"></div>
+        <button
+          id="btn"
+          onclick={async () => {
+            await Browser.setText(
+              {
+                text: "Hello World!",
+              },
+              // highlight-next-line
+              [{ customSelector: "#text-id" }]
+            );
+          }}
+        >
+          Set text
+        </button>
+      </>
+    );
+  };
+};
+```

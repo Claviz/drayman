@@ -5322,6 +5322,12 @@ declare global {
         [key: string]: any;
     }
 
+    interface BrowserCommandElementRefOptions {
+        wait?: boolean;
+        ref?: string;
+        customSelector?: string;
+    }
+
     interface DraymanComponent<Props = void, EventHubExtend = void, BrowserExtend = void, DataExtend = void, ServerExtend = void> {
         (data: {
             props: Props;
@@ -5331,7 +5337,7 @@ declare global {
                 emit(eventName: string, data: any, groupId?: string): any;
             } & EventHubExtend;
             Browser: {
-                [command: string]: (options?: any, elementRefs?: string[]) => Promise<any>
+                [command: string]: (options?: any, elementRefs?: (string | BrowserCommandElementRefOptions)[]) => Promise<any>
             } & BrowserExtend;
             Server: {
                 [command: string]: (options?: any) => Promise<any>

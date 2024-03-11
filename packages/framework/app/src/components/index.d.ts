@@ -1,6 +1,8 @@
 declare namespace JSX {
 interface IntrinsicElements {
 // ELEMENTS-START
+'browser-command-element-custom-selector': { [propName: string]: any; };
+'browser-command-element': { [propName: string]: any; };
 'browser-command-emit-debounce': { [propName: string]: any; };
 'communication-ping': { [propName: string]: any; };
 'communication-pong': { [propName: string]: any; };

@@ -332,7 +332,20 @@ customElements.define('drayman-element', class extends HTMLElement {
                 const { data, callbackId, command, elements } = payload;
                 let domElements: Element[] = [];
                 if (elements) {
-                    domElements = elements.map(x => document.querySelector(`drayman-element-container[componentinstanceid="${this.componentInstanceId}"] [ref="${x}"]`));
+                    for (const x of elements) {
+                        let ref = x;
+                        let wait = false;
+                        let customSelector;
+                        if (typeof x === 'object') {
+                            ref = x.ref;
+                            wait = x.wait;
+                            customSelector = x.customSelector;
+                        }
+                        if (wait) {
+                            await waitForElement(this.componentInstanceId, ref, customSelector);
+                        }
+                        domElements.push(getElement(this.componentInstanceId, ref, customSelector));
+                    }
                 }
                 const response = await browserCommands[command](data, domElements);
                 window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
@@ -370,3 +383,20 @@ customElements.define('drayman-element', class extends HTMLElement {
 });
 
 export const isEvent = (optionName: string) => optionName?.length > 2 && optionName.slice(0, 2) === 'on';
+
+const getElement = (componentInstanceId, ref, customSelector) => document.querySelector(customSelector ? customSelector : `drayman-element-container[componentinstanceid="${componentInstanceId}"] [ref="${ref}"]`);
+const waitForElement = (componentInstanceId, ref, customSelector) => {
+    return new Promise((resolve, reject) => {
+        const observer = new MutationObserver(mutations => {
+            if (getElement(componentInstanceId, ref, customSelector)) {
+                observer.disconnect();
+                resolve(getElement(componentInstanceId, ref, customSelector));
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+}

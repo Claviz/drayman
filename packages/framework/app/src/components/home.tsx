@@ -73,6 +73,15 @@ export const component: DraymanComponent<any> = async ({ Browser, props }) => {
             case 'http://localhost:3033/browser-command-emit-debounce': {
                 return <browser-command-emit-debounce />
             }
+            case 'http://localhost:3033/browser-command-element-wait': {
+                return <browser-command-element wait />
+            }
+            case 'http://localhost:3033/browser-command-element-no-wait': {
+                return <browser-command-element />
+            }
+            case 'http://localhost:3033/browser-command-element-custom-selector': {
+                return <browser-command-element-custom-selector />
+            }
         }
     }
 

@@ -50,6 +50,13 @@
                         emit(onEvent, { i }, { debounce });
                     }
                 },
+                setText: async ({ text }, [element, errorElement]) => {
+                    try {
+                        element.innerText = text;
+                    } catch (err) {
+                        errorElement.innerText = err.message;
+                    }
+                },
             }),
         });
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
