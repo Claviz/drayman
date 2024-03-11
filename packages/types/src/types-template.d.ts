@@ -161,7 +161,7 @@ declare global {
                 emit(eventName: string, data: any, groupId?: string): any;
             } & EventHubExtend;
             Browser: {
-                [command: string]: (options?: any, elementRefs?: (string | BrowserCommandElementRefOptions)[]) => Promise<any>
+                [command: string]: (options?: any, elementRefs?: Array<string | BrowserCommandElementRefOptions>) => Promise<any>
             } & BrowserExtend;
             Server: {
                 [command: string]: (options?: any) => Promise<any>
