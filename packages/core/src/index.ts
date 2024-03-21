@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import ts from 'typescript';
 import { spawn, Thread, Worker } from 'threads';
 import { exec } from 'child_process';
+import _ from 'lodash';
 
 const getNpmPackages = (nodeModulesPath) => {
     return new Promise<string[]>((resolve) => {
@@ -187,7 +188,7 @@ export const componentInstances: {
     }
 } = {};
 
-const clearGarbage = async () => {
+const clearGarbage = _.debounce(async () => {
     const aliveComponentInstances = Object.keys(componentInstances);
     const garbageComponentInstanceIds = [
         ...aliveComponentInstances.filter(x => garbage.connections.includes(componentInstances[x].connectionId)),
@@ -203,4 +204,4 @@ const clearGarbage = async () => {
             componentInstances[componentInstanceId].terminate();
         }
     }
-}
+}, 250);
