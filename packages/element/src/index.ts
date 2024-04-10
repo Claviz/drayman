@@ -296,7 +296,6 @@ customElements.define('drayman-element', class extends HTMLElement {
 
     async connectedCallback() {
         while (!window['draymanConfig'] || !this.component) {
-            console.log(`waiting for config`);
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         const browserCommands = window['draymanConfig'].browserCommands?.(
@@ -385,18 +384,20 @@ customElements.define('drayman-element', class extends HTMLElement {
 export const isEvent = (optionName: string) => optionName?.length > 2 && optionName.slice(0, 2) === 'on';
 
 const getElement = (componentInstanceId, ref, customSelector) => document.querySelector(customSelector ? customSelector : `drayman-element-container[componentinstanceid="${componentInstanceId}"] [ref="${ref}"]`);
-const waitForElement = (componentInstanceId, ref, customSelector) => {
+const waitForElement = (componentInstanceId, ref, customSelector, timeout = 5000) => {
     return new Promise((resolve, reject) => {
-        const observer = new MutationObserver(mutations => {
-            if (getElement(componentInstanceId, ref, customSelector)) {
-                observer.disconnect();
-                resolve(getElement(componentInstanceId, ref, customSelector));
+        const intervalDuration = 100;
+        let elapsedTime = 0;
+        const intervalId = setInterval(() => {
+            const element = getElement(componentInstanceId, ref, customSelector);
+            if (element) {
+                clearInterval(intervalId);
+                resolve(element);
+            } else if (elapsedTime >= timeout) {
+                clearInterval(intervalId);
+                reject(new Error(`Element with ref "${ref}" not found within ${timeout} ms`));
             }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+            elapsedTime += intervalDuration;
+        }, intervalDuration);
     });
-}
+};
