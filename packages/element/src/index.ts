@@ -8,17 +8,38 @@ import {
     VNode,
 } from 'snabbdom';
 
+function deepEqual(a: any, b: any): boolean {
+    if (a === b) return true;
+    if (typeof a !== 'object' || typeof b !== 'object' || !a || !b) return false;
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) return false;
+    for (const k of aKeys) {
+        if (!Object.prototype.hasOwnProperty.call(b, k)) return false;
+        if (!deepEqual(a[k], b[k])) return false;
+    }
+    return true;
+}
+
 function updateProps(oldVnode: VNode, vnode: VNode): void {
     const element = vnode.elm as any;
-    let oldProps = oldVnode.data?.props || {};
-    let props = vnode.data?.props || {};
-    for (const key of (Object.keys(oldProps))) {
+    const oldProps = oldVnode.data?.props || {};
+    const props = vnode.data?.props || {};
+    for (const key of Object.keys(oldProps)) {
         if (props[key] === undefined) {
             props[key] = null;
         }
     }
     if (element instanceof HTMLInputElement && element === document.activeElement) {
         delete vnode?.data?.props?.value;
+    }
+    for (const key of Object.keys(props)) {
+        const newVal = props[key];
+        const oldVal = oldProps[key];
+
+        if (typeof newVal === 'object' && newVal && oldVal && deepEqual(newVal, oldVal)) {
+            props[key] = oldVal;
+        }
     }
 }
 
@@ -350,9 +371,11 @@ customElements.define('drayman-element', class extends HTMLElement {
                 window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
             } else if (type === 'rootEvent') {
                 await this.rootEvents[payload.event](payload.data);
+            } else if (type === 'componentInstanceDestroyed') {
+                connectionClose();
             }
         });
-        window['draymanConfig'].connection.onConnectionClose(() => {
+        const connectionClose = () => {
             let overlay = document.createElement('div');
             overlay.style.position = 'absolute';
             overlay.style.top = '0';
@@ -370,7 +393,8 @@ customElements.define('drayman-element', class extends HTMLElement {
             this.style.position = 'relative';
             this.appendChild(overlay);
             overlay.style.pointerEvents = 'none';
-        });
+        };
+        window['draymanConfig'].connection.onConnectionClose(connectionClose);
     }
 
     disconnectedCallback() {

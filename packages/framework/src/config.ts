@@ -11,6 +11,9 @@ export function getDraymanConfig() {
     const port = draymanConfig.port || 3033;
     const sslCert = draymanConfig.sslCert;
     const sslKey = draymanConfig.sslKey;
+    const heapLimit = draymanConfig.heapLimit || 512;
+    const externalLimit = draymanConfig.externalLimit || 512;
+    const heartbeatLimitMs = draymanConfig.heartbeatLimitMs || 3 * 1000;
 
     return {
         srcDir,
@@ -22,5 +25,8 @@ export function getDraymanConfig() {
         port,
         sslCert,
         sslKey,
+        heapLimit,
+        externalLimit,
+        heartbeatLimitMs,
     }
 }

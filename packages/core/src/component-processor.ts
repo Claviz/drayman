@@ -6,6 +6,7 @@ import { render, isEvent } from './utils';
 import fs from 'fs';
 import path from 'path';
 import shortid from 'shortid';
+import v8 from 'v8';
 
 import { expose } from 'threads/worker'
 import { Observable, Subject } from 'threads/observable'
@@ -23,6 +24,15 @@ const portWritable = new Writable({
 });
 process.stdout.write = process.stderr.write = portWritable.write.bind(portWritable);
 consola.wrapAll();
+
+setInterval(() => {
+    sendMessage({
+        type: 'heartbeat',
+        payload: {
+            heapStatistics: v8.getHeapStatistics(),
+        },
+    });
+}, 500);
 
 class EventHubClass {
     #handlers: {
@@ -52,8 +62,14 @@ class EventHubClass {
 const EventHub = new EventHubClass();
 const ComponentInstance: any = {};
 const activeRequests = new Map<string, AbortController>();
-const renderedComps: { [componentId: string]: { result: any, called?: boolean } } = {};
-
+const renderedComps: Record<string, RenderedEntry> = {};
+type Renderer = (props: any) => Promise<any>;
+type RenderedEntry = {
+    ready?: Promise<Renderer>;
+    renderer?: Renderer;
+    generation: number;
+};
+let currentGeneration = 0;
 let browserCallbacks: {
     [callbackId: string]: {
         callback: any;
@@ -67,6 +83,7 @@ let props = {};
 let defaultProps = {};
 let extensions: { importable: any } = { importable: null };
 let updateId = 0;
+let sentView;
 
 
 const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], serverCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
@@ -140,18 +157,24 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
     const Components: { [componentId: string]: any } = {};
     componentNames.forEach(x => Components[x] = x);
     const childRenderer = async (type: string, key: string, props: any) => {
-        if (componentNames.includes(type)) {
-            if (!renderedComps[key]) {
-                const result = await createComponent(type, props);
-                renderedComps[key] = { result };
-            }
-            renderedComps[key].called = true;
-            return await renderedComps[key].result(props);
+        if (!componentNames.includes(type)) {
+            return null;
         }
-        return null;
-    }
+        const cacheKey = `${type}::${key}`;
+        let entry = renderedComps[cacheKey];
+        if (!entry) {
+            const ready = (async () => await createComponent(type, props))();
+            entry = renderedComps[cacheKey] = { ready, generation: currentGeneration };
+            entry.renderer = await ready;
+        } else if (!entry.renderer) {
+            entry.renderer = await entry.ready;
+        }
+        entry.generation = currentGeneration;
+
+        return await entry.renderer(props);
+    };
     const createComponent = async (componentKey: string, initialProps: any) => {
-        const props = { ...initialProps } || {};
+        const props = { ...initialProps };
         let defaultProps = {};
         let child_componentResult;
         try {
@@ -199,6 +222,7 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
     }
     forceUpdate = async () => {
         updateId++;
+        currentGeneration++;
         let compResult;
         let result;
         try {
@@ -216,14 +240,16 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         }
         prevProps = { ...props };
         for (const key of Object.keys(renderedComps)) {
-            if (!renderedComps[key].called) {
+            if (renderedComps[key].generation !== currentGeneration) {
                 delete renderedComps[key];
-            } else {
-                renderedComps[key].called = false;
             }
         }
         treeEvents = result.events;
-        sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
+        const newView = JSON.stringify(result.tree);
+        if (sentView !== newView) {
+            sentView = newView;
+            sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
+        }
         if (updateId === 1 && ComponentInstance.onInit) {
             await ComponentInstance.onInit();
         }

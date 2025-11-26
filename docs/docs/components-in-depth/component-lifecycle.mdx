@@ -47,3 +47,4 @@ When user visits a page with this component here is what happens:
 - Next steps of component lifecycle are decided by user.
   - If user selects some option, an `onchange` event gets triggered on `select` element. In our component this event reads file contents and calls `forceUpdate` function. As described before, `forceUpdate` function calls **render** function behind the scenes and user receives a new representation of component.
   - If user decides to close a page with component or component disappears from DOM, `onDestroy` method of the [ComponentInstance](./helpers/the-component-instance-object) gets called printing `Component instance was destroyed!` message to the console and component instance with **render** function gets destroyed.
+  - If component instance exceeds configured `heapLimit` or `externalLimit`, or fails to send a heartbeat within `heartbeatLimitMs`, it gets destroyed.

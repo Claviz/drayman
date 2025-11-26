@@ -5,6 +5,10 @@ sidebar_position: 2
 
 A `forceUpdate` is a function which calls a [render function](../component-lifecycle) and sends a result to the user.
 
+:::info
+  If a result of a render function is the same as a previous result, a `forceUpdate` function does nothing.
+:::
+
 This function is called when
 
 - component gets initialized;

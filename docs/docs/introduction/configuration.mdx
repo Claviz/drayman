@@ -24,6 +24,12 @@ module.exports = {
     destination: "public/styles.css",
   },
   port: 3033,
+  // Maximum memory (in MB) that can be used by the component instance heap.
+  heapLimit: 512,
+  // Maximum external memory (in MB) that can be used by the component instance.
+  externalLimit: 512,
+  // Time (in ms) after which the component instance will be destroyed if it does not send a heartbeat.
+  heartbeatLimitMs: 3000,
 };
 ```
 
