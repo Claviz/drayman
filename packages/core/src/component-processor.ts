@@ -64,11 +64,18 @@ const ComponentInstance: any = {};
 const activeRequests = new Map<string, AbortController>();
 const renderedComps: Record<string, RenderedEntry> = {};
 type Renderer = (props: any) => Promise<any>;
+type CreatedComponent = { renderer: Renderer; childInstance: any };
 type RenderedEntry = {
-    ready?: Promise<Renderer>;
+    ready?: Promise<CreatedComponent>;
     renderer?: Renderer;
     generation: number;
+    cachedResult?: any;
+    childInstance?: any;
+    childInitCalled?: boolean;
+    childDestroyed?: boolean;
 };
+const forceUpdateInitiators: Set<string> = new Set();
+const pendingChildUpdates: Set<string> = new Set();
 let currentGeneration = 0;
 let browserCallbacks: {
     [callbackId: string]: {
@@ -77,6 +84,7 @@ let browserCallbacks: {
     }
 } = {};
 let treeEvents: { [key: string]: any } = {};
+let eventOwners: Record<string, string> = {};
 let forceUpdate: any;
 let prevProps = {};
 let props = {};
@@ -84,61 +92,132 @@ let defaultProps = {};
 let extensions: { importable: any } = { importable: null };
 let updateId = 0;
 let sentView;
+let onInitRan = false;
 
+const isAbortError = (err: any) => {
+    const msg = String(err?.message || err || '');
+    return /aborted/i.test(msg) || msg.includes('Exclusive request aborted');
+};
+const isInvalidParamsError = (err: any) => String(err?.message || err || '').includes('Invalid Params');
+const createChildComponentInstance = (cacheKey: string) => ({
+    id: `${ComponentInstance.id}:${cacheKey}`,
+    parentId: ComponentInstance.id,
+    __draymanDestroyed: false,
+});
+const runChildOnInit = (entry: RenderedEntry) => {
+    if (!entry.childInitCalled && entry.childInstance?.onInit) {
+        entry.childInitCalled = true;
+        queueMicrotask(async () => {
+            if (entry.childDestroyed || entry.childInstance?.__draymanDestroyed) {
+                return;
+            }
+            try {
+                await entry.childInstance.onInit();
+            } catch (err) {
+                if (!isAbortError(err) && !isInvalidParamsError(err)) {
+                    console.error(err);
+                }
+            }
+        });
+    }
+};
+const runChildOnDestroy = async (entry: RenderedEntry) => {
+    if (entry.childDestroyed) {
+        return;
+    }
+    entry.childDestroyed = true;
+    if (entry.childInstance) {
+        entry.childInstance.__draymanDestroyed = true;
+    }
+    if (entry.childInstance?.onDestroy) {
+        await entry.childInstance.onDestroy();
+    }
+};
+const guardEventsWithInstance = (node: any, instance: any) => {
+    if (!node) return;
+    if (Array.isArray(node)) {
+        node.forEach(child => guardEventsWithInstance(child, instance));
+        return;
+    }
+    if (typeof node !== 'object') return;
+
+    const wrap = (fn: any) => {
+        if (typeof fn !== 'function') return fn;
+        return async (...args: any[]) => {
+            if (instance?.__draymanDestroyed) return;
+            try {
+                return await fn(...args);
+            } catch (err) {
+                if (instance?.__draymanDestroyed || isAbortError(err) || isInvalidParamsError(err)) return;
+                throw err;
+            }
+        };
+    };
+
+    const props = node.props;
+    if (props && typeof props === 'object') {
+        for (const key of Object.keys(props)) {
+            if (isEvent(key)) {
+                const val = props[key];
+                if (typeof val === 'function') {
+                    props[key] = wrap(val);
+                } else if (Array.isArray(val) && typeof val[0] === 'function') {
+                    props[key] = [wrap(val[0]), val[1]];
+                }
+            }
+        }
+        if (props.children) {
+            guardEventsWithInstance(props.children, instance);
+        }
+    }
+};
+const findRenderedEntryByEvent = (eventName: string): RenderedEntry | undefined => {
+    const cacheKey = eventOwners[eventName];
+    if (!cacheKey) return undefined;
+    return renderedComps[cacheKey];
+};
+
+
+const buildCommandProxy = (commands: string[], type: 'browserCommand' | 'serverCommand') => {
+    const proxy: Record<string, any> = {};
+    for (const command of commands) {
+        proxy[command] = async (data: any = {}, elements?: string[]) => new Promise<any>((resolve) => {
+            const newData = {};
+            for (const key of Object.keys(data || {})) {
+                if (typeof data[key] === 'function') {
+                    const callbackId = shortid.generate();
+                    newData[key] = callbackId;
+                    browserCallbacks[callbackId] = {
+                        callback: async (response) => await data[key](response),
+                        once: false,
+                    };
+                } else {
+                    newData[key] = data[key];
+                }
+            }
+            const callbackId = shortid.generate();
+            browserCallbacks[callbackId] = {
+                callback: (response) => resolve(response),
+                once: true,
+            };
+            const payload: any = { data: newData, callbackId, command };
+            if (type === 'browserCommand') {
+                payload.elements = elements;
+            }
+            sendMessage({ type, payload });
+        });
+    }
+    return proxy;
+};
 
 const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], serverCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
+    onInitRan = false;
     ComponentInstance.id = componentInstanceId;
     if (extensionsPath) {
         extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
     }
-    const Browser = {};
-    for (const command of browserCommands) {
-        Browser[command] = async (data: any = {}, elements?: string[]) => new Promise<any>((resolve, reject) => {
-            const newData = {};
-            for (const key of Object.keys(data || {})) {
-                if (typeof data[key] === 'function') {
-                    const callbackId = shortid.generate();
-                    newData[key] = callbackId;
-                    browserCallbacks[callbackId] = {
-                        callback: async (response) => await data[key](response),
-                        once: false,
-                    };
-                } else {
-                    newData[key] = data[key];
-                }
-            }
-            const callbackId = shortid.generate();
-            browserCallbacks[callbackId] = {
-                callback: (response) => resolve(response),
-                once: true,
-            };
-            sendMessage({ type: 'browserCommand', payload: { data: newData, callbackId, command, elements } });
-        })
-    }
-    const Server = {};
-    for (const command of serverCommands) {
-        Server[command] = async (data: any = {}) => new Promise<any>((resolve, reject) => {
-            const newData = {};
-            for (const key of Object.keys(data || {})) {
-                if (typeof data[key] === 'function') {
-                    const callbackId = shortid.generate();
-                    newData[key] = callbackId;
-                    browserCallbacks[callbackId] = {
-                        callback: async (response) => await data[key](response),
-                        once: false,
-                    };
-                } else {
-                    newData[key] = data[key];
-                }
-            }
-            const callbackId = shortid.generate();
-            browserCallbacks[callbackId] = {
-                callback: (response) => resolve(response),
-                once: true,
-            };
-            sendMessage({ type: 'serverCommand', payload: { data: newData, callbackId, command, } });
-        })
-    }
+    const Browser = buildCommandProxy(browserCommands, 'browserCommand');
+    const Server = buildCommandProxy(serverCommands, 'serverCommand');
     props = componentOptions || {};
     for (const key of Object.keys(props)) {
         if (isEvent(key)) {
@@ -156,27 +235,53 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         );
     const Components: { [componentId: string]: any } = {};
     componentNames.forEach(x => Components[x] = x);
-    const childRenderer = async (type: string, key: string, props: any) => {
+
+    const resolveRenderedEntry = async (type: string, key: string, initialProps: any) => {
+        const cacheKey = `${type}::${key}`;
+        let entry = renderedComps[cacheKey];
+        if (!entry) {
+            const ready = (async () => await createComponent(type, initialProps, cacheKey))();
+            entry = renderedComps[cacheKey] = { ready, generation: currentGeneration };
+        }
+        if (!entry.renderer) {
+            const created = await entry.ready;
+            entry.renderer = created.renderer;
+            entry.childInstance = created.childInstance;
+        }
+        entry.generation = currentGeneration;
+        return entry;
+    };
+
+    const childRenderer = async (type: string, key: string, props: any, parentDirty = false) => {
         if (!componentNames.includes(type)) {
             return null;
         }
         const cacheKey = `${type}::${key}`;
-        let entry = renderedComps[cacheKey];
-        if (!entry) {
-            const ready = (async () => await createComponent(type, props))();
-            entry = renderedComps[cacheKey] = { ready, generation: currentGeneration };
-            entry.renderer = await ready;
-        } else if (!entry.renderer) {
-            entry.renderer = await entry.ready;
-        }
-        entry.generation = currentGeneration;
+        const entry = await resolveRenderedEntry(type, key, props);
 
-        return await entry.renderer(props);
+        const iAmDirty = parentDirty || forceUpdateInitiators.has(cacheKey);
+
+        if (!iAmDirty && entry.cachedResult !== undefined) {
+            return { result: entry.cachedResult, isDirty: false, cacheKey };
+        }
+
+        const result = await entry.renderer(props);
+        runChildOnInit(entry);
+        entry.cachedResult = result;
+        return { result, isDirty: iAmDirty, cacheKey };
     };
-    const createComponent = async (componentKey: string, initialProps: any) => {
+
+    const createComponent = async (componentKey: string, initialProps: any, cacheKey: string) => {
         const props = { ...initialProps };
         let defaultProps = {};
         let child_componentResult;
+        const childComponentInstance = createChildComponentInstance(cacheKey);
+
+        const scopedForceUpdate = async () => {
+            pendingChildUpdates.add(cacheKey);
+            await forceUpdate(true);
+        };
+
         try {
             const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
             defaultProps = imported.defaultProps || {};
@@ -186,23 +291,30 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
                 }
             }
             child_componentResult = await imported.component({
-                forceUpdate,
+                forceUpdate: scopedForceUpdate,
                 props,
                 EventHub,
                 Components,
                 Browser,
                 Server,
-                ComponentInstance,
+                ComponentInstance: childComponentInstance,
                 ...extensions.importable,
             });
+            if (childComponentInstance.__draymanDestroyed) {
+                return { renderer: async () => null, childInstance: childComponentInstance };
+            }
         } catch (err) {
-            console.error(err);
-            child_componentResult = async () => {
-                return errorComp(`Child component "${componentKey}" failed to initialize!`, err.message);
+            if (childComponentInstance.__draymanDestroyed || isAbortError(err)) {
+                child_componentResult = async () => null;
+            } else {
+                console.error(err);
+                child_componentResult = async () => {
+                    return errorComp(`Child component "${componentKey}" failed to initialize!`, err.message);
+                };
             }
         }
         let prevChildProps = { ...defaultProps };
-        return async (newProps: any) => {
+        const renderer = async (newProps: any) => {
             updatePreservingRef(props, newProps);
             let res;
             try {
@@ -211,16 +323,37 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
                         props[key] = defaultProps[key];
                     }
                 }
+                if (childComponentInstance.__draymanDestroyed) {
+                    return null;
+                }
                 res = await child_componentResult({ prevProps: prevChildProps });
+                guardEventsWithInstance(res, childComponentInstance);
             } catch (err) {
+                if (childComponentInstance.__draymanDestroyed || isAbortError(err)) {
+                    return null;
+                }
                 console.error(err);
                 res = errorComp(`Child component "${componentKey}" failed to render!`, err.message);
             }
             prevChildProps = { ...props };
             return res;
         };
+        return { renderer, childInstance: childComponentInstance };
     }
-    forceUpdate = async () => {
+    let cachedParentResult: any = null;
+    let scheduledRender: ReturnType<typeof setTimeout> | null = null;
+    let renderPromise: Promise<void> | null = null;
+    let resolveRender: (() => void) | null = null;
+    let rootNeedsUpdate = false;
+    let inFlightRender: Promise<void> | null = null;
+
+    const doForceUpdate = async () => {
+        const currentEventOwners: Record<string, string> = {};
+        for (const key of pendingChildUpdates) {
+            forceUpdateInitiators.add(key);
+        }
+        pendingChildUpdates.clear();
+
         updateId++;
         currentGeneration++;
         let compResult;
@@ -231,28 +364,84 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
                     props[key] = defaultProps[key];
                 }
             }
-            compResult = await componentResult({ prevProps });
-            result = await render(compResult, childRenderer);
+            const isRootInitiated = rootNeedsUpdate || forceUpdateInitiators.size === 0;
+            rootNeedsUpdate = false;
+
+            if (isRootInitiated || !cachedParentResult) {
+                compResult = await componentResult({ prevProps });
+                cachedParentResult = compResult;
+            } else {
+                compResult = cachedParentResult;
+            }
+            result = await render(compResult, childRenderer, [], {}, '', isRootInitiated, '', currentEventOwners);
         } catch (err) {
             console.error(err)
             compResult = errorComp(`Component "${componentName}" failed to render!`, err.message);
-            result = await render(compResult, childRenderer);
+            result = await render(compResult, childRenderer, [], {}, '', true, '', currentEventOwners);
         }
         prevProps = { ...props };
         for (const key of Object.keys(renderedComps)) {
             if (renderedComps[key].generation !== currentGeneration) {
+                await runChildOnDestroy(renderedComps[key]);
                 delete renderedComps[key];
             }
         }
         treeEvents = result.events;
+        eventOwners = result.eventOwners || currentEventOwners;
         const newView = JSON.stringify(result.tree);
         if (sentView !== newView) {
             sentView = newView;
             sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
         }
-        if (updateId === 1 && ComponentInstance.onInit) {
-            await ComponentInstance.onInit();
+        forceUpdateInitiators.clear();
+    }
+
+    const runSerializedRender = async () => {
+        if (inFlightRender) {
+            try {
+                await inFlightRender;
+            } catch {
+            }
         }
+        const currentRender = doForceUpdate();
+        inFlightRender = currentRender.finally(() => {
+            if (inFlightRender === currentRender) {
+                inFlightRender = null;
+            }
+        });
+        await inFlightRender;
+    };
+
+    forceUpdate = async (isChildUpdate = false) => {
+        if (!isChildUpdate) {
+            rootNeedsUpdate = true;
+        }
+
+        if (scheduledRender) {
+            clearTimeout(scheduledRender);
+        }
+        if (!renderPromise) {
+            renderPromise = new Promise(resolve => {
+                resolveRender = resolve;
+            });
+        }
+
+        const currentPromise = renderPromise;
+
+        scheduledRender = setTimeout(async () => {
+            scheduledRender = null;
+            try {
+                await runSerializedRender();
+            } finally {
+                if (resolveRender) {
+                    resolveRender();
+                    resolveRender = null;
+                    renderPromise = null;
+                }
+            }
+        }, 50);
+
+        return currentPromise;
     }
     let componentResult;
     try {
@@ -281,7 +470,12 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         }
     }
 
-    await forceUpdate();
+    await runSerializedRender();
+    if (!onInitRan && ComponentInstance.onInit) {
+        onInitRan = true;
+        console.log('onInit called');
+        await ComponentInstance.onInit();
+    }
 }
 
 const handleBrowserCallback = async ({ callbackId, data }) => {
@@ -321,6 +515,11 @@ const updateComponentInstanceProps = async ({ options }) => {
 
 const handleComponentEvent = async ({ requestId, options, files, eventName }: { requestId: any; options: any; files: any; eventName: any; }) => {
     try {
+        const entry = findRenderedEntryByEvent(eventName);
+        if (entry?.childInstance?.__draymanDestroyed || entry?.childDestroyed) {
+            sendMessage({ type: 'response', payload: { requestId, result: null } });
+            return;
+        }
         if (treeEvents[eventName]) {
             const abortContoller = new AbortController();
             const { signal } = abortContoller;
@@ -329,7 +528,9 @@ const handleComponentEvent = async ({ requestId, options, files, eventName }: { 
             sendMessage({ type: 'response', payload: { requestId, result } });
         }
     } catch (err) {
-        console.error(err);
+        if (!isAbortError(err) && !isInvalidParamsError(err)) {
+            console.error(err);
+        }
         sendMessage({ type: 'response', payload: { requestId, err } });
     } finally {
         activeRequests.delete(requestId);
@@ -341,6 +542,12 @@ const handleEventHubEvent = async ({ type, data, groupId }) => {
 }
 
 const handleDestroyComponentInstance = async () => {
+    for (const key of Object.keys(renderedComps)) {
+        await runChildOnDestroy(renderedComps[key]);
+        delete renderedComps[key];
+    }
+    eventOwners = {};
+    treeEvents = {};
     if (ComponentInstance.onDestroy) {
         await ComponentInstance.onDestroy();
     }

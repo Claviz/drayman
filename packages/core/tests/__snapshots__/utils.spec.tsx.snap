@@ -2,6 +2,7 @@
 
 exports[`bindings are working 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -29,6 +30,7 @@ Object {
 
 exports[`custom CSS properties are allowed 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -53,6 +55,7 @@ Object {
 
 exports[`expression as children 2 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -104,6 +107,7 @@ Object {
 
 exports[`function as children 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -155,6 +159,7 @@ Object {
 
 exports[`ignores empty elements 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -182,6 +187,7 @@ Object {
 
 exports[`renders components with childRenderer 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -255,6 +261,7 @@ Object {
 
 exports[`renders components with childRenderer and custom key 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -299,6 +306,7 @@ Object {
 
 exports[`renders elements mixed with text 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -336,6 +344,7 @@ Object {
 
 exports[`renders fragments as nested array of elements 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -368,6 +377,7 @@ Object {
 
 exports[`renders nested array of elements 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -400,6 +410,7 @@ Object {
 
 exports[`renders nested elements 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -447,6 +458,7 @@ Object {
 
 exports[`renders single element 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -471,6 +483,7 @@ Object {
 
 exports[`renders styles appending 'px' to number values where possible 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -497,6 +510,7 @@ Object {
 
 exports[`returns options for events 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {
     "/0/input/input": [Function],
   },
@@ -525,6 +539,7 @@ Object {
 
 exports[`sets SVG attributes 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {},
   "tree": Array [
     Object {
@@ -560,6 +575,7 @@ Object {
 
 exports[`stores events correctly 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {
     "/0/input/input": [Function],
   },
@@ -586,6 +602,7 @@ Object {
 
 exports[`stores events for custom elements correctly 1`] = `
 Object {
+  "eventOwners": Object {},
   "events": Object {
     "/0/custom-element/onInput": [Function],
   },

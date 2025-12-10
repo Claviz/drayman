@@ -11,7 +11,7 @@ async function parseFnType(item) {
     return item;
 }
 
-export const render = async (raw, childRenderer = null, renderedArr = [], events = {}, parent = '') => {
+export const render = async (raw, childRenderer = null, renderedArr = [], events = {}, parent = '', parentDirty = false, owner = '', eventOwners = {}) => {
     async function traverse(arr: { type: string | any; props: any; key: string; }[], renderedArr = [], parent = null) {
         for (let item of (Array.isArray(arr) ? arr : [arr])) {
             // console.log(1, item)
@@ -23,9 +23,15 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
                 //     item = { ...rendered };
                 // }
                 item = { ...await parseFnType(item) }
-                const result = await childRenderer?.(item.type, item.key ? `${parent}/${item.key}/${item.type}` : `${parent}/${renderedArr.length}/${item.type}`, item.props);
-                if (result) {
-                    await render(result, childRenderer, renderedArr, events, `${parent}`);
+                const childResult = await childRenderer?.(item.type, item.key ? `${parent}/${item.key}/${item.type}` : `${parent}/${renderedArr.length}/${item.type}`, item.props, parentDirty);
+                if (childResult) {
+                    // Handle both old API (returns result directly) and new API (returns { result, isDirty })
+                    const isObjectResult = typeof childResult === 'object' && childResult !== null;
+                    const hasNewApi = isObjectResult && childResult.result !== undefined && 'isDirty' in childResult;
+                    const result = hasNewApi ? childResult.result : childResult;
+                    const isDirty = hasNewApi ? childResult.isDirty : false;
+                    const ownerForChild = hasNewApi && childResult.cacheKey ? childResult.cacheKey : owner;
+                    await render(result, childRenderer, renderedArr, events, `${parent}`, isDirty, ownerForChild, eventOwners);
                 } else {
                     const type = (item.type === 'container' || item.type === 'html') ? 'div' : item.type;
                     const { children, style, ...options } = item.props || {};
@@ -47,10 +53,16 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
                             }
                             if ((type as string).includes('-')) {
                                 events[`${itemName}/${optionKey}`] = eventFn;
+                                if (owner) {
+                                    eventOwners[`${itemName}/${optionKey}`] = owner;
+                                }
                                 props[optionKey] = eventOptions;
                             } else {
                                 const eventName = optionKey.slice(2).toLowerCase();
                                 events[`${itemName}/${eventName}`] = eventFn;
+                                if (owner) {
+                                    eventOwners[`${itemName}/${eventName}`] = owner;
+                                }
                                 on[eventName] = eventOptions;
                                 // delete options[optionKey];
                             }
@@ -168,7 +180,7 @@ export const render = async (raw, childRenderer = null, renderedArr = [], events
     }
     await traverse(raw, renderedArr, parent);
 
-    return { tree: renderedArr, events };
+    return { tree: renderedArr, events, eventOwners };
 }
 
 const formatStyle = (style) => {
