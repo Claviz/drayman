@@ -30,6 +30,21 @@ module.exports = {
   externalLimit: 512,
   // Time (in ms) after which the component instance will be destroyed if it does not send a heartbeat.
   heartbeatLimitMs: 3000,
+  // Controls how component instance console output is forwarded.
+  logging: {
+    batching: {
+      // If true, logs are buffered and flushed in batches.
+      enabled: false,
+      // How often buffered logs are flushed (in ms).
+      flushIntervalMs: 1000,
+      // Maximum size of a single log line before truncation (in bytes).
+      maxLogLineBytes: 16 * 1024,
+      // Maximum total log size flushed per batching window (in bytes).
+      maxBatchBytesPerWindow: 64 * 1024,
+      // Maximum total forwarded log size per component instance (in bytes).
+      maxForwardedBytesPerInstance: 512 * 1024,
+    },
+  },
 };
 ```
 

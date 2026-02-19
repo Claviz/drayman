@@ -196,6 +196,7 @@ describe('', () => {
                 connectionId,
                 serverCommands: [],
                 componentOptions: {},
+                heapLimit: 64,
                 emit: async (message) => {
                     messages.push(message);
                     switch (messages.length) {

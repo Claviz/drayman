@@ -14,6 +14,7 @@ export function getDraymanConfig() {
     const heapLimit = draymanConfig.heapLimit || 512;
     const externalLimit = draymanConfig.externalLimit || 512;
     const heartbeatLimitMs = draymanConfig.heartbeatLimitMs || 3 * 1000;
+    const logging = draymanConfig.logging || null;
 
     return {
         srcDir,
@@ -28,5 +29,6 @@ export function getDraymanConfig() {
         heapLimit,
         externalLimit,
         heartbeatLimitMs,
+        logging,
     }
 }

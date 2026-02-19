@@ -1,6 +1,4 @@
 require('source-map-support').install();
-const consola = require('consola');
-consola.setReporters(new consola.FancyReporter());
 
 import { render, isEvent } from './utils';
 import fs from 'fs';
@@ -16,14 +14,118 @@ import { Writable } from 'stream';
 const sendMessage = ({ type, payload }) => {
     subject.next({ type, payload });
 }
+
+const normalizeAndTruncateLogLine = (value: any, maxBytes: number) => {
+    const normalized = (value === null || value === undefined) ? '' : `${value}`;
+    const normalizedBytes = Buffer.byteLength(normalized, 'utf8');
+    if (normalizedBytes <= maxBytes) {
+        return { text: normalized, bytes: normalizedBytes, truncated: false };
+    }
+
+    let text = Buffer.from(normalized, 'utf8').subarray(0, maxBytes).toString('utf8');
+    while (Buffer.byteLength(text, 'utf8') > maxBytes) {
+        text = text.slice(0, -1);
+    }
+
+    const suffix = '...';
+    let truncatedText = text;
+    while (truncatedText && Buffer.byteLength(`${truncatedText}${suffix}`, 'utf8') > maxBytes) {
+        truncatedText = truncatedText.slice(0, -1);
+    }
+    truncatedText = truncatedText ? `${truncatedText}${suffix}` : suffix;
+
+    return { text: truncatedText, bytes: Buffer.byteLength(truncatedText, 'utf8'), truncated: true };
+};
+
+let consoleBatchingEnabled = false;
+let consoleFlushIntervalMs = 1000;
+let maxLogLineBytes = 16 * 1024;
+let maxBatchBytesPerWindow = 64 * 1024;
+let maxForwardedBytesPerInstance = 512 * 1024;
+const batchedConsoleLines: string[] = [];
+let batchedConsoleBytes = 0;
+let forwardedBytes = 0;
+let isConsoleMuted = false;
+let droppedInWindow = 0;
+let truncatedInWindow = 0;
+let flushTimer: ReturnType<typeof setInterval> | null = null;
+
+const clearFlushTimer = () => {
+    if (flushTimer) {
+        clearInterval(flushTimer);
+        flushTimer = null;
+    }
+};
+
+const resetBatchWindow = () => {
+    batchedConsoleLines.length = 0;
+    batchedConsoleBytes = 0;
+    droppedInWindow = 0;
+    truncatedInWindow = 0;
+};
+
+const flushConsoleBatch = () => {
+    if (!consoleBatchingEnabled || isConsoleMuted) {
+        return;
+    }
+    if (!batchedConsoleLines.length && !droppedInWindow && !truncatedInWindow) {
+        return;
+    }
+
+    let payload = batchedConsoleLines.join('\n');
+    if (droppedInWindow || truncatedInWindow) {
+        const limitMessage = 'Console output exceeded the allowed rate. Some logs were omitted.';
+        payload = payload ? `${payload}\n${limitMessage}` : limitMessage;
+    }
+
+    const payloadBytes = Buffer.byteLength(payload, 'utf8');
+    if ((forwardedBytes + payloadBytes) > maxForwardedBytesPerInstance) {
+        isConsoleMuted = true;
+        resetBatchWindow();
+        sendMessage({
+            type: 'console',
+            payload: { text: 'Console output exceeded the allowed volume. Logging is disabled for this execution.' },
+        });
+        return;
+    }
+
+    forwardedBytes += payloadBytes;
+    sendMessage({ type: 'console', payload: { text: payload } });
+    resetBatchWindow();
+};
+
 const portWritable = new Writable({
     write(chunk, encoding, callback) {
-        sendMessage({ type: 'console', payload: { text: chunk.toString() } })
+        const text = chunk.toString();
+        if (!consoleBatchingEnabled) {
+            sendMessage({ type: 'console', payload: { text } });
+            callback();
+            return;
+        }
+
+        if (isConsoleMuted) {
+            callback();
+            return;
+        }
+
+        const normalized = normalizeAndTruncateLogLine(text, maxLogLineBytes);
+        if (normalized.truncated) {
+            truncatedInWindow += 1;
+        }
+
+        const separatorBytes = batchedConsoleLines.length ? 1 : 0;
+        if ((batchedConsoleBytes + separatorBytes + normalized.bytes) > maxBatchBytesPerWindow) {
+            droppedInWindow += 1;
+            callback();
+            return;
+        }
+
+        batchedConsoleLines.push(normalized.text);
+        batchedConsoleBytes += separatorBytes + normalized.bytes;
         callback();
     },
 });
 process.stdout.write = process.stderr.write = portWritable.write.bind(portWritable);
-consola.wrapAll();
 
 setInterval(() => {
     sendMessage({
@@ -210,8 +312,22 @@ const buildCommandProxy = (commands: string[], type: 'browserCommand' | 'serverC
     return proxy;
 };
 
-const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], serverCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '' }) => {
+const initializeComponentInstance = async ({ componentInstanceId, browserCommands = [], serverCommands = [], extensionsPath, extensionsOptions, componentRootDir, componentName, componentOptions, componentNamePrefix = '', logging = null }) => {
     onInitRan = false;
+
+    clearFlushTimer();
+    consoleBatchingEnabled = !!logging?.batching?.enabled || consoleBatchingEnabled;
+    consoleFlushIntervalMs = logging?.batching?.flushIntervalMs || consoleFlushIntervalMs;
+    maxLogLineBytes = logging?.batching?.maxLogLineBytes || maxLogLineBytes;
+    maxBatchBytesPerWindow = logging?.batching?.maxBatchBytesPerWindow || maxBatchBytesPerWindow;
+    maxForwardedBytesPerInstance = logging?.batching?.maxForwardedBytesPerInstance || maxForwardedBytesPerInstance;
+    resetBatchWindow();
+    forwardedBytes = 0;
+    isConsoleMuted = false;
+    if (consoleBatchingEnabled) {
+        flushTimer = setInterval(flushConsoleBatch, consoleFlushIntervalMs);
+    }
+
     ComponentInstance.id = componentInstanceId;
     if (extensionsPath) {
         extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
@@ -473,7 +589,6 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
     await runSerializedRender();
     if (!onInitRan && ComponentInstance.onInit) {
         onInitRan = true;
-        console.log('onInit called');
         await ComponentInstance.onInit();
     }
 }
@@ -542,14 +657,19 @@ const handleEventHubEvent = async ({ type, data, groupId }) => {
 }
 
 const handleDestroyComponentInstance = async () => {
-    for (const key of Object.keys(renderedComps)) {
-        await runChildOnDestroy(renderedComps[key]);
-        delete renderedComps[key];
-    }
-    eventOwners = {};
-    treeEvents = {};
-    if (ComponentInstance.onDestroy) {
-        await ComponentInstance.onDestroy();
+    try {
+        for (const key of Object.keys(renderedComps)) {
+            await runChildOnDestroy(renderedComps[key]);
+            delete renderedComps[key];
+        }
+        eventOwners = {};
+        treeEvents = {};
+        if (ComponentInstance.onDestroy) {
+            await ComponentInstance.onDestroy();
+        }
+    } finally {
+        flushConsoleBatch();
+        clearFlushTimer();
     }
 };
 

@@ -38,7 +38,7 @@ class EventHubClass {
 const EventHub = new EventHubClass();
 
 (async () => {
-    const { publicDir, port, componentsOutputDir, outDir, sslKey, sslCert, heapLimit, externalLimit, heartbeatLimitMs } = getDraymanConfig();
+    const { publicDir, port, componentsOutputDir, outDir, sslKey, sslCert, heapLimit, externalLimit, heartbeatLimitMs, logging } = getDraymanConfig();
     const elementsPaths = await draymanCore.getElementsScriptPaths({});
     await build();
     const storage = multer.memoryStorage();
@@ -149,6 +149,7 @@ const EventHub = new EventHubClass();
                     heapLimit,
                     externalLimit,
                     heartbeatLimitMs,
+                    logging,
                 });
             } else if (type === 'eventHubEvent') {
                 const { type, groupId } = data;

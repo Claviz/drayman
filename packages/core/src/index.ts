@@ -296,6 +296,7 @@ export const onInitializeComponentInstance = async ({
     namespaceId = null,
     extensionsPath = null,
     extensionsOptions = null,
+    logging = null,
     componentNamePrefix = '',
     componentName,
     componentRootDir,
@@ -414,6 +415,7 @@ export const onInitializeComponentInstance = async ({
             componentInstanceId,
             extensionsPath,
             extensionsOptions,
+            logging,
         });
     } catch {
         markComponentGarbage(componentInstanceId, { skipOnDestroy: true });
