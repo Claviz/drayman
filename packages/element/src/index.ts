@@ -108,8 +108,9 @@ customElements.define('drayman-element', class extends HTMLElement {
     previouslySerializedTree = [];
     events = {};
     rootEvents = {};
-    onInit;
-    onDestroy;
+    onInit?: (() => Promise<void>) | (() => void);
+    onInitFailed?: (() => Promise<void>) | (() => void);
+    onDestroy?: (() => Promise<void>) | (() => void);
 
     get options() {
         return this.getAttribute('options');
@@ -312,20 +313,60 @@ customElements.define('drayman-element', class extends HTMLElement {
 
     once = false;
     updateId = 0;
-    initSent = false;
     browserCommandDebouncedCallbacks = {};
 
     async connectedCallback() {
         while (!window['draymanConfig'] || !this.component) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
+        this.updateId = 0;
+        let initSettled = false;
+        let connectionLostOverlay: HTMLDivElement;
+        const connection = window['draymanConfig'].connection;
+        const markInitSuccess = () => {
+            if (initSettled) {
+                return;
+            }
+            initSettled = true;
+            this.onInit?.();
+        };
+        const markInitFailed = () => {
+            if (initSettled) {
+                return;
+            }
+            initSettled = true;
+            this.onInitFailed?.();
+        };
+        const connectionClose = () => {
+            if (!connectionLostOverlay) {
+                connectionLostOverlay = document.createElement('div');
+                connectionLostOverlay.style.position = 'absolute';
+                connectionLostOverlay.style.top = '0';
+                connectionLostOverlay.style.left = '0';
+                connectionLostOverlay.style.width = '100%';
+                connectionLostOverlay.style.height = '100%';
+                connectionLostOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                connectionLostOverlay.style.display = 'flex';
+                connectionLostOverlay.style.justifyContent = 'center';
+                connectionLostOverlay.style.alignItems = 'center';
+                connectionLostOverlay.style.zIndex = '1000';
+                let message = document.createElement('div');
+                message.textContent = 'Component connection lost';
+                connectionLostOverlay.appendChild(message);
+                this.style.position = 'relative';
+                this.appendChild(connectionLostOverlay);
+                connectionLostOverlay.style.pointerEvents = 'none';
+            }
+            markInitFailed();
+        };
+        connection.onConnectionClose(connectionClose);
         const browserCommands = window['draymanConfig'].browserCommands?.(
             (callbackId, data, options) => {
                 if (!options?.debounce) {
-                    return window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, });
+                    return connection.handleBrowserCallback({ callbackId, data, });
                 }
                 if (!this.browserCommandDebouncedCallbacks[callbackId]) {
-                    this.browserCommandDebouncedCallbacks[callbackId] = this.eventDebounce((callbackId, data) => window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data, }), options.debounce);
+                    this.browserCommandDebouncedCallbacks[callbackId] = this.eventDebounce((callbackId, data) => connection.handleBrowserCallback({ callbackId, data, }), options.debounce);
                 }
 
                 return this.browserCommandDebouncedCallbacks[callbackId](callbackId, data);
@@ -333,21 +374,23 @@ customElements.define('drayman-element', class extends HTMLElement {
         ) || {};
         let rootNode = document.createElement('drayman-element-container') as any;
         this.appendChild(rootNode);
-        this.componentInstanceId = await window['draymanConfig'].connection.initializeComponent({
-            componentId: this.component,
-            componentOptions: this.options,
-            browserCommands: Object.keys(browserCommands),
-        });
-        window['draymanConfig'].connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
+        try {
+            this.componentInstanceId = await connection.initializeComponent({
+                componentId: this.component,
+                componentOptions: this.options,
+                browserCommands: Object.keys(browserCommands),
+            });
+        } catch (error) {
+            markInitFailed();
+            throw error;
+        }
+        connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
             if (type === 'view' && payload.updateId > this.updateId) {
                 this.updateId = payload.updateId;
                 const newNode = h('drayman-element-container', { attrs: { componentInstanceId: this.componentInstanceId } }, payload.view.map(x => this.traverseTree(x)));
                 patch(rootNode, newNode);
                 rootNode = newNode;
-                if (!this.initSent) {
-                    this.onInit?.();
-                    this.initSent = true;
-                }
+                markInitSuccess();
             } else if (type === 'browserCommand') {
                 const { data, callbackId, command, elements } = payload;
                 let domElements: Element[] = [];
@@ -368,33 +411,13 @@ customElements.define('drayman-element', class extends HTMLElement {
                     }
                 }
                 const response = await browserCommands[command](data, domElements);
-                window['draymanConfig']?.connection.handleBrowserCallback({ callbackId, data: response });
+                connection.handleBrowserCallback({ callbackId, data: response });
             } else if (type === 'rootEvent') {
                 await this.rootEvents[payload.event](payload.data);
             } else if (type === 'componentInstanceDestroyed') {
                 connectionClose();
             }
         });
-        const connectionClose = () => {
-            let overlay = document.createElement('div');
-            overlay.style.position = 'absolute';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-            overlay.style.display = 'flex';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'center';
-            overlay.style.zIndex = '1000';
-            let message = document.createElement('div');
-            message.textContent = 'Component connection lost';
-            overlay.appendChild(message);
-            this.style.position = 'relative';
-            this.appendChild(overlay);
-            overlay.style.pointerEvents = 'none';
-        };
-        window['draymanConfig'].connection.onConnectionClose(connectionClose);
     }
 
     disconnectedCallback() {
