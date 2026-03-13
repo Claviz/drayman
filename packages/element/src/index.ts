@@ -104,7 +104,7 @@ function mapEvent(event): EventOptions {
 const createdElements = {};
 
 customElements.define('drayman-element', class extends HTMLElement {
-    componentInstanceId: string;
+    componentInstanceId = '';
     previouslySerializedTree = [];
     events = {};
     rootEvents = {};
@@ -153,6 +153,18 @@ customElements.define('drayman-element', class extends HTMLElement {
         if (attrName === 'options' && window['draymanConfig']) {
             window['draymanConfig'].connection.updateComponentInstanceProps({ componentInstanceId: this.componentInstanceId, options: this.options });
         }
+    }
+
+    connectionGeneration = 0;
+
+    destroyComponentInstance(componentInstanceId = this.componentInstanceId) {
+        if (!componentInstanceId) {
+            return;
+        }
+        if (this.componentInstanceId === componentInstanceId) {
+            this.componentInstanceId = '';
+        }
+        window['draymanConfig']?.connection?.destroyComponentInstance({ componentInstanceId });
     }
 
     debounce(eventName, wait, options, elementOptions) {
@@ -316,8 +328,12 @@ customElements.define('drayman-element', class extends HTMLElement {
     browserCommandDebouncedCallbacks = {};
 
     async connectedCallback() {
-        while (!window['draymanConfig'] || !this.component) {
+        const connectionGeneration = ++this.connectionGeneration;
+        while ((!window['draymanConfig'] || !this.component) && connectionGeneration === this.connectionGeneration) {
             await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        if (connectionGeneration !== this.connectionGeneration || !this.isConnected) {
+            return;
         }
         this.updateId = 0;
         let initSettled = false;
@@ -374,8 +390,9 @@ customElements.define('drayman-element', class extends HTMLElement {
         ) || {};
         let rootNode = document.createElement('drayman-element-container') as any;
         this.appendChild(rootNode);
+        let componentInstanceId = '';
         try {
-            this.componentInstanceId = await connection.initializeComponent({
+            componentInstanceId = await connection.initializeComponent({
                 componentId: this.component,
                 componentOptions: this.options,
                 browserCommands: Object.keys(browserCommands),
@@ -384,10 +401,18 @@ customElements.define('drayman-element', class extends HTMLElement {
             markInitFailed();
             throw error;
         }
-        connection.onEvent(this.componentInstanceId, async ({ type, payload }) => {
+        if (connectionGeneration !== this.connectionGeneration || !this.isConnected) {
+            this.destroyComponentInstance(componentInstanceId);
+            return;
+        }
+        this.componentInstanceId = componentInstanceId;
+        connection.onEvent(componentInstanceId, async ({ type, payload }) => {
+            if (connectionGeneration !== this.connectionGeneration || this.componentInstanceId !== componentInstanceId) {
+                return;
+            }
             if (type === 'view' && payload.updateId > this.updateId) {
                 this.updateId = payload.updateId;
-                const newNode = h('drayman-element-container', { attrs: { componentInstanceId: this.componentInstanceId } }, payload.view.map(x => this.traverseTree(x)));
+                const newNode = h('drayman-element-container', { attrs: { componentInstanceId } }, payload.view.map(x => this.traverseTree(x)));
                 patch(rootNode, newNode);
                 rootNode = newNode;
                 markInitSuccess();
@@ -405,9 +430,9 @@ customElements.define('drayman-element', class extends HTMLElement {
                             customSelector = x.customSelector;
                         }
                         if (wait) {
-                            await waitForElement(this.componentInstanceId, ref, customSelector);
+                            await waitForElement(componentInstanceId, ref, customSelector);
                         }
-                        domElements.push(getElement(this.componentInstanceId, ref, customSelector));
+                        domElements.push(getElement(componentInstanceId, ref, customSelector));
                     }
                 }
                 const response = await browserCommands[command](data, domElements);
@@ -421,10 +446,11 @@ customElements.define('drayman-element', class extends HTMLElement {
     }
 
     disconnectedCallback() {
+        this.connectionGeneration++;
         if (this.updateId) {
             this.onDestroy?.();
         }
-        window['draymanConfig']?.connection?.destroyComponentInstance({ componentInstanceId: this.componentInstanceId });
+        this.destroyComponentInstance();
     }
 });
 

@@ -85,6 +85,9 @@ const markConnectionGarbage = (connectionId: string) => {
 }
 
 const markComponentGarbage = (componentInstanceId: string, opts: ComponentGarbageOpts = {}) => {
+    if (!componentInstanceId) {
+        return;
+    }
     const prev = garbage.componentInstances.get(componentInstanceId) || {};
     garbage.componentInstances.set(componentInstanceId, {
         skipOnDestroy: Boolean(prev.skipOnDestroy || opts.skipOnDestroy),
@@ -102,13 +105,19 @@ const clearGarbage = () => {
         }
     }
     const explicit = new Map(garbage.componentInstances);
+    const remainingExplicit = new Map<string, ComponentGarbageOpts>();
     const toTerminate = new Map<string, ComponentGarbageOpts>();
     for (const [id, opts] of fromConnections) {
         toTerminate.set(id, { skipOnDestroy: Boolean(opts.skipOnDestroy) });
     }
     for (const [id, opts] of explicit) {
         const prev = toTerminate.get(id) || { skipOnDestroy: false };
-        toTerminate.set(id, { skipOnDestroy: Boolean(prev.skipOnDestroy || opts.skipOnDestroy) });
+        const mergedOpts = { skipOnDestroy: Boolean(prev.skipOnDestroy || opts.skipOnDestroy) };
+        if (!componentInstances[id]) {
+            remainingExplicit.set(id, mergedOpts);
+            continue;
+        }
+        toTerminate.set(id, mergedOpts);
     }
     for (const [id, opts] of toTerminate) {
         const instance = componentInstances[id];
@@ -118,6 +127,9 @@ const clearGarbage = () => {
         terminateComponentInstance(id, Boolean(opts.skipOnDestroy));
     }
     garbage.componentInstances.clear();
+    for (const [id, opts] of remainingExplicit) {
+        garbage.componentInstances.set(id, opts);
+    }
     garbage.connections.clear();
 };
 
