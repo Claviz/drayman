@@ -98,10 +98,19 @@ const markComponentGarbage = (componentInstanceId: string, opts: ComponentGarbag
 const clearGarbage = () => {
     const aliveIds = Object.keys(componentInstances);
     const fromConnections = new Map<string, ComponentGarbageOpts>();
-    for (const id of aliveIds) {
-        const instance = componentInstances[id];
-        if (instance && garbage.connections.has(instance.connectionId)) {
+    const remainingConnections = new Set<string>();
+    for (const connectionId of garbage.connections) {
+        let hasAliveInstance = false;
+        for (const id of aliveIds) {
+            const instance = componentInstances[id];
+            if (!instance || instance.connectionId !== connectionId) {
+                continue;
+            }
+            hasAliveInstance = true;
             fromConnections.set(id, { skipOnDestroy: false });
+        }
+        if (!hasAliveInstance) {
+            remainingConnections.add(connectionId);
         }
     }
     const explicit = new Map(garbage.componentInstances);
@@ -131,6 +140,9 @@ const clearGarbage = () => {
         garbage.componentInstances.set(id, opts);
     }
     garbage.connections.clear();
+    for (const connectionId of remainingConnections) {
+        garbage.connections.add(connectionId);
+    }
 };
 
 async function terminateComponentInstance(componentInstanceId: string, skipOnDestroy = false) {

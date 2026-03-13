@@ -577,4 +577,78 @@ describe('', () => {
         }
     });
 
+    test('disconnect requested before registration is applied once initialization finishes', async () => {
+        jest.resetModules();
+
+        const componentInstanceId = 'disconnect-before-registration__component';
+        const connectionId = 'disconnect-before-registration__connection';
+        const emit = jest.fn();
+        const handleDestroyComponentInstance = jest.fn().mockResolvedValue(undefined);
+        const unsubscribe = jest.fn();
+        let releaseSpawn = () => { };
+        const waitForSpawn = new Promise<void>((resolve) => {
+            releaseSpawn = resolve;
+        });
+
+        try {
+            jest.doMock('threads', () => ({
+                Worker: jest.fn().mockImplementation(() => ({
+                    addEventListener: jest.fn(),
+                })),
+                Thread: {
+                    terminate: jest.fn().mockResolvedValue(undefined),
+                },
+                spawn: jest.fn().mockImplementation(async () => {
+                    await waitForSpawn;
+                    return {
+                        events: () => ({
+                            subscribe: () => ({ unsubscribe }),
+                        }),
+                        initializeComponentInstance: jest.fn(),
+                        handleDestroyComponentInstance,
+                    };
+                }),
+            }));
+
+            const isolatedCore = require('../dist');
+            const destroyed = new Promise<any>((resolve) => {
+                emit.mockImplementation((message) => {
+                    if (message.type === 'componentInstanceDestroyed') {
+                        resolve(message);
+                    }
+                });
+            });
+
+            const initPromise = isolatedCore.onInitializeComponentInstance({
+                browserCommands: [],
+                onComponentInstanceConsole: () => { },
+                componentInstanceId,
+                componentName: 'buttons',
+                componentRootDir: 'tests/dist/components',
+                connectionId,
+                serverCommands: [],
+                componentOptions: { text: 'Hello, world!' },
+                emit,
+            });
+
+            await isolatedCore.onDisconnect({ connectionId });
+            expect(isolatedCore.componentInstances[componentInstanceId]).not.toBeDefined();
+
+            releaseSpawn();
+            await initPromise;
+
+            const destroyedMessage = await destroyed;
+            expect(handleDestroyComponentInstance).toHaveBeenCalledTimes(1);
+            expect(unsubscribe).toHaveBeenCalledTimes(1);
+            expect(isolatedCore.componentInstances[componentInstanceId]).not.toBeDefined();
+            expect(destroyedMessage).toEqual(expect.objectContaining({
+                type: 'componentInstanceDestroyed',
+                componentInstanceId,
+            }));
+        } finally {
+            jest.unmock('threads');
+            jest.resetModules();
+        }
+    });
+
 });
