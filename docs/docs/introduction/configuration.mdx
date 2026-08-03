@@ -129,7 +129,9 @@ Can be used to configure default behavior of elements. Contains dictionary which
 Using this example will modify default behavior of elements:
 
 - All `<h3>` elements will have red text.
-- All `<input>` elements will be debounced by 500ms before data is sent to server.
+- All `<input>` elements with an `oninput` handler will be debounced by 500ms before data is sent to server.
+
+Global event options only configure handlers declared by the element. They do not add new event handlers.
 
 :::tip
 Element event configuration is described in detail [here](../components-in-depth/handling-events#configuring-events).

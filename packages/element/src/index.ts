@@ -55,6 +55,14 @@ function maskMatch(original = {}, mask = {}) {
     return match;
 }
 
+function mergeEventOptions(currentOptions, configuredOptions) {
+    if (typeof currentOptions === 'object' && currentOptions &&
+        typeof configuredOptions === 'object' && configuredOptions) {
+        return { ...currentOptions, ...configuredOptions };
+    }
+    return configuredOptions;
+}
+
 const patch = init([
     { update: updateProps, create: updateProps },
     attributesModule,
@@ -257,13 +265,24 @@ customElements.define('drayman-element', class extends HTMLElement {
             for (const [currentElement, currentElementOption] of Object.entries(window['draymanConfig'].elementOptions)) {
                 if (child.sel === currentElement) {
                     if (child.sel?.includes('-')) {
-                        child.data.props = { ...child.data.props, ...(currentElementOption as any) };
+                        const props = { ...child.data.props };
+                        for (const [option, configuredValue] of Object.entries(currentElementOption)) {
+                            if (!isEvent(option)) {
+                                props[option] = configuredValue;
+                            } else if (Object.prototype.hasOwnProperty.call(child.data.props || {}, option)) {
+                                props[option] = mergeEventOptions(child.data.props[option], configuredValue);
+                            }
+                        }
+                        child.data.props = props;
                     } else {
                         const props = {};
                         const events = {};
                         for (const option of Object.keys(currentElementOption)) {
                             if (isEvent(option)) {
-                                events[option.substring(2)] = currentElementOption[option];
+                                const eventName = option.substring(2).toLowerCase();
+                                if (Object.prototype.hasOwnProperty.call(child.data.on || {}, eventName)) {
+                                    events[eventName] = mergeEventOptions(child.data.on[eventName], currentElementOption[option]);
+                                }
                             } else {
                                 props[option] = currentElementOption[option];
                             }
