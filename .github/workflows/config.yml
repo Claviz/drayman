@@ -38,7 +38,7 @@ jobs:
       - name: "@drayman/framework install local core"
         working-directory: ./packages/framework
         run: |
-          npm install --no-save --package-lock=false ../core
+          npm install --no-save ../core
 
       - name: "@drayman/framework/client"
         working-directory: ./packages/framework/client
