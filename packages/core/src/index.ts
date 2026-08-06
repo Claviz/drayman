@@ -642,7 +642,7 @@ export const onDestroyNamespace = async ({ namespaceId }) => {
         .map(([componentInstanceId]) => componentInstanceId);
 
     await Promise.all(instanceIds.map(componentInstanceId =>
-        markComponentGarbage(componentInstanceId, { skipOnDestroy: false, endReason: 'server stopped' })
+        terminateComponentInstance(componentInstanceId, { skipOnDestroy: false, endReason: 'server stopped' })
     ));
 };
 
