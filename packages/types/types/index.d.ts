@@ -5354,6 +5354,9 @@ declare global {
         (data: {
             emit: (callback: any, data?: any) => Promise<void>;
             app: any;
+            basePath: string;
+            projectDir: string;
+            onClose: (handler: () => Promise<void> | void) => void;
             EventHub: {
                 on(eventName: string, event: ((payload: any) => any), groupId?: string): any;
                 emit(eventName: string, data: any, groupId?: string): any;

@@ -330,7 +330,7 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
 
     ComponentInstance.id = componentInstanceId;
     if (extensionsPath) {
-        extensions = await require(path.join(process.cwd(), extensionsPath))(extensionsOptions);
+        extensions = await require(path.resolve(process.cwd(), extensionsPath))(extensionsOptions);
     }
     const Browser = buildCommandProxy(browserCommands, 'browserCommand');
     const Server = buildCommandProxy(serverCommands, 'serverCommand');
@@ -399,7 +399,7 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         };
 
         try {
-            const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
+            const imported = await import(path.resolve(process.cwd(), componentRootDir, `${componentNamePrefix}${componentKey}.js`));
             defaultProps = imported.defaultProps || {};
             for (const key of Object.keys(defaultProps)) {
                 if (!props[key]) {
@@ -561,7 +561,7 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
     }
     let componentResult;
     try {
-        const imported = await import(path.join(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
+        const imported = await import(path.resolve(process.cwd(), componentRootDir, `${componentNamePrefix}${componentName}.js`));
         defaultProps = imported.defaultProps || {};
         prevProps = { ...defaultProps };
         for (const key of Object.keys(defaultProps)) {

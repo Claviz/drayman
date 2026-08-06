@@ -129,3 +129,29 @@ export const Server: DraymanServer = async ({ app }) => {
 ```
 
 You can read more about Express.js middlewares and request interceptors [here](https://expressjs.com/en/guide/using-middleware.html).
+
+When Drayman is embedded, `app` is the router mounted below the configured
+`basePath`. Routes added to it are automatically scoped to the Drayman
+application. The Server function also receives the resolved `projectDir` and
+normalized `basePath` values for filesystem and URL construction.
+
+## Cleaning up server resources
+
+Use `onClose` to release long-lived resources when the Drayman runtime shuts
+down. This is especially useful for embedded applications where the host owns
+the HTTP server lifecycle.
+
+```tsx title="src/index.ts"
+export const Server: DraymanServer = async ({ onClose }) => {
+  const client = await connectToExternalService();
+
+  onClose(async () => {
+    await client.close();
+  });
+
+  return {};
+};
+```
+
+Close handlers run in reverse registration order before Drayman destroys its
+remaining component instances and WebSocket connections.

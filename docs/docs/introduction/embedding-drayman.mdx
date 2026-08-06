@@ -1,0 +1,99 @@
+---
+title: Embedding Drayman
+sidebar_position: 5
+---
+
+Drayman applications can be mounted into an existing Express application and
+Node HTTP server. The host application keeps ownership of the public port and
+Drayman serves its HTTP and WebSocket endpoints below a dedicated base path.
+
+## Build the Drayman project
+
+Build the Drayman project as part of the host application's build step:
+
+```ts
+import path from "path";
+import { buildDrayman } from "@drayman/framework";
+
+await buildDrayman({
+  projectDir: path.join(process.cwd(), "apps/embedded-app"),
+});
+```
+
+`projectDir` is the directory containing the Drayman application's
+`drayman.config.js`. Source, output, public, PostCSS, and node modules paths are
+resolved relative to this directory.
+
+## Mount the runtime
+
+Create the host's HTTP server explicitly and pass both the Express application
+and HTTP server to `mountDrayman`:
+
+```ts
+import express from "express";
+import http from "http";
+import path from "path";
+import { mountDrayman } from "@drayman/framework";
+
+const app = express();
+const server = http.createServer(app);
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
+const drayman = await mountDrayman({
+  app,
+  server,
+  basePath: "/embedded-app",
+  projectDir: path.join(process.cwd(), "apps/embedded-app"),
+});
+
+server.listen(process.env.PORT || 3000);
+```
+
+This example reserves the following paths for Drayman:
+
+```text
+/embedded-app/
+/embedded-app/ws
+/embedded-app/drayman-framework-client.js
+/embedded-app/api/componentEvent
+/embedded-app/event
+/embedded-app/elements/*
+```
+
+Requests to `/embedded-app` are redirected to `/embedded-app/` so relative
+browser assets resolve below the mounted application.
+
+## Configure the browser client
+
+Use the same base path when loading and initializing the browser client:
+
+```html
+<script src="/embedded-app/drayman-framework-client.js"></script>
+<script>
+  initializeDraymanFramework({
+    basePath: "/embedded-app",
+  });
+</script>
+```
+
+Application styles, scripts, and other assets should use relative URLs or URLs
+below the same base path.
+
+## Shut down the runtime
+
+`mountDrayman` returns an idempotent `close` method. Call it before closing the
+host HTTP server:
+
+```ts
+await drayman.close();
+await new Promise((resolve, reject) => {
+  server.close(error => error ? reject(error) : resolve());
+});
+```
+
+Closing the runtime stops its WebSocket server, destroys its component
+instances, clears its EventHub listeners, and executes application close
+handlers registered by the Server object.

@@ -29,3 +29,17 @@ const component: DraymanComponent = async ({ EventHub, forceUpdate, props, Brows
         </>;
     };
 };
+
+const server: DraymanServer = async ({ basePath, projectDir, onClose }) => {
+    const resource = {
+        close: async () => { },
+    };
+
+    onClose(async () => {
+        await resource.close();
+    });
+
+    return {
+        getPaths: async () => ({ basePath, projectDir }),
+    };
+};

@@ -16,6 +16,8 @@ module.exports = {
   outDir: "dist",
   // Folder where `index.html` is located.
   publicDir: "public",
+  // Folder containing dependencies and Drayman web components.
+  nodeModulesDir: "node_modules",
   // Custom configuration for PostCSS.
   postcss: {
     // Source CSS file.
@@ -48,6 +50,11 @@ module.exports = {
 };
 ```
 
+All configured file and directory paths are resolved relative to the Drayman
+project directory. Standalone applications use the current working directory.
+Embedded applications provide the project directory to `buildDrayman` and
+`mountDrayman`.
+
 ## Drayman initialization
 
 Drayman initialization can be configured when executing `initializeDraymanFramework()` function which is by default located inside `public/index.html` file:
@@ -75,6 +82,21 @@ Drayman initialization can be configured when executing `initializeDraymanFramew
 ```
 
 This function accepts an object with some configurable options which are described below.
+
+### basePath
+
+Sets the HTTP and WebSocket base path used by an embedded Drayman application.
+The value must match the `basePath` passed to `mountDrayman`. Standalone
+applications use `/`.
+
+```html title="public/index.html"
+<script src="/embedded-app/drayman-framework-client.js"></script>
+<script>
+  initializeDraymanFramework({
+    basePath: "/embedded-app",
+  });
+</script>
+```
 
 ### browserCommands
 

@@ -7,19 +7,18 @@ import postcssrc from 'postcss-load-config';
 
 import { getDraymanConfig } from '../config';
 
-process.env.NODE_ENV = 'production';
-
-const getPostcssrc = async () => {
+const getPostcssrc = async (projectDir: string) => {
     try {
-        return await postcssrc();
+        return await postcssrc({}, projectDir);
     } catch (err) { }
 
     return null;
 }
 
-export async function build() {
-    const { outDir, srcDir, postcssSourceFile, postcssDestinationFile, componentsOutputDir } = getDraymanConfig();
-    const postcssrc = await getPostcssrc();
+export async function build({ projectDir = process.cwd() }: { projectDir?: string } = {}) {
+    const config = getDraymanConfig(projectDir);
+    const { outDir, srcDir, postcssSourceFile, postcssDestinationFile, componentsOutputDir } = config;
+    const postcssrc = await getPostcssrc(config.projectDir);
     if (postcssrc) {
         const source = await fs.readFile(postcssSourceFile, 'utf-8');
         const processedCss = (await postcss(postcssrc.plugins).process(source, postcssrc.options));
@@ -55,11 +54,12 @@ export async function build() {
     await fs.outputFile(templateFilePath, lines.join('\n'));
     for (const componentName of componentNames) {
         const script = await fs.readFile(path.join(componentsDir, `${componentName}.tsx`), 'utf-8');
-        await draymanCore.saveComponent({ scriptPath: path.join(process.cwd(), componentsDir, `${componentName}.tsx`), script, outputFile: path.join(componentsOutputDir, `${componentName}.js`) });
+        await draymanCore.saveComponent({ scriptPath: path.join(componentsDir, `${componentName}.tsx`), script, outputFile: path.join(componentsOutputDir, `${componentName}.js`) });
     }
     const otherFiles = files.filter(x => x.endsWith('.ts') && !x.endsWith('.d.ts'));
     for (const otherFile of otherFiles) {
         const script = await fs.readFile(otherFile, 'utf-8');
-        await draymanCore.saveComponent({ script, scriptPath: otherFile, outputFile: path.join(outDir, `${otherFile.replace(`${srcDir}/`, '').replace('.ts', '')}.js`) });
+        const relativeOutputPath = path.relative(srcDir, otherFile).replace(/\.ts$/, '.js');
+        await draymanCore.saveComponent({ script, scriptPath: otherFile, outputFile: path.join(outDir, relativeOutputPath) });
     }
 }

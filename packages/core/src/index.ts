@@ -342,7 +342,7 @@ async function terminateComponentInstance(componentInstanceId: string, opts: Com
     return instance.terminatingPromise;
 }
 
-setInterval(() => {
+const heartbeatInterval = setInterval(() => {
     const now = Date.now();
     for (const [id, instance] of Object.entries(componentInstances)) {
         if (!instance || instance.terminatingPromise) {
@@ -355,6 +355,9 @@ setInterval(() => {
         }
     }
 }, 1000);
+if (typeof (heartbeatInterval as any).unref === 'function') {
+    (heartbeatInterval as any).unref();
+}
 
 export const componentInstances: {
     [componentInstanceId: string]: ComponentInstance
@@ -631,6 +634,16 @@ export const onInitializeComponentInstance = async ({
 
 export const onDisconnect = async ({ connectionId }) => {
     markConnectionGarbage(connectionId, { endReason: 'user stopped' });
+};
+
+export const onDestroyNamespace = async ({ namespaceId }) => {
+    const instanceIds = Object.entries(componentInstances)
+        .filter(([, instance]) => instance?.namespaceId === namespaceId)
+        .map(([componentInstanceId]) => componentInstanceId);
+
+    await Promise.all(instanceIds.map(componentInstanceId =>
+        markComponentGarbage(componentInstanceId, { skipOnDestroy: false, endReason: 'server stopped' })
+    ));
 };
 
 

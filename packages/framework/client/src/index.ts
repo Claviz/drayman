@@ -1,19 +1,29 @@
 import '@drayman/element';
 
-const waitForConnection = () => new Promise<WebSocket>((resolve, reject) => {
-    const socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/`);
+const normalizeBasePath = (basePath = '/') => {
+    const normalized = `/${basePath}`.replace(/\/+/g, '/').replace(/\/$/, '');
+    return normalized === '' ? '/' : normalized;
+};
+
+const joinBasePath = (basePath: string, route: string) =>
+    basePath === '/' ? route : `${basePath}${route}`;
+
+const waitForConnection = (basePath: string) => new Promise<WebSocket>((resolve, reject) => {
+    const websocketPath = joinBasePath(basePath, '/ws');
+    const socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}${websocketPath}`);
     socket.onerror = () => socket.close();
     socket.onclose = async (ev: any) => {
         setTimeout(async () => window.location.reload(), 500);
     };
     socket.addEventListener('open', (ev) => { resolve(socket); })
 });
-async function initializeDraymanFramework(options?: { browserCommands: any, elementOptions: any, }) {
+async function initializeDraymanFramework(options?: { browserCommands?: any, elementOptions?: any, basePath?: string, }) {
     const requests = {};
     let sequence = 1;
     const browserCommands = options?.browserCommands;
+    const basePath = normalizeBasePath(options?.basePath);
     const handlers = {};
-    const socket = await waitForConnection();
+    const socket = await waitForConnection(basePath);
     socket.onmessage = (event) => {
         const { id, data, type } = JSON.parse(event.data);
         if (id) {
@@ -40,7 +50,7 @@ async function initializeDraymanFramework(options?: { browserCommands: any, elem
     window['draymanConfig'] = {
         browserCommands,
         elementOptions: options?.elementOptions,
-        elementUrl: '/elements/',
+        elementUrl: joinBasePath(basePath, '/elements/'),
         connection: {
             onConnectionClose: (handler) => {
                 socket.onclose = handler;
@@ -60,7 +70,7 @@ async function initializeDraymanFramework(options?: { browserCommands: any, elem
                 });
             },
             postFormData: async (formData) => {
-                return (await fetch('/api/componentEvent', {
+                return (await fetch(joinBasePath(basePath, '/api/componentEvent'), {
                     method: 'POST',
                     body: formData,
                 })).json();

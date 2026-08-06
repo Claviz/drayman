@@ -23,17 +23,18 @@ jobs:
           npm install
           npm run test
 
-      - name: "@drayman/framework install packages"
-        working-directory: ./packages/framework
-        run: |
-          npm install
-
       - name: "@drayman/core"
         working-directory: ./packages/core
         run: |
           npm install
           npm run build
           npm run test
+
+      - name: "@drayman/framework install packages"
+        working-directory: ./packages/framework
+        run: |
+          npm install
+          npm install --no-save --package-lock=false ../core
 
       - name: "@drayman/framework/client"
         working-directory: ./packages/framework/client
