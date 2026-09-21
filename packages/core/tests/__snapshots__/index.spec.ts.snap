@@ -170,37 +170,19 @@ Array [
   Object {
     "componentInstanceId": "component-user-interaction__component",
     "payload": Object {
-      "updateId": 2,
-      "view": Array [
+      "baseUpdateId": 1,
+      "patch": Array [
         Object {
-          "children": Array [
-            Object {
-              "children": Array [],
-              "key": "/0/button/0/text",
-              "text": "Hello, world!",
-            },
-          ],
-          "data": Object {
-            "on": Object {
-              "click": true,
-            },
+          "op": "add",
+          "path": "/1/children/0",
+          "value": Object {
+            "children": Array [],
+            "key": "/1/h1/0/text",
+            "text": "Hello, world!",
           },
-          "key": "/0/button",
-          "sel": "button",
-        },
-        Object {
-          "children": Array [
-            Object {
-              "children": Array [],
-              "key": "/1/h1/0/text",
-              "text": "Hello, world!",
-            },
-          ],
-          "data": Object {},
-          "key": "/1/h1",
-          "sel": "h1",
         },
       ],
+      "updateId": 2,
     },
     "type": "view",
   },

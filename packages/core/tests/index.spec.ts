@@ -1,4 +1,5 @@
 import { componentInstances, handleComponentEvent, saveComponent, handleEventHubEvent, onDestroyComponentInstance, onInitializeComponentInstance, getElementsScriptPaths, onDisconnect, onUpdateComponentInstanceProps, onHandleBrowserCallback } from '../dist';
+import { applyPatch } from 'fast-json-patch';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -33,7 +34,8 @@ describe('', () => {
             'child',
             'parent',
             'identical-view',
-            'update-props'
+            'update-props',
+            'view-container-types'
         ];
         for (const scriptName of scripts) {
             const script = await fs.readFile(`./tests/components/${scriptName}.tsx`, 'utf-8');
@@ -555,8 +557,60 @@ describe('', () => {
         expect(messages.length).toBe(2);
     });
 
+    test('snapshots container type changes and resumes patches from the new baseline', async () => {
+        const { componentInstanceId, connectionId } = makeIds();
+        const states = [
+            { value: {}, label: 'initial' },
+            { value: [], label: 'initial' },
+            { value: {}, label: 'also changed' },
+            { value: {}, label: 'patch again' },
+        ];
+        const payloads: any[] = [];
+        let view;
+        try {
+            await new Promise<void>((resolve, reject) => {
+                onInitializeComponentInstance({
+                    browserCommands: [],
+                    onComponentInstanceConsole: () => { },
+                    componentInstanceId,
+                    componentName: 'view-container-types',
+                    componentRootDir: 'tests/dist/components',
+                    connectionId,
+                    serverCommands: [],
+                    componentOptions: states[0],
+                    emit: (message) => {
+                        if (message.type !== 'view') return;
+                        try {
+                            const index = payloads.length;
+                            const payload = message.payload;
+                            payloads.push(payload);
+                            if (index < 3) {
+                                expect(payload.view).toBeDefined();
+                                expect(payload.patch).toBeUndefined();
+                                view = payload.view;
+                            } else {
+                                expect(payload.view).toBeUndefined();
+                                expect(payload.baseUpdateId).toBe(payloads[index - 1].updateId);
+                                view = applyPatch(view, payload.patch, true).newDocument;
+                            }
+                            expect(view[0].data.props.config.nested).toEqual(states[index].value);
+                            expect(view[0].data.props.label).toBe(states[index].label);
+                            if (payloads.length === states.length) resolve();
+                            else onUpdateComponentInstanceProps({ componentInstanceId, options: states[index + 1] });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    },
+                }).catch(reject);
+            });
+        } finally {
+            await onDestroyComponentInstance({ componentInstanceId });
+        }
+    });
+
     test('should update component props', async () => {
         const { componentInstanceId, connectionId } = makeIds();
+        let view;
         const messages = await (() => new Promise<{ type, payload, componentInstanceId }[]>((resolve, reject) => {
             const messages = [];
             onInitializeComponentInstance({
@@ -572,7 +626,8 @@ describe('', () => {
                     messages.push(message);
                     switch (messages.length) {
                         case 1: {
-                            expect(message.payload.view[0].children[0].text).toBe('initial');
+                            view = message.payload.view;
+                            expect(view[0].children[0].text).toBe('initial');
                             onUpdateComponentInstanceProps({
                                 componentInstanceId,
                                 options: { text: 'updated' }
@@ -580,7 +635,10 @@ describe('', () => {
                             return;
                         }
                         case 2: {
-                            expect(message.payload.view[0].children[0].text).toBe('updated');
+                            view = message.payload.view !== undefined
+                                ? message.payload.view
+                                : applyPatch(view, message.payload.patch).newDocument;
+                            expect(view[0].children[0].text).toBe('updated');
                             onDestroyComponentInstance({ componentInstanceId });
                             return;
                         }

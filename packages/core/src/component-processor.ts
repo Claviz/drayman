@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import shortid from 'shortid';
 import v8 from 'v8';
+import { applyPatch, compare } from 'fast-json-patch';
 
 import { expose } from 'threads/worker'
 import { Observable, Subject } from 'threads/observable'
@@ -194,6 +195,7 @@ let defaultProps = {};
 let extensions: { importable: any } = { importable: null };
 let updateId = 0;
 let sentView;
+let sentUpdateId;
 let onInitRan = false;
 
 const isAbortError = (err: any) => {
@@ -470,7 +472,6 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         }
         pendingChildUpdates.clear();
 
-        updateId++;
         currentGeneration++;
         let compResult;
         let result;
@@ -506,8 +507,38 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         eventOwners = result.eventOwners || currentEventOwners;
         const newView = JSON.stringify(result.tree);
         if (sentView !== newView) {
+            // Allocate IDs when emitting: async renders can finish out of order.
+            updateId++;
+            const nextView = JSON.parse(newView);
+            const snapshotPayload = { view: nextView, updateId };
+            let viewPayload: any = snapshotPayload;
+
+            if (sentView !== undefined) {
+                try {
+                    const previousView = JSON.parse(sentView);
+                    const patch = compare(previousView, nextView);
+                    const patchPayload = { patch, baseUpdateId: sentUpdateId, updateId };
+                    const snapshotSize = Buffer.byteLength(JSON.stringify(snapshotPayload), 'utf8');
+                    const patchSize = Buffer.byteLength(JSON.stringify(patchPayload), 'utf8');
+                    const protectedPath = patch.some(operation =>
+                        /\/(?:__proto__|constructor\/prototype)(?:\/|$)/.test(operation.path));
+                    if (!protectedPath && patchSize < snapshotSize) {
+                        // Verify using the browser's validation settings: this library can omit
+                        // container type changes or reject escaped JSON property paths.
+                        // Applying can mutate operation values; verify a copy of the wire patch.
+                        const reconstructed = applyPatch(previousView, JSON.parse(JSON.stringify(patch)), true, true, true).newDocument;
+                        if (JSON.stringify(reconstructed) === newView) {
+                            viewPayload = patchPayload;
+                        }
+                    }
+                } catch {
+                    // A snapshot remains safe when the patch cannot be generated or applied.
+                }
+            }
+
             sentView = newView;
-            sendMessage({ type: 'view', payload: { view: result.tree, updateId } });
+            sentUpdateId = updateId;
+            sendMessage({ type: 'view', payload: viewPayload });
         }
         forceUpdateInitiators.clear();
     }

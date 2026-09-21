@@ -7,10 +7,12 @@ import {
     attributesModule,
     VNode,
 } from 'snabbdom';
+import { applyPatch } from 'fast-json-patch';
 
 function deepEqual(a: any, b: any): boolean {
     if (a === b) return true;
     if (typeof a !== 'object' || typeof b !== 'object' || !a || !b) return false;
+    if (Array.isArray(a) !== Array.isArray(b)) return false;
     const aKeys = Object.keys(a);
     const bKeys = Object.keys(b);
     if (aKeys.length !== bKeys.length) return false;
@@ -408,6 +410,16 @@ customElements.define('drayman-element', class extends HTMLElement {
             }
         ) || {};
         let rootNode = document.createElement('drayman-element-container') as any;
+        let serializedTree: any[] | undefined;
+        let viewStreamFailed = false;
+        const failViewStream = (error) => {
+            if (viewStreamFailed) {
+                return;
+            }
+            viewStreamFailed = true;
+            console.error(`Failed to apply view update for component ${this.component}`, error);
+            window.location.reload();
+        };
         this.appendChild(rootNode);
         let componentInstanceId = '';
         try {
@@ -429,11 +441,47 @@ customElements.define('drayman-element', class extends HTMLElement {
             if (connectionGeneration !== this.connectionGeneration || this.componentInstanceId !== componentInstanceId) {
                 return;
             }
-            if (type === 'view' && payload.updateId > this.updateId) {
-                this.updateId = payload.updateId;
-                const newNode = h('drayman-element-container', { attrs: { componentInstanceId } }, payload.view.map(x => this.traverseTree(x)));
-                patch(rootNode, newNode);
-                rootNode = newNode;
+            if (type === 'view') {
+                if (viewStreamFailed) {
+                    return;
+                }
+                if (!payload || !Number.isSafeInteger(payload.updateId) || payload.updateId < 1) {
+                    failViewStream(new Error('View update has an invalid updateId'));
+                    return;
+                }
+                if (payload.updateId <= this.updateId) {
+                    return;
+                }
+                try {
+                    let nextTree: any[];
+                    const hasView = Object.prototype.hasOwnProperty.call(payload, 'view');
+                    const hasPatch = Object.prototype.hasOwnProperty.call(payload, 'patch');
+                    if (hasView === hasPatch) {
+                        throw new Error('View update must contain exactly one snapshot or patch');
+                    }
+                    if (Array.isArray(payload.view)) {
+                        nextTree = payload.view;
+                    } else if (Array.isArray(payload.patch)) {
+                        if (serializedTree === undefined || payload.baseUpdateId !== this.updateId) {
+                            throw new Error(`View patch baseline mismatch (expected ${this.updateId}, received ${payload.baseUpdateId})`);
+                        }
+                        nextTree = applyPatch(serializedTree, payload.patch, true, true, true).newDocument;
+                    } else {
+                        throw new Error('View update does not contain a snapshot or patch');
+                    }
+                    if (!Array.isArray(nextTree)) {
+                        throw new Error('View update did not produce a tree');
+                    }
+                    const renderTree = JSON.parse(JSON.stringify(nextTree));
+                    const newNode = h('drayman-element-container', { attrs: { componentInstanceId } }, renderTree.map(x => this.traverseTree(x)));
+                    patch(rootNode, newNode);
+                    rootNode = newNode;
+                    serializedTree = nextTree;
+                    this.updateId = payload.updateId;
+                } catch (error) {
+                    failViewStream(error);
+                    return;
+                }
                 markInitSuccess();
             } else if (type === 'browserCommand') {
                 const { data, callbackId, command, elements } = payload;
