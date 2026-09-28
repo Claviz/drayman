@@ -374,7 +374,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             initSettled = true;
             this.onInitFailed?.();
         };
-        const connectionClose = () => {
+        const connectionClose = (messageText = 'Component connection lost') => {
             if (!connectionLostOverlay) {
                 connectionLostOverlay = document.createElement('div');
                 connectionLostOverlay.style.position = 'absolute';
@@ -388,7 +388,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                 connectionLostOverlay.style.alignItems = 'center';
                 connectionLostOverlay.style.zIndex = '1000';
                 let message = document.createElement('div');
-                message.textContent = 'Component connection lost';
+                message.textContent = messageText;
                 connectionLostOverlay.appendChild(message);
                 this.style.position = 'relative';
                 this.appendChild(connectionLostOverlay);
@@ -396,7 +396,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             }
             markInitFailed();
         };
-        connection.onConnectionClose(connectionClose);
+        connection.onConnectionClose(() => connectionClose());
         const browserCommands = window['draymanConfig'].browserCommands?.(
             (callbackId, data, options) => {
                 if (!options?.debounce) {
@@ -418,7 +418,7 @@ customElements.define('drayman-element', class extends HTMLElement {
             }
             viewStreamFailed = true;
             console.error(`Failed to apply view update for component ${this.component}`, error);
-            window.location.reload();
+            connectionClose('Component failed to render');
         };
         this.appendChild(rootNode);
         let componentInstanceId = '';
@@ -473,7 +473,7 @@ customElements.define('drayman-element', class extends HTMLElement {
                         throw new Error('View update did not produce a tree');
                     }
                     const renderTree = JSON.parse(JSON.stringify(nextTree));
-                    const newNode = h('drayman-element-container', { attrs: { componentInstanceId } }, renderTree.map(x => this.traverseTree(x)));
+                    const newNode = h('drayman-element-container', { attrs: { componentInstanceId } }, renderTree.map(x => x.sel ? this.traverseTree(x) : x.text));
                     patch(rootNode, newNode);
                     rootNode = newNode;
                     serializedTree = nextTree;

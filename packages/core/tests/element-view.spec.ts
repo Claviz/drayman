@@ -20,8 +20,10 @@ async function connectElement(onInit = jest.fn(), elementOptions = {}) {
     let instanceCount = 0;
     class HTMLElement {
         isConnected = true;
+        style = {};
+        children = [];
         getAttribute(name) { return name === 'component' ? 'test' : null; }
-        appendChild() { }
+        appendChild(child) { this.children.push(child); }
     }
     vm.runInNewContext(elementScript, {
         exports: {},
@@ -38,7 +40,7 @@ async function connectElement(onInit = jest.fn(), elementOptions = {}) {
             define: (_, cls) => { ElementClass = cls; },
             get: () => HTMLElement,
         },
-        document: { createElement: () => ({}) },
+        document: { createElement: () => new HTMLElement() },
         window: {
             location: { reload },
             draymanConfig: {
@@ -57,6 +59,7 @@ async function connectElement(onInit = jest.fn(), elementOptions = {}) {
     });
     const element = new ElementClass();
     element.onInit = onInit;
+    element.onInitFailed = jest.fn();
     await element.connectedCallback();
     return {
         element, reload, render, viewHandlers, destroyComponentInstance, updateProps,
@@ -205,16 +208,19 @@ test.each([
     ['protected prototype path', {
         baseUpdateId: 1, patch: [{ op: 'add', path: '/0/data/props/__proto__', value: {} }],
     }],
-])('%s reloads once and stops an initialized view stream', async (_, payload) => {
+])('%s shows a component error and stops an initialized view stream without reloading', async (_, payload) => {
     const onInit = jest.fn();
     const { element, reload, render, send } = await connectElement(onInit);
     await send({ view: textTree('initial'), updateId: 1 });
     await send({ ...payload, updateId: 2 });
     await send({ view: textTree('ignored'), updateId: 3 });
-    expect(reload).toHaveBeenCalledTimes(1);
+    expect(reload).not.toHaveBeenCalled();
+    expect(element.children).toHaveLength(2);
+    expect(element.children[1].children[0].textContent).toBe('Component failed to render');
     expect(render).toHaveBeenCalledTimes(1);
     expect(element.updateId).toBe(1);
     expect(onInit).toHaveBeenCalledTimes(1);
+    expect(element.onInitFailed).not.toHaveBeenCalled();
 });
 
 test.each([
@@ -224,10 +230,13 @@ test.each([
     ['null snapshot', { view: null, updateId: 2 }],
     ['non-array patch', { patch: 'invalid', baseUpdateId: 1, updateId: 2 }],
 ])('%s abandons the malformed view stream', async (_, payload) => {
-    const { reload, render, send } = await connectElement();
+    const { element, reload, render, send } = await connectElement();
     await send(payload);
     await send({ view: [], updateId: 3 });
-    expect(reload).toHaveBeenCalledTimes(1);
+    expect(reload).not.toHaveBeenCalled();
+    expect(element.children).toHaveLength(2);
+    expect(element.children[1].children[0].textContent).toBe('Component failed to render');
+    expect(element.onInitFailed).toHaveBeenCalledTimes(1);
     expect(render).not.toHaveBeenCalled();
 });
 
@@ -266,12 +275,15 @@ test('an application onInit exception does not reload or abandon the view stream
     expect(onInit).toHaveBeenCalledTimes(1);
 });
 
-test('a failed patch reloads once without invoking onInit or accepting more views', async () => {
+test('a failed patch shows a component error without reloading, invoking onInit or accepting more views', async () => {
     const onInit = jest.fn();
-    const { reload, render, send } = await connectElement(onInit);
+    const { element, reload, render, send } = await connectElement(onInit);
     await send({ patch: [], baseUpdateId: 1, updateId: 2 });
     await send({ view: [], updateId: 3 });
-    expect(reload).toHaveBeenCalledTimes(1);
+    expect(reload).not.toHaveBeenCalled();
+    expect(element.children).toHaveLength(2);
+    expect(element.children[1].children[0].textContent).toBe('Component failed to render');
+    expect(element.onInitFailed).toHaveBeenCalledTimes(1);
     expect(render).not.toHaveBeenCalled();
     expect(onInit).not.toHaveBeenCalled();
 });
