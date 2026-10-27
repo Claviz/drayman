@@ -5,17 +5,35 @@
  * and scoped locally.
  */
 
+.homepage {
+  display: flex;
+  flex-direction: column;
+}
+
 .heroBanner {
+  flex: 1 0 auto;
   padding: 4rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-@media screen and (max-width: 966px) {
+@media screen and (max-width: 996px) {
   .heroBanner {
-    padding: 2rem;
+    padding: 3rem 0;
   }
+
+  .buttons :global(.button) {
+    font-size: 1rem;
+  }
+}
+
+.heroLogo {
+  display: block;
+  width: 100%;
+  max-width: 37.5rem;
+  height: auto;
+  margin: 0 auto 1.5rem;
 }
 
 .buttons {
@@ -28,6 +46,6 @@
   margin: 40px 0;
 }
 
-.sandbox {
-  padding-top: 40px;
+.buttons :global(.button) {
+  white-space: normal;
 }

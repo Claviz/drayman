@@ -12,7 +12,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <DraymanLogoLightTheme style={{ maxWidth: 600 }} />
+        <DraymanLogoLightTheme className={styles.heroLogo} role="img" aria-label="Drayman" />
         <p className="hero__subtitle" style={{ color: 'black' }}>{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
@@ -20,19 +20,6 @@ function HomepageHeader() {
             to="/docs/introduction/getting-started">
             Drayman Introduction - 5min ⏱️
           </Link>
-        </div>
-        <div className={styles.sandbox}>
-          <iframe style={{
-            width: "100%",
-            height: 900,
-            outline: "1px solid #252525",
-            border: 0,
-            borderRadius: 8,
-            marginBottom: 16,
-            zIndex: 100,
-            width: '100%',
-            height: '500px'
-          }} src="https://codesandbox.io/p/sandbox/drayman-framework-v943ig?file=/src/components/home.tsx&embed=1" allowfullscreen></iframe>
         </div>
       </div>
     </header>
@@ -43,6 +30,7 @@ export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
+      wrapperClassName={styles.homepage}
       title={`Hello from ${siteConfig.title}`}
       description="Server-side component framework">
       <HomepageHeader />

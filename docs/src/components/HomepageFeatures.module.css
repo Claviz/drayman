@@ -3,8 +3,12 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
+  padding: 3rem 0;
   width: 100%;
+}
+
+.features :global(.row) {
+  row-gap: 2rem;
 }
 
 .featureSvg {
