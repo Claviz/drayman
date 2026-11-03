@@ -342,10 +342,20 @@ async function terminateComponentInstance(componentInstanceId: string, opts: Com
     return instance.terminatingPromise;
 }
 
+// A check that runs over a second late means this process was stuck, not its components.
+const HEARTBEAT_CHECK_MS = 1000;
+let heartbeatsCheckedAt = Date.now();
 const heartbeatInterval = setInterval(() => {
     const now = Date.now();
+    const processStalled = now - heartbeatsCheckedAt > 2 * HEARTBEAT_CHECK_MS;
+    heartbeatsCheckedAt = now;
     for (const [id, instance] of Object.entries(componentInstances)) {
         if (!instance || instance.terminatingPromise) {
+            continue;
+        }
+        // Every heartbeat looks late after a stall, so instances get a fresh window instead of being stopped.
+        if (processStalled) {
+            instance.lastHeartbeat = now;
             continue;
         }
         const limit = instance.heartbeatLimitMs;
@@ -354,7 +364,7 @@ const heartbeatInterval = setInterval(() => {
             markComponentGarbage(id, { skipOnDestroy: true, endReason: 'resource limited' });
         }
     }
-}, 1000);
+}, HEARTBEAT_CHECK_MS);
 if (typeof (heartbeatInterval as any).unref === 'function') {
     (heartbeatInterval as any).unref();
 }
