@@ -65,10 +65,68 @@ function mergeEventOptions(currentOptions, configuredOptions) {
     return configuredOptions;
 }
 
+// A custom element's props can arrive before its script has loaded. Until its class is defined, a prop named like a
+// native property (title, hidden, lang) goes to the native setter and becomes an attribute: a table's title showed as
+// the browser's tooltip over the whole table. Once the class is defined, the props it declares itself are set again
+// through its own setters, and the attributes the native setters wrote are removed.
+const earlyProps = new WeakMap<Element, { [key: string]: any }>();
+
+function declaresProperty(element: Element, key: string): boolean {
+    for (let proto = Object.getPrototypeOf(element); proto && proto !== HTMLElement.prototype; proto = Object.getPrototypeOf(proto)) {
+        if (Object.prototype.hasOwnProperty.call(proto, key)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// The attributes a native setter writes for this prop, found on a plain element.
+function nativeAttributes(key: string, value: any): string[] {
+    const probe = document.createElement('span');
+    if (!(key in probe)) {
+        return [];
+    }
+    try {
+        probe[key] = value;
+    } catch {
+        return [];
+    }
+    return probe.getAttributeNames();
+}
+
+function trackEarlyProps(oldVnode: VNode, vnode: VNode): void {
+    const element = vnode.elm as Element;
+    if (earlyProps.has(element)) {
+        earlyProps.set(element, { ...vnode.data?.props });
+        return;
+    }
+    const name = element?.localName;
+    if (oldVnode.elm === element || !name?.includes('-') || customElements.get(name)) {
+        return;
+    }
+    earlyProps.set(element, { ...vnode.data?.props });
+    customElements.whenDefined(name).then(() => {
+        const props = earlyProps.get(element) || {};
+        earlyProps.delete(element);
+        customElements.upgrade(element);
+        for (const key of Object.keys(props)) {
+            if (!declaresProperty(element, key)) {
+                continue;
+            }
+            const attributes = nativeAttributes(key, props[key]);
+            if (attributes.length) {
+                attributes.forEach(x => element.removeAttribute(x));
+                element[key] = props[key];
+            }
+        }
+    });
+}
+
 const patch = init([
     { update: updateProps, create: updateProps },
     attributesModule,
     propsModule,
+    { create: trackEarlyProps, update: trackEarlyProps },
     styleModule,
     eventListenersModule
 ]);
