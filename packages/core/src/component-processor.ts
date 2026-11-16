@@ -196,6 +196,11 @@ let extensions: { importable: any } = { importable: null };
 let updateId = 0;
 let sentView;
 let sentUpdateId;
+// Pending while views this component sent are still on their way. The next render waits for it, so a component
+// that renders faster than its views can be delivered slows down instead of queueing them.
+let viewsOnTheWay = 0;
+let viewsDelivered: Promise<void> | null = null;
+let resolveViewsDelivered: (() => void) | null = null;
 let onInitRan = false;
 
 const isAbortError = (err: any) => {
@@ -538,6 +543,12 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
 
             sentView = newView;
             sentUpdateId = updateId;
+            viewsOnTheWay++;
+            if (!viewsDelivered) {
+                viewsDelivered = new Promise(resolve => {
+                    resolveViewsDelivered = resolve;
+                });
+            }
             sendMessage({ type: 'view', payload: viewPayload });
         }
         forceUpdateInitiators.clear();
@@ -549,6 +560,9 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
                 await inFlightRender;
             } catch {
             }
+        }
+        while (viewsDelivered) {
+            await viewsDelivered;
         }
         const currentRender = doForceUpdate();
         inFlightRender = currentRender.finally(() => {
@@ -623,6 +637,15 @@ const initializeComponentInstance = async ({ componentInstanceId, browserCommand
         await ComponentInstance.onInit();
     }
 }
+
+const handleViewDelivered = async () => {
+    viewsOnTheWay = Math.max(viewsOnTheWay - 1, 0);
+    if (viewsOnTheWay === 0 && resolveViewsDelivered) {
+        resolveViewsDelivered();
+        resolveViewsDelivered = null;
+        viewsDelivered = null;
+    }
+};
 
 const handleBrowserCallback = async ({ callbackId, data }) => {
     if (browserCallbacks[callbackId]) {
@@ -715,6 +738,7 @@ expose({
     initializeComponentInstance,
     updateComponentInstanceProps,
     handleBrowserCallback,
+    handleViewDelivered,
     handleComponentEvent,
     handleEventHubEvent,
     handleDestroyComponentInstance,

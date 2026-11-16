@@ -102,6 +102,79 @@ describe('worker view protocol', () => {
         }
     });
 
+    test('the next view is rendered only after the previous one was delivered', async () => {
+        const componentInstanceId = 'view-delivery';
+        const views: any[] = [];
+        const deliveries: Array<() => void> = [];
+        const update = (label: string) => onUpdateComponentInstanceProps({
+            componentInstanceId, options: { value: 1, label },
+        });
+        try {
+            await onInitializeComponentInstance({
+                componentInstanceId,
+                connectionId: componentInstanceId,
+                componentName: 'view-container-types',
+                componentRootDir: 'tests/dist/components',
+                componentOptions: { value: 1, label: 'first' },
+                browserCommands: [],
+                serverCommands: [],
+                onComponentInstanceConsole: () => { },
+                emit: message => {
+                    if (message.type !== 'view') return;
+                    views.push(message.payload);
+                    return new Promise<void>(resolve => deliveries.push(resolve));
+                },
+            });
+            await waitFor(() => views.length === 1);
+
+            // The first view is still on its way: both changes wait for it.
+            update('second');
+            await sleep(150);
+            update('third');
+            await sleep(150);
+            expect(views.length).toBe(1);
+
+            deliveries[0]();
+            await waitFor(() => views.length === 2);
+            // One view for both changes, built on the delivered one.
+            expect(views[1].baseUpdateId).toBe(views[0].updateId);
+            const browserView = applyPatch(JSON.parse(JSON.stringify(views[0].view)), views[1].patch, true).newDocument;
+            expect(browserView[0].data.props.label).toBe('third');
+            deliveries[1]();
+            await sleep(150);
+            expect(views.length).toBe(2);
+        } finally {
+            await onDestroyComponentInstance({ componentInstanceId });
+        }
+    });
+
+    test('a view that could not be delivered does not stop the component', async () => {
+        const componentInstanceId = 'view-delivery-failed';
+        const views: any[] = [];
+        try {
+            await onInitializeComponentInstance({
+                componentInstanceId,
+                connectionId: componentInstanceId,
+                componentName: 'view-container-types',
+                componentRootDir: 'tests/dist/components',
+                componentOptions: { value: 1, label: 'first' },
+                browserCommands: [],
+                serverCommands: [],
+                onComponentInstanceConsole: () => { },
+                emit: message => {
+                    if (message.type !== 'view') return;
+                    views.push(message.payload);
+                    return Promise.reject(new Error('not delivered'));
+                },
+            });
+            await waitFor(() => views.length === 1);
+            onUpdateComponentInstanceProps({ componentInstanceId, options: { value: 1, label: 'second' } });
+            await waitFor(() => views.length === 2);
+        } finally {
+            await onDestroyComponentInstance({ componentInstanceId });
+        }
+    });
+
     test.each([
         ['own __proto__', '{"__proto__":{"value":1}}', true, undefined],
         ['constructor prototype', '{"constructor":{"prototype":{"value":1}}}', true, undefined],

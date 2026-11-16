@@ -591,10 +591,27 @@ export const onInitializeComponentInstance = async ({
                     markComponentGarbage(componentInstanceId, { skipOnDestroy: true, endReason: 'resource limited' });
                 }
             } else {
+                let sent;
                 try {
-                    emit({ type, payload, componentInstanceId });
+                    sent = emit({ type, payload, componentInstanceId });
                 } catch (e) {
                     warnComponentInstance(componentInstanceId, componentInstances[componentInstanceId], `Failed to emit event ${type} for ${componentInstanceId} (${componentInstances[componentInstanceId].component})`, e);
+                }
+                if (type === 'view') {
+                    // The worker renders its next view once this one was handed over, delivered or not.
+                    const delivered = () => {
+                        const instance = componentInstances[componentInstanceId];
+                        if (!instance || instance.terminatingPromise) {
+                            return;
+                        }
+                        try {
+                            Promise.resolve(instance.worker.handleViewDelivered()).catch(() => { });
+                        } catch { }
+                    };
+                    Promise.resolve(sent).then(delivered, e => {
+                        warnComponentInstance(componentInstanceId, componentInstances[componentInstanceId], `Failed to emit event ${type} for ${componentInstanceId} (${componentInstances[componentInstanceId]?.component})`, e);
+                        delivered();
+                    });
                 }
             }
         },
